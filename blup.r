@@ -52,35 +52,42 @@ load_beekube_data <- function(json_file) {
 
   # Convertir les autres colonnes en facteurs si nécessaire
   df <- df %>%
-    mutate(across(c(queenbee, drone_parent, apiary, born), as.factor))
+    mutate(across(c(queenbee, drone_parent, born), as.factor))
 
   # Préparer les données d'évaluation
   eval_data <- lapply(criteres, function(critere) {
-    eval_list <- df[[critere]]
-    if (length(eval_list) > 0) {
-      eval_df <- do.call(rbind, lapply(seq_along(eval_list), function(i) {
-        if (length(eval_list[[i]]) > 0) {
-          data.frame(
-            queenbee = df$queenbee[i],
-            critere = critere,
-            note = sapply(eval_list[[i]], function(x) if (is.list(x)) x$note else NA),
-            user = sapply(eval_list[[i]], function(x) if (is.list(x)) x$user else NA),
-            apiary = sapply(eval_list[[i]], function(x) if (is.list(x)) x$apiary else NA),
-            beehiveType = sapply(eval_list[[i]], function(x) if (is.list(x)) x$beehiveType else NA),
-            month = sapply(eval_list[[i]], function(x) if (is.list(x)) x$month else NA),
-            year = sapply(eval_list[[i]], function(x) if (is.list(x)) x$year else NA)
-          )
-        }
-      }))
-      return(eval_df)
-    }
-  })
+  eval_list <- df[[critere]]
+  if (length(eval_list) > 0) {
+    eval_df <- do.call(rbind, lapply(seq_along(eval_list), function(i) {
+      if (length(eval_list[[i]]) > 0) {
+        data.frame(
+          queenbee = df$queenbee[i],
+          critere = critere,
+          note = eval_list[[i]]$note,
+          user = eval_list[[i]]$user,
+          apiary = eval_list[[i]]$apiary,
+          beehiveType = eval_list[[i]]$beehiveType,
+          month = eval_list[[i]]$month,
+          year = eval_list[[i]]$year,
+          stringsAsFactors = FALSE
+        )
+      }
+    }))
+    return(eval_df)
+  }
+})
 
+  print(eval_data);
+
+  # Combiner tous les data frames en un seul
   eval_data <- do.call(rbind, eval_data)
 
   # Convertir les colonnes en facteurs si nécessaire
   eval_data <- eval_data %>%
     mutate(across(c(queenbee, critere, user, apiary, beehiveType, month, year), as.factor))
+
+  # Ajouter cette ligne pour vérifier la structure des données
+  print(str(eval_data))
 
   list(df = df, eval_data = eval_data, criteres = criteres, criteres_eliminatoires = criteres_eliminatoires)
 }
@@ -91,60 +98,12 @@ calculate_blup <- function(data, eval_data, criteres) {
   blups <- list()
   methods <- list()
 
-  # Préparer les données de pédigrée
-  ped_data <- data.frame(
-    id = as.character(data$queenbee),
-    sire = as.character(data$drone_parent),
-    dam = as.character(data$queenbee_parent)
-  )
-
-  # Nettoyer le pédigrée
-  ped_data$sire[ped_data$sire == "0" |
-                  ped_data$sire == "Unknown" |
-                  is.na(ped_data$sire)] <- NA
-  ped_data$dam[ped_data$dam == "0" |
-                 ped_data$dam == "Unknown" |
-                 is.na(ped_data$dam)] <- NA
-  ped_data <- ped_data[ped_data$id != "0" & ped_data$id != "Unknown",]
-
-  # Ajouter les parents manquants
-  all_parents <- unique(c(ped_data$sire, ped_data$dam))
-  missing_parents <- setdiff(all_parents, ped_data$id)
-  missing_parents <- missing_parents[!is.na(missing_parents)]
-
-  if (length(missing_parents) > 0) {
-    ped_data <- rbind(ped_data,
-                      data.frame(id = missing_parents,
-                                 sire = NA,
-                                 dam = NA))
-  }
-
-  # Trier le pédigrée
-  sorted_ped <- sortPed(ped_data)
-
-  # Créer l'objet pédigrée
-  ped <- pedigree(sire = sorted_ped$sire, dam = sorted_ped$dam, label = sorted_ped$id)
-
-  if (inherits(ped, "try-error")) {
-    stop("Impossible de créer l'objet pédigrée. Vérifiez la structure du pédigrée.")
-  }
-
-  # Calculer la matrice de parenté
-  A <- as(getA(ped), "matrix")
-
   for (critere in criteres) {
     tryCatch({
       # Préparer les données pour le modèle
       model_data <- eval_data %>%
         filter(critere == !!critere) %>%
         left_join(data, by = "queenbee")
-
-      if (nrow(model_data) == 0) {
-        print(paste("Aucune donnée disponible pour le critère", critere))
-        blups[[critere]] <- rep(NA, nrow(data))
-        methods[[critere]] <- "Pas de données"
-        next
-      }
 
       # Vérifier quelles colonnes sont disponibles
       available_columns <- names(model_data)
@@ -153,7 +112,7 @@ calculate_blup <- function(data, eval_data, criteres) {
       # Construire la formule du modèle en fonction des colonnes disponibles
       random_effects <- c("queenbee", "user", "apiary", "beehiveType", "month", "year")
       formula_parts <- c("note ~ (1|queenbee)")
-      for (effect in random_effects[-1]) {  # Skip 'queenbee' as it's always included
+      for (effect in random_effects[-1]) {
         if (effect %in% available_columns) {
           formula_parts <- c(formula_parts, paste0("(1|", effect, ")"))
         }
@@ -171,28 +130,10 @@ calculate_blup <- function(data, eval_data, criteres) {
         blups[[critere]] <- ranef(blup_model)$queenbee[, 1]
         methods[[critere]] <- "BLUP"
       } else {
-        # Méthode 2: Modèle bayésien
-        bayesian_model <- brm(
-          as.formula(formula_str),
-          data = model_data,
-          family = gaussian(),
-          prior = c(prior(normal(0, 1), class = "Intercept"),
-                    prior(cauchy(0, 2), class = "sd")),
-          cov_ranef = list(queenbee = A_subset),
-          chains = 2,
-          iter = 2000,
-          warmup = 1000
-        )
-
-        if (!inherits(bayesian_model, "try-error")) {
-          blups[[critere]] <- ranef(bayesian_model)$queenbee[, , "Intercept"]
-          methods[[critere]] <- "Bayesien"
-        } else {
-          # Méthode 3: Régression linéaire simple
-          lm_model <- lm(note ~ 1, data = model_data)
-          blups[[critere]] <- rep(coef(lm_model)[1], nrow(model_data))
-          methods[[critere]] <- "Régression linéaire"
-        }
+        # Méthode 2: Régression linéaire simple
+        lm_model <- lm(note ~ queenbee, data = model_data)
+        blups[[critere]] <- coef(lm_model)[-1]  # Exclure l'intercept
+        methods[[critere]] <- "Régression linéaire"
       }
 
       print(paste("BLUP calculé pour le critère", critere, "avec la méthode", methods[[critere]]))
@@ -212,8 +153,7 @@ calculate_blup <- function(data, eval_data, criteres) {
 data <- load_beekube_data("/Users/tups/Sites/beekube-blup/lineage.json")
 
 # Afficher la structure des données pour le diagnostic
-str(data$df)
-str(data$eval_data)
+
 
 results <- calculate_blup(data$df, data$eval_data, data$criteres)
 
