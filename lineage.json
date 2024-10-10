@@ -1,0 +1,746 @@
+{
+  "exploitation": 798,
+  "evaluate": [
+    46,
+    139,
+    44,
+    47,
+    274,
+    228,
+    45
+  ],
+  "evaluate_elimination": [
+    196
+  ],
+  "data": [
+    {
+      "queenbee": 3262,
+      "queenbee_parent": null,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2020",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 5064,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 7531,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 1,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "05",
+          "year": "24"
+        }
+      ],
+      "45": [
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 1,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "05",
+          "year": "24"
+        }
+      ],
+      "46": [
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        }
+      ],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 7536,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 7537,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 7538,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": 4948,
+      "born": "2023",
+      "44": [
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "03",
+          "year": "24"
+        }
+      ],
+      "45": [
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "03",
+          "year": "24"
+        }
+      ],
+      "46": [
+        {
+          "note": 0.5,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "03",
+          "year": "24"
+        }
+      ],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 9586,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 9587,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 9588,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 9589,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 9590,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 9591,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 10169,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 10170,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 11743,
+      "queenbee_parent": 10170,
+      "drone_parent": null,
+      "apiary": 1212,
+      "born": "2023",
+      "44": [
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 1,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.8,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "09",
+          "year": "24"
+        }
+      ],
+      "45": [
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 1,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.8,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "09",
+          "year": "24"
+        }
+      ],
+      "46": [
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "04",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        },
+        {
+          "note": 0.8,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "09",
+          "year": "24"
+        }
+      ],
+      "47": [],
+      "139": [
+        {
+          "note": 0.8,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "09",
+          "year": "24"
+        }
+      ],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 10772,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": 1212,
+      "born": "2023",
+      "44": [
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-6",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-6",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "07",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "09",
+          "year": "24"
+        }
+      ],
+      "45": [
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-6",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 0.75,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-6",
+          "month": "03",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "07",
+          "year": "24"
+        },
+        {
+          "note": 0.8,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        },
+        {
+          "note": 0.8,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "09",
+          "year": "24"
+        }
+      ],
+      "46": [
+        {
+          "note": 0.6,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "07",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "09",
+          "year": "24"
+        }
+      ],
+      "47": [],
+      "139": [
+        {
+          "note": 0.6,
+          "user": 682,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "07",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        },
+        {
+          "note": 0.6,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "09",
+          "year": "24"
+        }
+      ],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 11564,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [],
+      "45": [],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 11899,
+      "queenbee_parent": 3262,
+      "drone_parent": null,
+      "apiary": null,
+      "born": "2023",
+      "44": [
+        {
+          "note": 0.75,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-6",
+          "month": "03",
+          "year": "24"
+        }
+      ],
+      "45": [
+        {
+          "note": 1,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-6",
+          "month": "03",
+          "year": "24"
+        }
+      ],
+      "46": [],
+      "47": [],
+      "139": [],
+      "228": [],
+      "274": [],
+      "196": []
+    },
+    {
+      "queenbee": 18177,
+      "queenbee_parent": 11899,
+      "drone_parent": null,
+      "apiary": 1213,
+      "born": "2024",
+      "44": [
+        {
+          "note": 0.6,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        }
+      ],
+      "45": [
+        {
+          "note": 0.6,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        }
+      ],
+      "46": [
+        {
+          "note": 0.4,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        }
+      ],
+      "47": [],
+      "139": [
+        {
+          "note": 0.4,
+          "user": 851,
+          "apiary": 1212,
+          "beehiveType": "dadant-10",
+          "month": "08",
+          "year": "24"
+        }
+      ],
+      "228": [],
+      "274": [],
+      "196": []
+    }
+  ]
+}
