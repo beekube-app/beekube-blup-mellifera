@@ -9,10 +9,8 @@ library(lm.beta)
 
 options(mc.cores = parallel::detectCores())
 
-# Obtenir le chemin du répertoire courant
+# Chemins des fichiers
 current_dir <- getwd()
-
-# Définir les chemins des fichiers d'entrée et de sortie
 input_file <- file.path(current_dir, "data/input.json")
 output_file <- file.path(current_dir, "data/resultats_index.json")
 
@@ -112,6 +110,34 @@ has_enough_levels <- function(factor, min_levels = 2) {
   length(unique(factor)) >= min_levels
 }
 
+# Fonction pour calculer la matrice de parenté adaptée aux abeilles
+calculate_bee_kinship <- function(ped, n_drones = 12, has_drone_info = TRUE) {
+  # Vérifier si l'information sur les drones est disponible
+  if (!has_drone_info) {
+    # Si pas d'info sur les drones, utiliser une matrice de parenté standard
+    A <- as(getA(ped), "matrix")
+    return(A)
+  }
+
+  # Calcul basé sur Bienefeld et al. (2007) si l'info sur les drones est disponible
+  A <- as(getA(ped), "matrix")
+
+  # Ajustement pour l'accouplement multiple
+  A_adjusted <- A * (1 + 1/(4 * n_drones))
+
+  # Ajuster les coefficients de parenté entre reines soeurs
+  queen_ids <- unique(ped$id[!is.na(ped$dam)])
+  for (i in 1:(length(queen_ids) - 1)) {
+    for (j in (i + 1):length(queen_ids)) {
+      if (ped$dam[ped$id == queen_ids[i]] == ped$dam[ped$id == queen_ids[j]]) {
+        A_adjusted[queen_ids[i], queen_ids[j]] <- A_adjusted[queen_ids[j], queen_ids[i]] <- 0.25 + 0.5 / n_drones
+      }
+    }
+  }
+
+  return(A_adjusted)
+}
+
 # Fonction pour charger et préparer les données
 # Modification de la fonction load_beekube_data
 load_beekube_data <- function(json_file) {
@@ -155,14 +181,11 @@ load_beekube_data <- function(json_file) {
   eval_data <- eval_data %>%
     mutate(across(c(queenbee, critere, user, apiary, beehiveType, month, year), as.factor))
 
-  # Ajouter cette ligne pour vérifier la structure des données
-  #print(str(eval_data))
-
   list(df = df, eval_data = eval_data, criteres = criteres, criteres_eliminatoires = criteres_eliminatoires)
 }
 
-# Modification de la fonction calculate_blup
-calculate_blup <- function(data, eval_data, criteres) {
+# Fonction principale pour le calcul BLUP
+calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
   blups <- list()
   methods <- list()
 
@@ -198,52 +221,40 @@ calculate_blup <- function(data, eval_data, criteres) {
   # Trier le pedigree
   sorted_ped <- sort_pedigree(ped_data)
 
-  # Vérifier que tous les parents sont dans la liste des IDs
-  missing_sires <- setdiff(sorted_ped$sire, sorted_ped$id)
-  missing_dams <- setdiff(sorted_ped$dam, sorted_ped$id)
-
-  # Créer l'objet pedigree
+  # Création de l'objet pedigree
   ped <- pedigree(sire = sorted_ped$sire, dam = sorted_ped$dam, label = sorted_ped$id)
 
-  # Calculer la matrice de parenté
-  A <- as(getA(ped), "matrix")
+    # Vérifier si l'information sur les drones est disponible
+  has_drone_info <- !all(is.na(data$drone_parent) | data$drone_parent == "0")
+
+  # Calcul de la matrice de parenté adaptée aux abeilles
+  A <- calculate_bee_kinship(ped, n_drones, has_drone_info)
 
   for (critere in criteres) {
     tryCatch({
-      # Préparer les données pour le modèle
       model_data <- eval_data %>%
         filter(critere == !!critere) %>%
         left_join(data, by = "queenbee")
 
-
-      if (nrow(model_data) < 1) {  # Vous pouvez ajuster ce seuil
+      if (nrow(model_data) < 1) {
         message(paste("Pas assez de données pour le critère", critere))
         blups[[critere]] <- rep(NA, nrow(data))
         methods[[critere]] <- "Pas assez de données"
-        next  # Passer au critère suivant
-      }
-
-      if (all(is.na(model_data$note))) {
-        message(paste("Aucune donnée pour le critère", critere))
-        blups[[critere]] <- rep(NA, nrow(data))
-        methods[[critere]] <- "Aucune donnée"
-        next  # Passer au critère suivant
+        next
       }
 
       # Vérifier quelles colonnes sont disponibles
       available_columns <- names(model_data)
-      #print(paste("Colonnes disponibles pour le critère", critere, ":", paste(available_columns, collapse = ", ")))
 
-      # Construire la formule du modèle en fonction des colonnes disponibles
-      random_effects <- c("queenbee", "user", "apiary", "beehiveType", "month", "year")
-      formula_parts <- c("note ~ (1|queenbee)")
-      for (effect in random_effects[-1]) {
+      # Construction de la formule du modèle
+      random_effects <- c("user", "apiary", "beehiveType", "month", "year")
+      formula_parts <- c("note ~ (1|queenbee) + (1|drone_parent)")
+       for (effect in random_effects) {
         if (effect %in% available_columns && has_enough_levels(model_data[[effect]])) {
           formula_parts <- c(formula_parts, paste0("(1|", effect, ")"))
         }
       }
       formula_str <- paste(formula_parts, collapse = " + ")
-      #print(paste("Formule du modèle pour le critère", critere, ":", formula_str))
 
       # Ajuster la matrice A pour correspondre aux données du modèle
       A_subset <- A[as.character(model_data$queenbee), as.character(model_data$queenbee)]
@@ -254,60 +265,38 @@ calculate_blup <- function(data, eval_data, criteres) {
 
       if (!inherits(blup_model, "try-error")) {
         tryCatch({
-          blup_values <- ranef(blup_model)$queenbee[, 1]
-
-          #print("BLUPs extraits:")
-          #print(blup_values)
-
+          blup_values <- ranef(blup_model)$queenbee[, 1] + ranef(blup_model)$drone_parent[, 1]
           # Obtenir les noms des reines du modèle
           queen_names <- rownames(ranef(blup_model)$queenbee)
           names(blup_values) <- queen_names
-
-          #print("BLUPs extraits avec noms:")
-          #print(blup_values)
 
           # Créer un vecteur aligné avec toutes les reines
           aligned_blups <- rep(NA, nrow(data))
           names(aligned_blups) <- as.character(data$queenbee)
 
-          #print("Noms des reines dans les données:")
-          #print(names(aligned_blups))
-
-          #print("Noms des reines dans les BLUPs:")
-          #print(names(blup_values))
-
           # Utiliser une méthode de correspondance plus robuste
-          common_names <- intersect(names(aligned_blups), names(blup_values))
-          aligned_blups[common_names] <- blup_values[common_names]
+        common_names <- intersect(names(aligned_blups), names(blup_values))
+        aligned_blups[common_names] <- blup_values[common_names]
 
-          #print("BLUPs alignés:")
-          #print(aligned_blups)
-
-          blups[[critere]] <- aligned_blups
-          methods[[critere]] <- "BLUP"
-
-          # Imprimer un résumé du modèle
-          #print(summary(blup_model))
+        blups[[critere]] <- aligned_blups
+        methods[[critere]] <- "BLUP"
         }, error = function(e) {
           message(paste("Erreur lors de l'extraction des BLUPs pour le critère", critere, ":", e$message))
           blups[[critere]] <- rep(NA, nrow(data))
           methods[[critere]] <- "Échec (extraction)"
         })
       } else {
-        # Méthode 2: Régression linéaire simple
-        lm_model <- lm(note ~ queenbee, data = model_data)
-        blup_values <- coef(lm_model)[-1]  # Exclure l'intercept
-        # Aligner les BLUPs avec toutes les reines
+        # Méthode alternative si BLUP échoue
+        lm_model <- lm(as.formula(paste(critere, "~ queenbee")), data = model_data)
+        blup_values <- coef(lm_model)[-1]
         aligned_blups <- rep(NA, nrow(data))
         names(aligned_blups) <- as.character(data$queenbee)
         aligned_blups[names(blup_values)] <- blup_values
         blups[[critere]] <- aligned_blups
         methods[[critere]] <- "Régression linéaire"
       }
-
     }, error = function(e) {
       message(paste("Impossible de calculer le BLUP pour le critère", critere, ":", e$message))
-      #print(str(model_data))
       blups[[critere]] <- rep(NA, nrow(data))
       methods[[critere]] <- "Échec"
     })
@@ -318,19 +307,13 @@ calculate_blup <- function(data, eval_data, criteres) {
 
 # Utilisation
 data <- load_beekube_data(input_file)
-
-# Afficher la structure des données pour le diagnostic
-#print(str(data$df))
-#print(str(data$eval_data))
-
 results <- calculate_blup(data$df, data$eval_data, data$criteres)
 
-print(str(results$df))
 
 # Préparation des résultats pour l'export JSON
 export_list <- list()
 
-for (i in 1:nrow(data$df)) {
+for (i in seq_len(nrow(data$df))) {
   queen_data <- as.list(data$df[i, ])
 
   # Supprimer les colonnes de type liste
