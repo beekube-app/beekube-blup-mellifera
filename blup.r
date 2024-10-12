@@ -247,9 +247,15 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
       available_columns <- names(model_data)
 
       # Construction de la formule du modèle
-      random_effects <- c("user", "apiary", "beehiveType", "month", "year")
-      formula_parts <- c("note ~ (1|queenbee) + (1|drone_parent)")
-       for (effect in random_effects) {
+      random_effects <- c("queenbee", "user", "apiary", "beehiveType", "month", "year", "drone_parent")
+
+      if(has_drone_info) {
+        formula_parts <- c("note ~ (1|queenbee) + (1|drone_parent)")
+      } else {
+        formula_parts <- c("note ~ (1|queenbee)")
+      }
+
+      for (effect in random_effects[-1]) {
         if (effect %in% available_columns && has_enough_levels(model_data[[effect]])) {
           formula_parts <- c(formula_parts, paste0("(1|", effect, ")"))
         }
@@ -265,7 +271,12 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
 
       if (!inherits(blup_model, "try-error")) {
         tryCatch({
-          blup_values <- ranef(blup_model)$queenbee[, 1] + ranef(blup_model)$drone_parent[, 1]
+          if(has_drone_info) {
+            blup_values <- ranef(blup_model)$queenbee[, 1] + ranef(blup_model)$drone_parent[, 1]
+          } else {
+            blup_values <- ranef(blup_model)$queenbee[, 1]
+          }
+
           # Obtenir les noms des reines du modèle
           queen_names <- rownames(ranef(blup_model)$queenbee)
           names(blup_values) <- queen_names
@@ -287,7 +298,7 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
         })
       } else {
         # Méthode alternative si BLUP échoue
-        lm_model <- lm(as.formula(paste(critere, "~ queenbee")), data = model_data)
+        lm_model <- lm(note ~ queenbee, data = model_data)
         blup_values <- coef(lm_model)[-1]
         aligned_blups <- rep(NA, nrow(data))
         names(aligned_blups) <- as.character(data$queenbee)
