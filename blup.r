@@ -9,35 +9,84 @@ library(lm.beta)
 
 options(mc.cores = parallel::detectCores())
 
-# Fonction pour trier le pédigrée
-sortPed <- function(ped) {
-  ped$generation <- 0
-  ped$processed <- FALSE
+# Fonction pour trier correctement le pedigree
+sort_pedigree <- function(ped, max_iterations = 1000) {
+  ped$sorted <- FALSE
+  sorted_ped <- data.frame()
+  iteration <- 0
 
-  while (any(!ped$processed)) {
-    for (i in which(!ped$processed)) {
-      if (is.na(ped$dam[i]) && is.na(ped$sire[i])) {
-        ped$processed[i] <- TRUE
-        next
+  while(nrow(ped) > 0 && iteration < max_iterations) {
+    iteration <- iteration + 1
+
+    # Trouver les individus sans parents ou dont les parents sont déjà triés
+    to_add <- ped[is.na(ped$sire) & is.na(ped$dam) |
+                  (is.na(ped$sire) | ped$sire %in% sorted_ped$id) &
+                  (is.na(ped$dam) | ped$dam %in% sorted_ped$id), ]
+
+    if(nrow(to_add) == 0) {
+      # Diagnostic: identifier les individus problématiques
+      problem_individuals <- ped[1:min(5, nrow(ped)), ]
+      print("Individus problématiques:")
+      print(problem_individuals)
+
+      # Vérifier les cycles potentiels
+      for(i in 1:nrow(problem_individuals)) {
+        individual <- problem_individuals$id[i]
+        sire <- problem_individuals$sire[i]
+        dam <- problem_individuals$dam[i]
+
+        if(!is.na(sire) && sire == individual) {
+          stop(paste("Cycle détecté: L'individu", individual, "est son propre père"))
+        }
+        if(!is.na(dam) && dam == individual) {
+          stop(paste("Cycle détecté: L'individu", individual, "est sa propre mère"))
+        }
       }
 
-      dam_gen <- if (!is.na(ped$dam[i])) ped$generation[ped$id == ped$dam[i]] else -1
-      sire_gen <- if (!is.na(ped$sire[i])) ped$generation[ped$id == ped$sire[i]] else -1
-
-      if (length(dam_gen) == 0) dam_gen <- -1
-      if (length(sire_gen) == 0) sire_gen <- -1
-
-      if (all(ped$processed[ped$id %in% c(ped$dam[i], ped$sire[i])] | is.na(c(ped$dam[i], ped$sire[i])))) {
-        ped$generation[i] <- max(dam_gen, sire_gen) + 1
-        ped$processed[i] <- TRUE
-      }
+      stop("Impossible de trier le pedigree. Il pourrait y avoir des cycles ou des incohérences.")
     }
+
+    sorted_ped <- rbind(sorted_ped, to_add)
+    ped <- ped[!ped$id %in% to_add$id, ]
   }
 
-  ped <- ped[order(ped$generation, ped$id),]
-  rownames(ped) <- NULL
+  if(iteration == max_iterations) {
+    stop("Nombre maximum d'itérations atteint. Le pedigree pourrait être trop grand ou contenir des cycles.")
+  }
+
+  return(sorted_ped)
+}
+
+# Fonction pour vérifier et nettoyer le pedigree
+check_and_clean_pedigree <- function(ped) {
+  # Convertir toutes les colonnes en caractères
+  ped$id <- as.character(ped$id)
+  ped$sire <- as.character(ped$sire)
+  ped$dam <- as.character(ped$dam)
+
+  # Remplacer les valeurs vides par NA
+  ped$sire[ped$sire == ""] <- NA
+  ped$dam[ped$dam == ""] <- NA
+
+  # Vérifier les doublons
+  if(any(duplicated(ped$id))) {
+    warning("Des IDs en double ont été détectés. Ils seront supprimés.")
+    ped <- ped[!duplicated(ped$id), ]
+  }
+
+  # Vérifier les parents manquants
+  missing_sires <- setdiff(ped$sire, c(ped$id, NA))
+  missing_dams <- setdiff(ped$dam, c(ped$id, NA))
+
+  if(length(c(missing_sires, missing_dams)) > 0) {
+    warning("Certains parents ne sont pas présents dans la liste des IDs. Ils seront remplacés par NA.")
+    ped$sire[ped$sire %in% missing_sires] <- NA
+    ped$dam[ped$dam %in% missing_dams] <- NA
+  }
+
   return(ped)
 }
+
 
 # fonction pour vérifier si un facteur a suffisamment de niveaux
 has_enough_levels <- function(factor, min_levels = 2) {
@@ -105,8 +154,6 @@ calculate_blup <- function(data, eval_data, criteres) {
     dam = as.character(data$queenbee_parent)
   )
 
-
-
   # Nettoyer le pédigrée
   ped_data$sire[ped_data$sire == "0" |
                   ped_data$sire == "Unknown" |
@@ -115,7 +162,6 @@ calculate_blup <- function(data, eval_data, criteres) {
                  ped_data$dam == "Unknown" |
                  is.na(ped_data$dam)] <- NA
   ped_data <- ped_data[ped_data$id != "0" & ped_data$id != "Unknown",]
-
 
   # Ajouter les parents manquants
   all_parents <- unique(c(ped_data$sire, ped_data$dam))
@@ -129,11 +175,15 @@ calculate_blup <- function(data, eval_data, criteres) {
                                  dam = NA))
   }
 
+  ped_data <- check_and_clean_pedigree(ped_data)
+  # Trier le pedigree
+  sorted_ped <- sort_pedigree(ped_data)
 
-  # Trier le pédigrée
-  sorted_ped <- sortPed(ped_data)
-  print(sorted_ped);
-  # Créer l'objet pédigrée
+  # Vérifier que tous les parents sont dans la liste des IDs
+  missing_sires <- setdiff(sorted_ped$sire, sorted_ped$id)
+  missing_dams <- setdiff(sorted_ped$dam, sorted_ped$id)
+
+  # Créer l'objet pedigree
   ped <- pedigree(sire = sorted_ped$sire, dam = sorted_ped$dam, label = sorted_ped$id)
 
   # Calculer la matrice de parenté
@@ -235,8 +285,6 @@ calculate_blup <- function(data, eval_data, criteres) {
         blups[[critere]] <- aligned_blups
         methods[[critere]] <- "Régression linéaire"
       }
-
-      print(paste("BLUP calculé pour le critère", critere, "avec la méthode", methods[[critere]]))
 
     }, error = function(e) {
       message(paste("Impossible de calculer le BLUP pour le critère", critere, ":", e$message))
