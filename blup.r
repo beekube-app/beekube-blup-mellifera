@@ -9,6 +9,13 @@ library(lm.beta)
 
 options(mc.cores = parallel::detectCores())
 
+# Obtenir le chemin du répertoire courant
+current_dir <- getwd()
+
+# Définir les chemins des fichiers d'entrée et de sortie
+input_file <- file.path(current_dir, "data/input.json")
+output_file <- file.path(current_dir, "data/resultats_index.json")
+
 # Fonction pour trier correctement le pedigree
 sort_pedigree <- function(ped, max_iterations = 1000) {
   ped$sorted <- FALSE
@@ -30,7 +37,7 @@ sort_pedigree <- function(ped, max_iterations = 1000) {
       print(problem_individuals)
 
       # Vérifier les cycles potentiels
-      for(i in 1:nrow(problem_individuals)) {
+      for(i in seq_len(nrow(problem_individuals))) {
         individual <- problem_individuals$id[i]
         sire <- problem_individuals$sire[i]
         dam <- problem_individuals$dam[i]
@@ -87,6 +94,18 @@ check_and_clean_pedigree <- function(ped) {
   return(ped)
 }
 
+# Fonction récursive pour gérer les NA
+replace_na_with_null <- function(x) {
+  if (is.list(x)) {
+    return(lapply(x, replace_na_with_null))
+  } else if (is.vector(x) && !is.null(x)) {
+    # Pour les vecteurs, on garde les NA tels quels
+    return(x)
+  } else {
+    # Pour les valeurs individuelles, on retourne NULL si c'est NA
+    return(if (is.na(x)) NULL else x)
+  }
+}
 
 # fonction pour vérifier si un facteur a suffisamment de niveaux
 has_enough_levels <- function(factor, min_levels = 2) {
@@ -298,7 +317,7 @@ calculate_blup <- function(data, eval_data, criteres) {
 }
 
 # Utilisation
-data <- load_beekube_data("/Users/tups/Sites/beekube-blup/lineage.json")
+data <- load_beekube_data(input_file)
 
 # Afficher la structure des données pour le diagnostic
 #print(str(data$df))
@@ -307,18 +326,37 @@ data <- load_beekube_data("/Users/tups/Sites/beekube-blup/lineage.json")
 results <- calculate_blup(data$df, data$eval_data, data$criteres)
 
 print(str(results$df))
-# Préparation des résultats pour l'export CSV
-export_df <- data$df
 
-# Supprimer les colonnes de type liste
-list_columns <- sapply(export_df, is.list)
-export_df <- export_df[, !list_columns]
+# Préparation des résultats pour l'export JSON
+export_list <- list()
 
-# Ajouter les BLUPs et les méthodes
-for (critere in data$criteres) {
-  export_df[[paste0("blup_", critere)]] <- results$blups[[critere]]
-  export_df[[paste0("method_", critere)]] <- results$methods[[critere]]
+for (i in 1:nrow(data$df)) {
+  queen_data <- as.list(data$df[i, ])
+
+  # Supprimer les colonnes de type liste
+  queen_data <- queen_data[!sapply(queen_data, is.list)]
+
+  # Ajouter les BLUPs et les méthodes
+  blups <- list()
+  methods <- list()
+  for (critere in data$criteres) {
+    blups[[critere]] <- results$blups[[critere]][i]
+    methods[[critere]] <- results$methods[[critere]][i]
+  }
+
+  queen_data$blups <- blups
+  queen_data$methods <- methods
+
+  # Appliquer la fonction pour gérer les NA
+  queen_data <- replace_na_with_null(queen_data)
+
+  export_list[[i]] <- queen_data
 }
 
-# Exporter les résultats en CSV
-write.csv(export_df, "/Users/tups/Sites/beekube-blup/resultats_index.csv", row.names = FALSE)
+# Convertir la liste en JSON
+json_output <- toJSON(export_list, pretty = TRUE, auto_unbox = TRUE, na = "null")
+
+# Exporter les résultats en JSON
+write(json_output, output_file)
+
+print("Les résultats ont été exportés en JSON avec les NA remplacés par null.")
