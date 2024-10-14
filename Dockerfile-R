@@ -1,0 +1,30 @@
+FROM rocker/r-ver:latest
+
+# Installer les dépendances système
+RUN apt-get update && apt-get install -y \
+    libgsl-dev \
+    libpng-dev \
+    cmake \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev \
+    libtiff5-dev \
+    libjpeg-dev
+
+# Installer et vérifier chaque package R individuellement
+RUN R -e "install.packages('jsonlite', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(jsonlite)" && \
+    R -e "install.packages('Matrix', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(Matrix)" && \
+    R -e "install.packages('lme4', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(lme4)" && \
+    R -e "install.packages('brms', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(brms)" && \
+    R -e "install.packages('rstan', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(rstan)" && \
+    R -e "install.packages('lm.beta', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(lm.beta)" && \
+    R -e "install.packages('pedigreemm', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(pedigreemm)"
+
+# Copier le script R dans l'image
+COPY blup.r /app/blup.r
+
+WORKDIR /app
+
+# Exécuter le script R
+CMD ["Rscript", "blup.r"]
