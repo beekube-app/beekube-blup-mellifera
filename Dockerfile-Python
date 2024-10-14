@@ -1,10 +1,41 @@
-FROM python:3.13
+FROM r-base:latest
+
+
+# Installer les dépendances système
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcurl4-openssl-dev \
+    python3 \
+    python3-pip \
+    python3-dev \
+    cmake \
+    libxml2-dev \
+    libgsl-dev \
+    libpng-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev \
+    libtiff5-dev \
+    libjpeg-dev
 
 WORKDIR /app
+
+COPY ./requirements-bin.txt .
+
+RUN cat requirements-bin.txt | xargs apt-get install -y -qq
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Installer et vérifier chaque package R individuellement
+RUN R -e "install.packages('lm.beta', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(lm.beta)" && \
+    R -e "install.packages('pedigreemm', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(pedigreemm)"
+
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
+# Copier le script R dans l'image
+COPY blup.r .
 COPY app.py .
 
 CMD ["python", "app.py"]
