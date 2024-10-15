@@ -156,9 +156,9 @@ load_beekube_data <- function(json_file) {
   df <- df %>%
     mutate(across(c(queenbee, drone_parent, born), as.factor))
 
-  # Préparer les données d'évaluation
+  # Prepare evaluation data
   eval_data <- do.call(rbind, lapply(criteres, function(critere) {
-    eval_list <- df[[critere]]
+    eval_list <- df$evaluate[[critere]]
     do.call(rbind, lapply(seq_along(eval_list), function(i) {
       if (length(eval_list[[i]]) > 0) {
         data.frame(
