@@ -1,0 +1,7 @@
+r-cran-jsonlite
+r-cran-dplyr
+r-cran-stringr
+r-cran-matrix
+r-cran-lme4
+r-cran-brms
+r-cran-rstan
