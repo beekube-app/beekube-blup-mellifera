@@ -19,8 +19,8 @@ Beekube BLUP Melifera API is a Flask application that provides an API interface 
 ## Installation and start-up
 1. Clone this repository:
    ```
-   git clone [URL_DU_REPO]
-   cd [NOM_DU_REPO]
+   git clone beekube-app/beekube-blup-melifera
+   cd beekube-blup-melifera
    ```
 
 2. Start the application with Docker Compose:
@@ -56,7 +56,8 @@ To contribute to the project:
 5. Open a Pull Request
 
 ## Licence
-[Indiquez ici la licence de votre projet]
+MIT Licence
 
 ## Contact
-[Vos informations de contact ou celles du projet]
+Beekube - Damien TUPINIER
+https://www.beekube.com
