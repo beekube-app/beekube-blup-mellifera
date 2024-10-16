@@ -76,45 +76,53 @@ def blup(body: BLUPInput):
         """
         Perform BLUP calculation
         """
-        # Assurez-vous que le répertoire data existe
+        # Make sure that the directory "data" exists
         os.makedirs('./data', exist_ok=True)
 
-        # Supprimer le fichier /app/data/input.json
+        # Delete the file input.json
         if os.path.exists('./data/input.json'):
             os.remove('./data/input.json')
 
-        # Supprimer le fichier /app/data/resultats_index.json
+        # Delete the file results_index.json
         if os.path.exists('./data/resultats_index.json'):
             os.remove('./data/resultats_index.json')
 
-        # Sauvegarder les données JSON dans un fichier
+        # Save the JSON data in a file
         with open('./data/input.json', 'w') as f:
             json.dump(body.dict(), f)
 
-        # Exécuter le script R
+        # Run the R script
         result = subprocess.run(['Rscript', 'blup.r'], capture_output=True, text=True)
 
-        # Lire les résultats
+        # Read the results
         if os.path.exists('./data/resultats_index.json'):
             with open('./data/resultats_index.json', 'r') as f:
                 results = json.load(f)
         else:
-            results = {"error": "Fichier de résultats non trouvé"}
+            results = {"error": "Results file not found"}
 
-        # Préparer la réponse
+        # Prepare the response
         response = BLUPOutput(
             status='success' if result.returncode == 0 else 'error',
             results=results
         )
 
-        return jsonify(response.dict())
+        # Delete the file input.json
+        if os.path.exists('./data/input.json'):
+            os.remove('./data/input.json')
+
+        # Delete the file resultats_index.json.
+        if os.path.exists('./data/resultats_index.json'):
+            os.remove('./data/resultats_index.json')
+
+        return jsonify(response.model_dump())
     except Exception as e:
         return jsonify({
             'status': 'error',
             'message': str(e),
             'output': result.stdout if 'result' in locals() else '',
             'error': result.stderr if 'result' in locals() else '',
-            'results': {"error": "Une erreur inattendue s'est produite"}
+            'results': {"error": "An unexpected error occurred"}
         }), 500
 
 
