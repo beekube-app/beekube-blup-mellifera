@@ -1,3 +1,4 @@
 Flask==3.0.3
 pydantic==2.9.2
 flask-openapi3[swagger]==4.0.1
+gunicorn==23.0.0

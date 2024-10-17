@@ -44,4 +44,6 @@ RUN pip install -r requirements.txt
 COPY blup.r .
 COPY app.py .
 
-CMD ["python", "app.py"]
+EXPOSE 8081
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8081", "app:app"]
