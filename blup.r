@@ -14,6 +14,61 @@ current_dir <- getwd()
 input_file <- file.path(current_dir, "data/input.json")
 output_file <- file.path(current_dir, "data/resultats_index.json")
 
+
+# Function to calculate bee-adapted heritability
+calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has_drone_info = TRUE) {
+  # Ajuster la matrice de parenté pour les abeilles
+  A <- as(getA(pedigree), "CsparseMatrix")
+
+  if (has_drone_info) {
+    A_adjusted <- A * (1 + 1 / (4 * n_drones))
+  } else {
+    A_adjusted <- A  # Utiliser la matrice de parenté standard si pas d'info sur les drones
+  }
+
+  # Préparer la formule du modèle
+  if (has_drone_info) {
+    formula <- as.formula(paste(trait, "~ (1|queenbee) + (1|drone_parent) + (1|apiary)"))
+  } else {
+    formula <- as.formula(paste(trait, "~ (1|queenbee) + (1|apiary)"))
+  }
+
+  tryCatch({
+    # Ajuster le modèle mixte
+    model <- lmer(formula,
+                  data = data,
+                  control = lmerControl(check.nobs.vs.nlev = "ignore",
+                                        check.nobs.vs.nRE = "ignore"),
+                  weights = A_adjusted)
+  }, error = function(e) {
+    message(paste("calculate_bee_heritability Error ", ":", e$message))
+  })
+
+
+  # Extraire les composantes de la variance
+  vc <- VarCorr(model)
+  v_a <- vc$queenbee[1]  # Variance génétique additive de la reine
+  v_c <- vc$apiary[1]  # Variance due à l'effet de la colonie/rucher
+
+  if (has_drone_info) {
+    v_d <- vc$drone_parent[1]  # Variance due aux drones
+  } else {
+    v_d <- 0
+  }
+
+  v_e <- attr(vc, "sc")^2  # Variance résiduelle
+
+  # Calculer l'héritabilité
+  h2 <- (v_a + v_d) / (v_a + v_d + v_c + v_e)
+
+  # Calculer l'erreur standard de l'héritabilité
+  se_h2 <- sqrt(var(h2))
+
+  return(list(heritability = h2, se = se_h2,
+              v_additive_queen = v_a, v_additive_drone = v_d,
+              v_colony = v_c, v_residual = v_e))
+}
+
 # Function to properly sort the pedigree
 sort_pedigree <- function(ped, max_iterations = 1000) {
   ped$sorted <- FALSE
@@ -188,6 +243,7 @@ load_beekube_data <- function(json_file) {
 calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
   blups <- list()
   methods <- list()
+  heritabilities <- list()
 
   # Prepare pedigree data
   ped_data <- data.frame(
@@ -307,6 +363,18 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
         blups[[critere]] <- aligned_blups
         methods[[critere]] <- "Linear regression"
       }
+
+      # Calcul de l'héritabilité
+      h2_result <- calculate_bee_heritability(model_data, "note", ped, n_drones, has_drone_info)
+      heritabilities[[critere]] <- list(
+        heritability = h2_result$heritability,
+        se = h2_result$se,
+        v_additive_queen = h2_result$v_additive_queen,
+        v_additive_drone = h2_result$v_additive_drone,
+        v_colony = h2_result$v_colony,
+        v_residual = h2_result$v_residual
+      )
+
     }, error = function(e) {
       message(paste("Unable to calculate the BLUP for the criterion", critere, ":", e$message))
       blups[[critere]] <- rep(NA, nrow(data))
@@ -314,7 +382,7 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
     })
   }
 
-  list(blups = blups, methods = methods)
+  list(blups = blups, methods = methods, heritabilities = heritabilities)
 }
 
 
@@ -347,6 +415,9 @@ for (i in seq_len(nrow(data$df))) {
 
   export_list[[i]] <- queen_data
 }
+
+# Ajout des héritabilités aux résultats
+export_list$heritabilities <- results$heritabilities
 
 # Convert the list to JSON
 json_output <- toJSON(export_list, pretty = TRUE, auto_unbox = TRUE, na = "null")
