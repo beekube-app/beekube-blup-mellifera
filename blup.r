@@ -29,30 +29,30 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
 
   missing_columns <- setdiff(required_columns, names(data))
   if (length(missing_columns) > 0) {
-    stop(paste("Colonnes manquantes dans les données:", paste(missing_columns, collapse = ", ")))
+    stop(paste("Missing columns in the data:", paste(missing_columns, collapse = ", ")))
   }
 
-  # Vérifier si 'apiary' est présent, sinon utiliser une valeur par défaut
+  # Check if 'apiary' is present, otherwise use a default value
   if (!"apiary" %in% names(data)) {
-    warning("Colonne 'apiary' non trouvée. Utilisation d'une valeur par défaut.")
+    warning("Column 'apiary' not found. Using a default value.")
     data$apiary <- factor(1)
   }
 
-  # Convertir les identifiants en facteurs
+  # Convert identifiers to factors
   data$queenbee <- factor(data$queenbee)
   if (has_drone_info) {
     data$drone_parent <- factor(data$drone_parent)
   }
   data$apiary <- factor(data$apiary)
 
-  # S'assurer que les données sont numériques
+  # Ensure the data is numeric
   data[[trait]] <- as.numeric(data[[trait]])
 
-  # Enlever les lignes avec des NA dans les colonnes importantes
+  # Remove rows with NAs in important columns
   data <- data[complete.cases(data[, c(trait, "queenbee", "apiary")]), ]
 
-  # Vérifier qu'il reste assez de données
-  if (nrow(data) < 10) {  # nombre minimum arbitraire
+  # Check that there is enough data left
+  if (nrow(data) < 10) {  # arbitrary minimum number
     warning("Pas assez de données pour calculer l'héritabilité")
     return(list(
       heritability = NA,
@@ -65,14 +65,14 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
   }
 
   tryCatch({
-    # Construction de la formule
+    # Building the formula
     formula <- if (has_drone_info) {
       as.formula(paste(trait, "~ (1|queenbee) + (1|drone_parent) + (1|apiary)"))
     } else {
       as.formula(paste(trait, "~ (1|queenbee) + (1|apiary)"))
     }
 
-    # Ajuster le modèle mixte
+    # Fit the mixed model
     model <- lmer(formula,
                   data = data,
                   control = lmerControl(
@@ -80,23 +80,23 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
                     check.nobs.vs.nRE = "ignore"
                   ))
 
-    # Extraire les composantes de la variance
+    # Extract variance components
     vc <- VarCorr(model)
-    v_a <- as.numeric(vc$queenbee[1])  # Variance génétique additive de la reine
-    v_c <- as.numeric(vc$apiary[1])    # Variance due à l'effet de la colonie/rucher
+    v_a <- as.numeric(vc$queenbee[1])  # Additive genetic variance of the queen
+    v_c <- as.numeric(vc$apiary[1])    # Variance due to the effect of the colony/apiary
     v_d <- if (has_drone_info && !is.null(vc$drone_parent)) {
       as.numeric(vc$drone_parent[1])
     } else {
       0
-    }  # Variance due aux drones
-    v_e <- attr(vc, "sc")^2  # Variance résiduelle
+    }  # Variance due to drones
+    v_e <- attr(vc, "sc")^2  # Residual variance
 
-    # Calculer l'héritabilité
+    # Calculate heritability
     h2 <- (v_a + v_d) / (v_a + v_d + v_c + v_e)
 
-    # Calculer l'erreur standard de l'héritabilité
-    # Ici nous utilisons une approximation delta-method simplifiée
-    se_h2 <- sqrt(2) * sqrt(1/nrow(data))  # Une approximation simple
+    # Calculate the standard error of heritability
+    # Here we use a simplified delta-method approximation
+    se_h2 <- sqrt(2) * sqrt(1/nrow(data))  # A simple approximation
 
     return(list(
       heritability = h2,
@@ -108,7 +108,7 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
     ))
 
   }, error = function(e) {
-    warning(paste("Erreur dans le calcul de l'héritabilité:", e$message))
+    warning(paste("Error in calculating heritability:", e$message))
     return(list(
       heritability = NA,
       se = NA,
@@ -137,7 +137,7 @@ sort_pedigree <- function(ped, max_iterations = 1000) {
     if (nrow(to_add) == 0) {
       # Diagnosis: Identify problematic individuals
       problem_individuals <- ped[1:min(5, nrow(ped)),]
-      print("Individus problématiques:")
+      print("Problematic individuals:")
       print(problem_individuals)
 
       # Verify potential cycles
@@ -391,31 +391,40 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
 
           # Create an aligned vector with all the queens
           aligned_blups <- rep(NA, nrow(data))
-          names(aligned_blups) <- as.character(data$queenbee)
+          aligned_methods <- rep(NA, nrow(data))
+          names(aligned_blups) <- names(aligned_methods) <- as.character(data$queenbee)
 
           # Use a more robust matching method
           common_names <- intersect(names(aligned_blups), names(blup_values))
           aligned_blups[common_names] <- blup_values[common_names]
+          aligned_methods[common_names] <- "BLUP"  # Explicit method assignment
 
           blups[[critere]] <- aligned_blups
-          methods[[critere]] <- "BLUP"
+          methods[[critere]] <- aligned_methods  # Storage of aligned methods
+
         }, error = function(e) {
-          message(paste("Error extracting BLUPs for the criterion", critere, ":", e$message))
+          message(paste("Error extracting BLUPs for criterion", critere, ":", e$message))
           blups[[critere]] <- rep(NA, nrow(data))
-          methods[[critere]] <- "Failure (extraction)"
+          methods[[critere]] <- rep("Failure (extraction)", nrow(data))
         })
       } else {
-        # Alternative method if BLUP fails
+        # Alternative method
         lm_model <- lm(note ~ queenbee, data = model_data)
         blup_values <- coef(lm_model)[-1]
+
         aligned_blups <- rep(NA, nrow(data))
-        names(aligned_blups) <- as.character(data$queenbee)
+        aligned_methods <- rep(NA, nrow(data))
+        names(aligned_blups) <- names(aligned_methods) <- as.character(data$queenbee)
+
+        # Filling values
         aligned_blups[names(blup_values)] <- blup_values
+        aligned_methods[names(blup_values)] <- "Linear regression"
+
         blups[[critere]] <- aligned_blups
-        methods[[critere]] <- "Linear regression"
+        methods[[critere]] <- aligned_methods
       }
 
-      # Calcul de l'héritabilité
+      # Calculation of heritability
       h2_result <- calculate_bee_heritability(model_data, "note", ped, n_drones, has_drone_info)
       heritabilities[[critere]] <- list(
         heritability = h2_result$heritability,
@@ -471,7 +480,7 @@ for (i in seq_len(nrow(data$df))) {
 # Preparing results for JSON export
 export <- list()
 
-# Ajout des héritabilités aux résultats
+# Adding heritabilities to the results
 export$blup <- export_list
 export$heritabilities <- results$heritabilities
 
