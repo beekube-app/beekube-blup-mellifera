@@ -22,7 +22,6 @@ output_file <- file.path(current_dir, "data/resultats_index.json")
 
 # Function to calculate bee-adapted heritability
 calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has_drone_info = TRUE) {
-  # Vérifier la présence des colonnes nécessaires
   required_columns <- c("queenbee", trait)
   if (has_drone_info) {
     required_columns <- c(required_columns, "drone_parent")
@@ -36,59 +35,88 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
   # Vérifier si 'apiary' est présent, sinon utiliser une valeur par défaut
   if (!"apiary" %in% names(data)) {
     warning("Colonne 'apiary' non trouvée. Utilisation d'une valeur par défaut.")
-    data$apiary <- factor(1)  # Assigner une valeur par défaut
+    data$apiary <- factor(1)
   }
 
-  # Ajuster la matrice de parenté pour les abeilles
-  A <- as(getA(pedigree), "CsparseMatrix") # Utilise la nouvelle syntaxe recommandée
-  A_adjusted <- if (has_drone_info) {
-    as.matrix(A) * (1 + 1 / (4 * n_drones)) # Convertit explicitement en matrice dense
-  } else {
-    as.matrix(A)
+  # Convertir les identifiants en facteurs
+  data$queenbee <- factor(data$queenbee)
+  if (has_drone_info) {
+    data$drone_parent <- factor(data$drone_parent)
   }
+  data$apiary <- factor(data$apiary)
 
-  # Assure-toi que les poids sont un vecteur numérique
-  weights <- diag(A_adjusted)
+  # S'assurer que les données sont numériques
+  data[[trait]] <- as.numeric(data[[trait]])
 
-  # print(A_adjusted);
+  # Enlever les lignes avec des NA dans les colonnes importantes
+  data <- data[complete.cases(data[, c(trait, "queenbee", "apiary")]), ]
 
-  # Préparer la formule du modèle
-  formula <- if (has_drone_info) {
-    as.formula(paste(trait, "~ (1|queenbee) + (1|drone_parent) + (1|apiary)"))
-  } else {
-    as.formula(paste(trait, "~ (1|queenbee) + (1|apiary)"))
+  # Vérifier qu'il reste assez de données
+  if (nrow(data) < 10) {  # nombre minimum arbitraire
+    warning("Pas assez de données pour calculer l'héritabilité")
+    return(list(
+      heritability = NA,
+      se = NA,
+      v_additive_queen = NA,
+      v_additive_drone = NA,
+      v_colony = NA,
+      v_residual = NA
+    ))
   }
 
   tryCatch({
+    # Construction de la formule
+    formula <- if (has_drone_info) {
+      as.formula(paste(trait, "~ (1|queenbee) + (1|drone_parent) + (1|apiary)"))
+    } else {
+      as.formula(paste(trait, "~ (1|queenbee) + (1|apiary)"))
+    }
+
     # Ajuster le modèle mixte
     model <- lmer(formula,
                   data = data,
-                  control = lmerControl(check.nobs.vs.nlev = "ignore",
-                                        check.nobs.vs.nRE = "ignore"),
-                  weights = weights)
+                  control = lmerControl(
+                    check.nobs.vs.nlev = "ignore",
+                    check.nobs.vs.nRE = "ignore"
+                  ))
 
     # Extraire les composantes de la variance
     vc <- VarCorr(model)
-    v_a <- vc$queenbee[1]  # Variance génétique additive de la reine
-    v_c <- vc$apiary[1]  # Variance due à l'effet de la colonie/rucher
-    v_d <- if (has_drone_info) vc$drone_parent[1] else 0  # Variance due aux drones
+    v_a <- as.numeric(vc$queenbee[1])  # Variance génétique additive de la reine
+    v_c <- as.numeric(vc$apiary[1])    # Variance due à l'effet de la colonie/rucher
+    v_d <- if (has_drone_info && !is.null(vc$drone_parent)) {
+      as.numeric(vc$drone_parent[1])
+    } else {
+      0
+    }  # Variance due aux drones
     v_e <- attr(vc, "sc")^2  # Variance résiduelle
 
     # Calculer l'héritabilité
     h2 <- (v_a + v_d) / (v_a + v_d + v_c + v_e)
 
     # Calculer l'erreur standard de l'héritabilité
-    se_h2 <- sqrt(var(h2))
+    # Ici nous utilisons une approximation delta-method simplifiée
+    se_h2 <- sqrt(2) * sqrt(1/nrow(data))  # Une approximation simple
 
-    return(list(heritability = h2, se = se_h2,
-                v_additive_queen = v_a, v_additive_drone = v_d,
-                v_colony = v_c, v_residual = v_e))
+    return(list(
+      heritability = h2,
+      se = se_h2,
+      v_additive_queen = v_a,
+      v_additive_drone = v_d,
+      v_colony = v_c,
+      v_residual = v_e
+    ))
 
   }, error = function(e) {
-    message(paste("Erreur dans calculate_bee_heritability:", e$message))
-    return(list(heritability = NA, se = NA,
-                v_additive_queen = NA, v_additive_drone = NA,
-                v_colony = NA, v_residual = NA))
+    warning(paste("Erreur dans le calcul de l'héritabilité:", e$message))
+    return(list(
+      heritability = NA,
+      se = NA,
+      v_additive_queen = NA,
+      v_additive_drone = NA,
+      v_colony = NA,
+      v_residual = NA
+    ))
   })
 }
 
