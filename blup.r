@@ -9,6 +9,11 @@ library(lm.beta)
 
 options(mc.cores = parallel::detectCores())
 
+if (requireNamespace("rstan", quietly = TRUE)) {
+  rstan::rstan_options(auto_write = TRUE)
+  rstan::rstan_options(threads_per_chain = 1)
+}
+
 # File Paths
 current_dir <- getwd()
 input_file <- file.path(current_dir, "data/input.json")
@@ -17,20 +22,41 @@ output_file <- file.path(current_dir, "data/resultats_index.json")
 
 # Function to calculate bee-adapted heritability
 calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has_drone_info = TRUE) {
-  # Ajuster la matrice de parenté pour les abeilles
-  A <- as(getA(pedigree), "CsparseMatrix")
-
+  # Vérifier la présence des colonnes nécessaires
+  required_columns <- c("queenbee", trait)
   if (has_drone_info) {
-    A_adjusted <- A * (1 + 1 / (4 * n_drones))
-  } else {
-    A_adjusted <- A  # Utiliser la matrice de parenté standard si pas d'info sur les drones
+    required_columns <- c(required_columns, "drone_parent")
   }
 
-  # Préparer la formule du modèle
-  if (has_drone_info) {
-    formula <- as.formula(paste(trait, "~ (1|queenbee) + (1|drone_parent) + (1|apiary)"))
+  missing_columns <- setdiff(required_columns, names(data))
+  if (length(missing_columns) > 0) {
+    stop(paste("Colonnes manquantes dans les données:", paste(missing_columns, collapse = ", ")))
+  }
+
+  # Vérifier si 'apiary' est présent, sinon utiliser une valeur par défaut
+  if (!"apiary" %in% names(data)) {
+    warning("Colonne 'apiary' non trouvée. Utilisation d'une valeur par défaut.")
+    data$apiary <- factor(1)  # Assigner une valeur par défaut
+  }
+
+  # Ajuster la matrice de parenté pour les abeilles
+  A <- as(getA(pedigree), "CsparseMatrix") # Utilise la nouvelle syntaxe recommandée
+  A_adjusted <- if (has_drone_info) {
+    as.matrix(A) * (1 + 1 / (4 * n_drones)) # Convertit explicitement en matrice dense
   } else {
-    formula <- as.formula(paste(trait, "~ (1|queenbee) + (1|apiary)"))
+    as.matrix(A)
+  }
+
+  # Assure-toi que les poids sont un vecteur numérique
+  weights <- diag(A_adjusted)
+
+  # print(A_adjusted);
+
+  # Préparer la formule du modèle
+  formula <- if (has_drone_info) {
+    as.formula(paste(trait, "~ (1|queenbee) + (1|drone_parent) + (1|apiary)"))
+  } else {
+    as.formula(paste(trait, "~ (1|queenbee) + (1|apiary)"))
   }
 
   tryCatch({
@@ -39,34 +65,31 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
                   data = data,
                   control = lmerControl(check.nobs.vs.nlev = "ignore",
                                         check.nobs.vs.nRE = "ignore"),
-                  weights = A_adjusted)
+                  weights = weights)
+
+    # Extraire les composantes de la variance
+    vc <- VarCorr(model)
+    v_a <- vc$queenbee[1]  # Variance génétique additive de la reine
+    v_c <- vc$apiary[1]  # Variance due à l'effet de la colonie/rucher
+    v_d <- if (has_drone_info) vc$drone_parent[1] else 0  # Variance due aux drones
+    v_e <- attr(vc, "sc")^2  # Variance résiduelle
+
+    # Calculer l'héritabilité
+    h2 <- (v_a + v_d) / (v_a + v_d + v_c + v_e)
+
+    # Calculer l'erreur standard de l'héritabilité
+    se_h2 <- sqrt(var(h2))
+
+    return(list(heritability = h2, se = se_h2,
+                v_additive_queen = v_a, v_additive_drone = v_d,
+                v_colony = v_c, v_residual = v_e))
+
   }, error = function(e) {
-    message(paste("calculate_bee_heritability Error ", ":", e$message))
+    message(paste("Erreur dans calculate_bee_heritability:", e$message))
+    return(list(heritability = NA, se = NA,
+                v_additive_queen = NA, v_additive_drone = NA,
+                v_colony = NA, v_residual = NA))
   })
-
-
-  # Extraire les composantes de la variance
-  vc <- VarCorr(model)
-  v_a <- vc$queenbee[1]  # Variance génétique additive de la reine
-  v_c <- vc$apiary[1]  # Variance due à l'effet de la colonie/rucher
-
-  if (has_drone_info) {
-    v_d <- vc$drone_parent[1]  # Variance due aux drones
-  } else {
-    v_d <- 0
-  }
-
-  v_e <- attr(vc, "sc")^2  # Variance résiduelle
-
-  # Calculer l'héritabilité
-  h2 <- (v_a + v_d) / (v_a + v_d + v_c + v_e)
-
-  # Calculer l'erreur standard de l'héritabilité
-  se_h2 <- sqrt(var(h2))
-
-  return(list(heritability = h2, se = se_h2,
-              v_additive_queen = v_a, v_additive_drone = v_d,
-              v_colony = v_c, v_residual = v_e))
 }
 
 # Function to properly sort the pedigree
@@ -416,11 +439,16 @@ for (i in seq_len(nrow(data$df))) {
   export_list[[i]] <- queen_data
 }
 
+
+# Preparing results for JSON export
+export <- list()
+
 # Ajout des héritabilités aux résultats
-export_list$heritabilities <- results$heritabilities
+export$blup <- export_list
+export$heritabilities <- results$heritabilities
 
 # Convert the list to JSON
-json_output <- toJSON(export_list, pretty = TRUE, auto_unbox = TRUE, na = "null")
+json_output <- toJSON(export, pretty = TRUE, auto_unbox = TRUE, na = "null")
 
 # Export results to JSON
 write(json_output, output_file)
