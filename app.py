@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, RootModel
 import subprocess
 import json
 import os
-from typing import List, Optional, Union, Dict
+from typing import List, Optional, Union, Dict, Any
 
 info = Info(title="Beekube BLUP Melifera API", version="1.0.0")
 app = OpenAPI(__name__, info=info)
@@ -12,6 +12,7 @@ app = OpenAPI(__name__, info=info)
 blup_tag = Tag(name="blup", description="BLUP operations")
 
 
+# Input Models
 class Evaluation(BaseModel):
     note: float
     user: int
@@ -20,8 +21,10 @@ class Evaluation(BaseModel):
     month: str
     year: str
 
+
 class QueenBeeEvaluations(RootModel):
     root: Dict[str, List[Evaluation]]
+
 
 class QueenBeeInput(BaseModel):
     queenbee: int
@@ -31,15 +34,6 @@ class QueenBeeInput(BaseModel):
     born: str
     evaluate: QueenBeeEvaluations = Field(default_factory=dict)
 
-class QueenBeeOutput(BaseModel):
-    queenbee: int
-    queenbee_parent: Optional[int]
-    drone_parent: Optional[int]
-    apiary: Optional[int]
-    born: str
-    blups: dict
-    methods: dict
-
 
 class BLUPInput(BaseModel):
     exploitation: int
@@ -48,16 +42,34 @@ class BLUPInput(BaseModel):
     data: List[QueenBeeInput]
 
 
-class BLUPOutputDebug(BaseModel):
-    status: str
-    output: str
-    error: str
-    results: Union[List[QueenBeeOutput], dict]
+# Output Models
+class HeritabilityStats(BaseModel):
+    heritability: float
+    se: float
+    v_additive_queen: float
+    v_additive_drone: float
+    v_colony: float
+    v_residual: float
+
+
+class QueenBeeOutput(BaseModel):
+    queenbee: str
+    queenbee_parent: str
+    drone_parent: str
+    apiary_default: Optional[int]
+    born: str
+    blups: Dict[str, Optional[float]]
+    methods: Dict[str, Optional[str]]
+
+
+class BLUPResultOutput(BaseModel):
+    blup: List[QueenBeeOutput]
+    heritabilities: Dict[str, HeritabilityStats]
 
 
 class BLUPOutput(BaseModel):
     status: str
-    results: Union[List[QueenBeeOutput], dict]
+    results: Union[BLUPResultOutput, dict]
 
 
 @app.get("/", tags=[blup_tag])
@@ -70,52 +82,51 @@ def welcome():
 
 
 @app.post("/blup", tags=[blup_tag])
-
 def blup(body: BLUPInput):
+    """
+    Perform BLUP calculation
+    """
     try:
-        """
-        Perform BLUP calculation
-        """
         # Make sure that the directory "data" exists
         os.makedirs('./data', exist_ok=True)
 
-        # Delete the file input.json
-        if os.path.exists('./data/input.json'):
-            os.remove('./data/input.json')
+        # Clean up any existing files
+        for filename in ['input.json', 'resultats_index.json']:
+            filepath = f'./data/{filename}'
+            if os.path.exists(filepath):
+                os.remove(filepath)
 
-        # Delete the file results_index.json
-        if os.path.exists('./data/resultats_index.json'):
-            os.remove('./data/resultats_index.json')
-
-        # Save the JSON data in a file
+        # Save input data
         with open('./data/input.json', 'w') as f:
             json.dump(body.dict(), f)
 
-        # Run the R script
+        # Run R script
         result = subprocess.run(['Rscript', 'blup.r'], capture_output=True, text=True)
 
-        # Read the results
+        # Read results
         if os.path.exists('./data/resultats_index.json'):
             with open('./data/resultats_index.json', 'r') as f:
                 results = json.load(f)
+
+            # Parse results into our output model
+            response = BLUPOutput(
+                status='success',
+                results=results
+            )
         else:
-            results = {"error": "Results file not found"}
+            response = BLUPOutput(
+                status='error',
+                results={"error": "Results file not found"}
+            )
 
-        # Prepare the response
-        response = BLUPOutput(
-            status='success' if result.returncode == 0 else 'error',
-            results=results
-        )
-
-        # Delete the file input.json
-        if os.path.exists('./data/input.json'):
-            os.remove('./data/input.json')
-
-        # Delete the file resultats_index.json.
-        if os.path.exists('./data/resultats_index.json'):
-            os.remove('./data/resultats_index.json')
+        # Clean up
+        for filename in ['input.json', 'resultats_index.json']:
+            filepath = f'./data/{filename}'
+            if os.path.exists(filepath):
+                os.remove(filepath)
 
         return jsonify(response.model_dump())
+
     except Exception as e:
         return jsonify({
             'status': 'error',
