@@ -30,7 +30,7 @@ class QueenBeeInput(BaseModel):
     queenbee: int
     queenbee_parent: Optional[int] = None
     drone_parent: Optional[int] = None
-    apiary: Optional[int] = None
+    apiary_default: Optional[int] = None
     born: str
     evaluate: QueenBeeEvaluations = Field(default_factory=dict)
 
