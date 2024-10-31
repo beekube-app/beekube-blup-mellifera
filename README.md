@@ -1,7 +1,7 @@
-# Beekube BLUP Melifera API
+# Beekube BLUP Mellifera API
 
 ## Description
-Beekube BLUP Melifera API is a Flask application that provides an API interface to perform BLUP (Best Linear Unbiased Prediction) calculations on bee breeding data. This API was designed to be used with the Beekube beekeeping management system, but the data model can be used for other purposes.
+Beekube BLUP Mellifera API is a Flask application that provides an API interface to perform BLUP (Best Linear Unbiased Prediction) calculations on bee breeding data. This API was designed to be used with the Beekube beekeeping management system, but the data model can be used for other purposes.
 
 
 *Read this in other languages: [English](README.md), [Français](README.fr.md)*
@@ -19,8 +19,8 @@ Beekube BLUP Melifera API is a Flask application that provides an API interface 
 ## Installation and start-up
 1. Clone this repository:
    ```
-   git clone beekube-app/beekube-blup-melifera
-   cd beekube-blup-melifera
+   git clone beekube-app/beekube-blup-mellifera
+   cd beekube-blup-mellifera
    ```
 
 2. Start the application with Docker Compose:

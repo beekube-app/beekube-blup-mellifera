@@ -6,7 +6,7 @@ import json
 import os
 from typing import List, Optional, Union, Dict, Any
 
-info = Info(title="Beekube BLUP Melifera API", version="1.0.0")
+info = Info(title="Beekube BLUP Mellifera API", version="1.0.0")
 app = OpenAPI(__name__, info=info)
 
 blup_tag = Tag(name="blup", description="BLUP operations")
@@ -77,7 +77,7 @@ def welcome():
     """Welcome endpoint"""
     return jsonify({
         'status': 'success',
-        'results': "Beekube BLUP Melifera"
+        'results': "Beekube BLUP Mellifera"
     })
 
 
