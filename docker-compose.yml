@@ -11,3 +11,5 @@ services:
       - ./data:/app/data
     environment:
       - FLASK_ENV=production
+    env_file:
+      - .env.production

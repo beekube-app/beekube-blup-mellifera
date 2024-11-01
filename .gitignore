@@ -1,3 +1,5 @@
 .idea
 /data/input.json
 /data/resultats_index.json
+.env.production
+.env.development

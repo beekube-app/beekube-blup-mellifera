@@ -1,13 +1,19 @@
 from flask import jsonify
-from flask_openapi3 import OpenAPI, Info, Tag
+from flask_openapi3 import OpenAPI, Info, Tag, Server
 from pydantic import BaseModel, Field, RootModel
 import subprocess
 import json
 import os
 from typing import List, Optional, Union, Dict, Any
 
+# Récupérer l'URL de base depuis les variables d'environnement
+API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8081')
+
 info = Info(title="Beekube BLUP Mellifera API", version="1.0.0")
-app = OpenAPI(__name__, info=info)
+servers = [
+    Server(url=API_BASE_URL),
+]
+app = OpenAPI(__name__, info=info, servers=servers)
 
 blup_tag = Tag(name="blup", description="BLUP operations")
 
