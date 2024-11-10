@@ -17,7 +17,6 @@ app = OpenAPI(__name__, info=info, servers=servers)
 
 blup_tag = Tag(name="blup", description="BLUP operations")
 
-
 # Input Models
 class Evaluation(BaseModel):
     note: float
@@ -27,10 +26,8 @@ class Evaluation(BaseModel):
     month: str
     year: str
 
-
 class QueenBeeEvaluations(RootModel):
     root: Dict[str, List[Evaluation]]
-
 
 class QueenBeeInput(BaseModel):
     queenbee: int
@@ -40,13 +37,11 @@ class QueenBeeInput(BaseModel):
     born: str
     evaluate: QueenBeeEvaluations = Field(default_factory=dict)
 
-
 class BLUPInput(BaseModel):
     exploitation: int
     evaluate: List[int]
     evaluate_elimination: List[int]
     data: List[QueenBeeInput]
-
 
 # Output Models
 class HeritabilityStats(BaseModel):
@@ -57,7 +52,6 @@ class HeritabilityStats(BaseModel):
     v_colony: float
     v_residual: float
 
-
 class QueenBeeOutput(BaseModel):
     queenbee: str
     queenbee_parent: str
@@ -67,18 +61,30 @@ class QueenBeeOutput(BaseModel):
     blups: Dict[str, Optional[float]]
     methods: Dict[str, Optional[str]]
 
-
 class BLUPResultOutput(BaseModel):
     blup: List[QueenBeeOutput]
     heritabilities: Dict[str, HeritabilityStats]
-
 
 class BLUPOutput(BaseModel):
     status: str
     results: Union[BLUPResultOutput, dict]
 
+class WelcomeResponse(BaseModel):
+    status: str
+    results: str
 
-@app.get("/", tags=[blup_tag])
+class ErrorResponse(BaseModel):
+    status: str
+    message: str
+    output: str
+    error: str
+    results: dict
+
+@app.get("/",
+         tags=[blup_tag],
+         responses={
+             200: WelcomeResponse,
+         })
 def welcome():
     """Welcome endpoint"""
     return jsonify({
@@ -86,8 +92,12 @@ def welcome():
         'results': "Beekube BLUP Mellifera"
     })
 
-
-@app.post("/blup", tags=[blup_tag])
+@app.post("/blup",
+          tags=[blup_tag],
+          responses={
+              200: BLUPOutput,
+              500: ErrorResponse
+          })
 def blup(body: BLUPInput):
     """
     Perform BLUP calculation
@@ -134,14 +144,14 @@ def blup(body: BLUPInput):
         return jsonify(response.model_dump())
 
     except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'message': str(e),
-            'output': result.stdout if 'result' in locals() else '',
-            'error': result.stderr if 'result' in locals() else '',
-            'results': {"error": "An unexpected error occurred"}
-        }), 500
-
+        error_response = ErrorResponse(
+            status='error',
+            message=str(e),
+            output=result.stdout if 'result' in locals() else '',
+            error=result.stderr if 'result' in locals() else '',
+            results={"error": "An unexpected error occurred"}
+        )
+        return jsonify(error_response.model_dump()), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8081)
