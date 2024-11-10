@@ -58,8 +58,17 @@ class QueenBeeOutput(BaseModel):
     drone_parent: str
     apiary_default: Optional[int]
     born: str
-    blups: Dict[str, Optional[float]]
-    methods: Dict[str, Optional[str]]
+    blups: Dict[str, Union[float, None]]
+    methods: Dict[str, Union[str, None]]
+
+    class Config:
+        json_schema_extra = {
+            "properties": {
+                "blups": {
+                    "type": "array"
+                }
+            }
+        }
 
 class BLUPResultOutput(BaseModel):
     blup: List[QueenBeeOutput]
