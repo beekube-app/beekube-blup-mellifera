@@ -98,7 +98,7 @@ def welcome():
               200: BLUPOutput,
               500: ErrorResponse
           })
-def blup(body: BLUPInput):
+def calulate(body: BLUPInput):
     """
     Perform BLUP calculation
     """
