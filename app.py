@@ -9,7 +9,7 @@ from typing import List, Optional, Union, Dict, Any
 # Récupérer l'URL de base depuis les variables d'environnement
 API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8081')
 
-info = Info(title="Beekube BLUP Mellifera API", version="1.0.0")
+info = Info(title="Beekube BLUP Mellifera API", version="1.0.0", description="SDK PHP pour l'API BLUP de Beekube - Calcul génétique des abeilles mellifères")
 servers = [
     Server(url=API_BASE_URL),
 ]
