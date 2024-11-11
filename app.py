@@ -65,7 +65,8 @@ class QueenBeeOutput(BaseModel):
         json_schema_extra = {
             "properties": {
                 "blups": {
-                    "type": "array"
+                    'type': 'object',
+                    'additionalProperties': 'true'
                 }
             }
         }
