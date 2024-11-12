@@ -58,17 +58,52 @@ class QueenBeeOutput(BaseModel):
     drone_parent: str
     apiary_default: Optional[int]
     born: str
-    blups: Dict[str, Union[float, None]]
-    methods: Dict[str, Union[str, None]]
+    blups: Dict[str, Optional[float]] = Field(description="BLUP values for different criteria")
+    methods: Dict[str, Optional[str]] = Field(description="Methods used for calculations")
 
     class Config:
         json_schema_extra = {
             "properties": {
+                "apiary_default": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "title": "Apiary Default"
+                },
                 "blups": {
+                    "description": "BLUP values for different criteria",
+                    "title": "Blups",
                     'type': 'object',
-                    'additionalProperties': 'true'
+                    'additionalProperties': 'true',
+                },
+                "born": {
+                    "title": "Born",
+                    "type": "string"
+                },
+                "drone_parent": {
+                    "title": "Drone Parent",
+                    "type": "string"
+                },
+                "methods": {
+                    'type': 'object',
+                    'additionalProperties': 'true',
+                    "description": "Methods used for calculations",
+                    "title": "Methods",
+                },
+                "queenbee": {
+                    "title": "Queenbee",
+                    "type": "string"
+                },
+                "queenbee_parent": {
+                    "title": "Queenbee Parent",
+                    "type": "string"
                 }
-            }
+            },
         }
 
 class BLUPResultOutput(BaseModel):
