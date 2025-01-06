@@ -36,6 +36,7 @@ class QueenBeeInput(BaseModel):
     apiary_default: Optional[int] = None
     born: str
     evaluate: QueenBeeEvaluations = Field(default_factory=dict)
+    variety: str
 
 class BLUPInput(BaseModel):
     exploitation: int

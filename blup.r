@@ -260,7 +260,7 @@ load_beekube_data <- function(json_file) {
 
   # Convert other columns to factors if necessary
   df <- df %>%
-    mutate(across(c(queenbee, drone_parent, born), as.factor))
+    mutate(across(c(queenbee, drone_parent, born, variety), as.factor))
 
   # Prepare evaluation data
   eval_data <- do.call(rbind, lapply(criteres, function(critere) {
