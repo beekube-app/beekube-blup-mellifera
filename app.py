@@ -37,6 +37,7 @@ class QueenBeeInput(BaseModel):
     born: str
     evaluate: QueenBeeEvaluations = Field(default_factory=dict)
     variety: str
+    died: bool = False
 
 class BLUPInput(BaseModel):
     exploitation: int
@@ -53,6 +54,17 @@ class HeritabilityStats(BaseModel):
     v_colony: float
     v_residual: float
 
+class MatingSuggestion(BaseModel):
+    """
+    https://spec.openapis.org/oas/v3.1.0#contact-object
+    """
+    blup_score: float
+    diversity_score: float
+    mate_blup: float
+    queen: str
+    queen_blup: float
+    total_score: float
+
 class QueenBeeOutput(BaseModel):
     queenbee: str
     queenbee_parent: str
@@ -61,51 +73,10 @@ class QueenBeeOutput(BaseModel):
     born: str
     blups: Dict[str, Optional[float]] = Field(description="BLUP values for different criteria")
     methods: Dict[str, Optional[str]] = Field(description="Methods used for calculations")
+    variety: str
+    died: bool = False
+    mating_suggestions: Optional[List[MatingSuggestion]] = None
 
-    class Config:
-        json_schema_extra = {
-            "properties": {
-                "apiary_default": {
-                    "anyOf": [
-                        {
-                            "type": "integer"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "title": "Apiary Default"
-                },
-                "blups": {
-                    "description": "BLUP values for different criteria",
-                    "title": "Blups",
-                    'type': 'object',
-                    'additionalProperties': 'true',
-                },
-                "born": {
-                    "title": "Born",
-                    "type": "string"
-                },
-                "drone_parent": {
-                    "title": "Drone Parent",
-                    "type": "string"
-                },
-                "methods": {
-                    'type': 'object',
-                    'additionalProperties': 'true',
-                    "description": "Methods used for calculations",
-                    "title": "Methods",
-                },
-                "queenbee": {
-                    "title": "Queenbee",
-                    "type": "string"
-                },
-                "queenbee_parent": {
-                    "title": "Queenbee Parent",
-                    "type": "string"
-                }
-            },
-        }
 
 class BLUPResultOutput(BaseModel):
     blup: List[QueenBeeOutput]
@@ -114,6 +85,7 @@ class BLUPResultOutput(BaseModel):
 class BLUPOutput(BaseModel):
     status: str
     results: Union[BLUPResultOutput, dict]
+
 
 class WelcomeResponse(BaseModel):
     status: str
@@ -178,7 +150,7 @@ def calulate(body: BLUPInput):
         else:
             response = BLUPOutput(
                 status='error',
-                results={"error": "Results file not found"}
+                results={"errorMessage": "Results file not found", "output": result.stdout, "error": result.stderr}
             )
 
         # Clean up

@@ -49,7 +49,7 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
   data[[trait]] <- as.numeric(data[[trait]])
 
   # Remove rows with NAs in important columns
-  data <- data[complete.cases(data[, c(trait, "queenbee", "apiary")]), ]
+  data <- data[complete.cases(data[, c(trait, "queenbee", "apiary")]),]
 
   # Check that there is enough data left
   if (nrow(data) < 10) {  # arbitrary minimum number
@@ -96,7 +96,7 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
 
     # Calculate the standard error of heritability
     # Here we use a simplified delta-method approximation
-    se_h2 <- sqrt(2) * sqrt(1/nrow(data))  # A simple approximation
+    se_h2 <- sqrt(2) * sqrt(1 / nrow(data))  # A simple approximation
 
     return(list(
       heritability = h2,
@@ -446,6 +446,106 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
 }
 
 
+# Function to suggest optimal matings based on genetic values and diversity
+suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
+  queens <- data$df$queenbee
+  blup_values <- blup_results$blups
+  died_status <- data$df$died
+
+  # Create pedigree data
+  ped_data <- data.frame(
+    id = as.character(data$df$queenbee),
+    sire = as.character(data$df$drone_parent),
+    dam = as.character(data$df$queenbee_parent)
+  )
+
+  # Function to calculate genetic similarity
+  calc_similarity <- function(queen1, queen2, ped_data) {
+    common_ancestors <- intersect(
+      c(ped_data$sire[ped_data$id == queen1], ped_data$dam[ped_data$id == queen1]),
+      c(ped_data$sire[ped_data$id == queen2], ped_data$dam[ped_data$id == queen2])
+    )
+    similarity <- length(common_ancestors) / 4  # Scale between 0-1
+    return(1 - similarity)  # Convert to diversity score
+  }
+
+  suggestions <- list()
+  for (queen in queens) {
+    suggestions[[queen]] <- data.frame(
+      mate = character(0),
+      total_score = numeric(0),
+      blup_score = numeric(0),
+      diversity_score = numeric(0),
+      queen_blup = numeric(0),
+      mate_blup = numeric(0),
+      stringsAsFactors = FALSE
+    )
+
+    # Skip if queen has NA BLUP values or is dead
+    queen_index <- which(queens == queen)
+    if (all(is.na(blup_values[[1]][queen])) || died_status[queen_index]) {
+      next
+    }
+
+    # Calculate scores for each potential mate
+    mate_details <- lapply(seq_along(queens), function(i) {
+      mate <- queens[i]
+      mate_index <- i
+
+      if (mate == queen ||
+        all(is.na(blup_values[[1]][as.character(mate)])) ||
+        died_status[mate_index]) {
+        return(NULL)
+      }
+
+      # Calculate individual BLUP scores
+      queen_blup <- mean(unlist(lapply(blup_values, function(x) x[as.character(queen)])), na.rm = TRUE)
+      mate_blup <- mean(unlist(lapply(blup_values, function(x) x[as.character(mate)])), na.rm = TRUE)
+
+      # Calculate average BLUP score
+      blup_score <- mean(c(queen_blup, mate_blup), na.rm = TRUE)
+
+      # Calculate diversity score
+      diversity_score <- calc_similarity(queen, mate, ped_data)
+
+      # Calculate weighted total score
+      total_score <- 0.7 * blup_score + 0.3 * diversity_score
+
+      return(list(
+        mate = mate,
+        total_score = total_score,
+        blup_score = blup_score,
+        diversity_score = diversity_score,
+        queen_blup = queen_blup,
+        mate_blup = mate_blup
+      ))
+    })
+
+    # Remove NULL entries and convert to data frame
+    mate_details <- Filter(Negate(is.null), mate_details)
+    if (length(mate_details) > 0) {
+      mate_df <- do.call(rbind, lapply(mate_details, function(x) {
+        data.frame(
+          mate = x$mate,
+          total_score = x$total_score,
+          blup_score = x$blup_score,
+          diversity_score = x$diversity_score,
+          queen_blup = x$queen_blup,
+          mate_blup = x$mate_blup,
+          stringsAsFactors = FALSE
+        )
+      }))
+
+      # Sort by total score and select top suggestions
+      mate_df <- mate_df[order(mate_df$total_score, decreasing = TRUE), ]
+      suggestions[[queen]] <- head(mate_df, n_suggestions)
+    }
+  }
+
+  return(suggestions)
+}
+
+
 data <- load_beekube_data(input_file)
 results <- calculate_blup(data$df, data$eval_data, data$criteres)
 
@@ -453,8 +553,13 @@ results <- calculate_blup(data$df, data$eval_data, data$criteres)
 # Preparing results for JSON export
 export_list <- list()
 
+# Calculer d'abord les suggestions d'accouplement
+mating_suggestions <- suggest_optimal_matings(data, results)
+
+# Dans la boucle existante, modifions pour ajouter les suggestions :
 for (i in seq_len(nrow(data$df))) {
   queen_data <- as.list(data$df[i,])
+  queen_id <- as.character(queen_data$queenbee)
 
   # Remove columns of type list
   queen_data <- queen_data[!sapply(queen_data, is.list)]
@@ -469,6 +574,25 @@ for (i in seq_len(nrow(data$df))) {
 
   queen_data$blups <- blups
   queen_data$methods <- methods
+
+  # Ajouter les suggestions d'accouplement
+if (!is.null(mating_suggestions[[queen_id]])) {
+    queen_data$mating_suggestions <- lapply(
+      seq_len(nrow(mating_suggestions[[queen_id]])),
+      function(j) {
+        list(
+          queen = mating_suggestions[[queen_id]]$mate[j],
+          total_score = round(mating_suggestions[[queen_id]]$total_score[j], 3),
+          blup_score = round(mating_suggestions[[queen_id]]$blup_score[j], 3),
+          diversity_score = round(mating_suggestions[[queen_id]]$diversity_score[j], 3),
+          queen_blup = round(mating_suggestions[[queen_id]]$queen_blup[j], 3),
+          mate_blup = round(mating_suggestions[[queen_id]]$mate_blup[j], 3)
+        )
+      }
+    )
+  } else {
+    queen_data$mating_suggestions <- list()
+  }
 
   # Apply the function to handle NAs
   queen_data <- replace_na_with_null(queen_data)
