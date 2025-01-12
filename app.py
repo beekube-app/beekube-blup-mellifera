@@ -55,9 +55,6 @@ class HeritabilityStats(BaseModel):
     v_residual: float
 
 class MatingSuggestion(BaseModel):
-    """
-    https://spec.openapis.org/oas/v3.1.0#contact-object
-    """
     blup_score: float
     diversity_score: float
     mate_blup: float
@@ -71,7 +68,7 @@ class QueenBeeOutput(BaseModel):
     drone_parent: str
     apiary_default: Optional[int]
     born: str
-    blups: Dict[str, Optional[float]] = Field(description="BLUP values for different criteria")
+    blups: Dict[str, Optional[float]] = Field(description="BLUP values for different criteria", json_schema_extra={'additionalProperties': 'true'})
     methods: Dict[str, Optional[str]] = Field(description="Methods used for calculations")
     variety: str
     died: bool = False
