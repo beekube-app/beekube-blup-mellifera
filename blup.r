@@ -460,13 +460,46 @@ suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
   )
 
   # Function to calculate genetic similarity
-  calc_similarity <- function(queen1, queen2, ped_data) {
-    common_ancestors <- intersect(
-      c(ped_data$sire[ped_data$id == queen1], ped_data$dam[ped_data$id == queen1]),
-      c(ped_data$sire[ped_data$id == queen2], ped_data$dam[ped_data$id == queen2])
-    )
-    similarity <- length(common_ancestors) / 4  # Scale between 0-1
-    return(1 - similarity)  # Convert to diversity score
+  calc_similarity <- function(queen1, queen2, ped_data, depth = 3) {
+    # Fonction récursive pour trouver tous les ancêtres jusqu'à une certaine profondeur
+    get_ancestors <- function(id, current_depth = 0) {
+      if (current_depth >= depth || is.na(id)) {
+        return(character(0))
+      }
+
+      # Trouver les parents directs
+      parents <- c(
+        ped_data$sire[ped_data$id == id],
+        ped_data$dam[ped_data$id == id]
+      )
+
+      # Récursivement trouver les ancêtres des parents
+      ancestors <- parents
+      for (parent in parents[!is.na(parents)]) {
+        ancestors <- c(ancestors,
+                       get_ancestors(parent, current_depth + 1))
+      }
+
+      return(unique(ancestors))
+    }
+
+    # Obtenir tous les ancêtres pour chaque reine
+    ancestors1 <- get_ancestors(queen1)
+    ancestors2 <- get_ancestors(queen2)
+
+    # Calculer le coefficient de similarité
+    common_ancestors <- intersect(ancestors1, ancestors2)
+    total_ancestors <- union(ancestors1, ancestors2)
+
+    if (length(total_ancestors) == 0) {
+      return(1) # Diversité maximale si pas d'ancêtres communs connus
+    }
+
+    # Calculer la similarité comme proportion d'ancêtres communs
+    similarity <- length(common_ancestors) / length(total_ancestors)
+
+    # Retourner la diversité (1 - similarité)
+    return(1 - similarity)
   }
 
   suggestions <- list()
@@ -537,7 +570,7 @@ suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
       }))
 
       # Sort by total score and select top suggestions
-      mate_df <- mate_df[order(mate_df$total_score, decreasing = TRUE), ]
+      mate_df <- mate_df[order(mate_df$total_score, decreasing = TRUE),]
       suggestions[[queen]] <- head(mate_df, n_suggestions)
     }
   }
@@ -576,7 +609,7 @@ for (i in seq_len(nrow(data$df))) {
   queen_data$methods <- methods
 
   # Ajouter les suggestions d'accouplement
-if (!is.null(mating_suggestions[[queen_id]])) {
+  if (!is.null(mating_suggestions[[queen_id]])) {
     queen_data$mating_suggestions <- lapply(
       seq_len(nrow(mating_suggestions[[queen_id]])),
       function(j) {
