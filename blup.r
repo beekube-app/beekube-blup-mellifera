@@ -538,11 +538,14 @@ suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
       # Calculate average BLUP score
       blup_score <- mean(c(queen_blup, mate_blup), na.rm = TRUE)
 
+      # Normalisation du blup_score (plage initiale supposée : -0.5 à 0.5)
+      blup_rescaled <- (blup_score + 0.5) / 1  # Transforme [-0.5, 0.5] en [0, 1]
+
       # Calculate diversity score
       diversity_score <- calc_similarity(queen, mate, ped_data)
 
       # Calculate weighted total score
-      total_score <- 0.7 * blup_score + 0.3 * diversity_score
+      total_score <- 0.7 * blup_rescaled + 0.3 * diversity_score
 
       return(list(
         mate = mate,
