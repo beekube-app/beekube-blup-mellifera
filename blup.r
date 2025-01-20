@@ -231,11 +231,17 @@ calculate_bee_kinship <- function(ped, n_drones = 12, has_drone_info = TRUE) {
   # Adjustment for multiple mating
   A_adjusted <- A * (1 + 1 / (4 * n_drones))
 
+  # Get the labels from the pedigree object
+  queen_ids <- ped@label
+
   # Adjust the kinship coefficients between sister queens
-  queen_ids <- unique(ped$id[!is.na(ped$dam)])
+  # Get the dam information from the pedigree object
+  dam_info <- ped@dam
+
   for (i in 1:(length(queen_ids) - 1)) {
     for (j in (i + 1):length(queen_ids)) {
-      if (ped$dam[ped$id == queen_ids[i]] == ped$dam[ped$id == queen_ids[j]]) {
+      # Check if queens have the same dam
+      if (!is.na(dam_info[i]) && !is.na(dam_info[j]) && dam_info[i] == dam_info[j]) {
         A_adjusted[queen_ids[i], queen_ids[j]] <- A_adjusted[queen_ids[j], queen_ids[i]] <- 0.25 + 0.5 / n_drones
       }
     }
