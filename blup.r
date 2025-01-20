@@ -218,32 +218,52 @@ has_enough_levels <- function(factor, min_levels = 2) {
 
 # Function to calculate the kinship matrix adapted for bees
 calculate_bee_kinship <- function(ped, n_drones = 12, has_drone_info = TRUE) {
-  # Check if information about drones is available
-  if (!has_drone_info) {
-    # If no information on drones, use a standard kinship matrix
-    A <- as(getA(ped), "matrix")
-    return(A)
-  }
-
-  # Calculation based on Bienefeld et al. (2007) if drone information is available
-  A <- as(getA(ped), "matrix")
-
-  # Adjustment for multiple mating
-  A_adjusted <- A * (1 + 1 / (4 * n_drones))
-
-
-
-  # Adjust the kinship coefficients between sister queens
-  queen_ids <- unique(ped$id[!is.na(ped$dam)])
-  for (i in 1:(length(queen_ids) - 1)) {
-    for (j in (i + 1):length(queen_ids)) {
-      if (ped$dam[ped$id == queen_ids[i]] == ped$dam[ped$id == queen_ids[j]]) {
-        A_adjusted[queen_ids[i], queen_ids[j]] <- A_adjusted[queen_ids[j], queen_ids[i]] <- 0.25 + 0.5 / n_drones
-      }
+  tryCatch({
+    # Check if information about drones is available
+    if (!has_drone_info) {
+      # If no information on drones, use a standard kinship matrix
+      A <- as(getA(ped), "matrix")
+      return(A)
     }
-  }
 
-  return(A_adjusted)
+    # Calculation based on Bienefeld et al. (2007) if drone information is available
+    A <- as(getA(ped), "matrix")
+
+    # Adjustment for multiple mating
+    A_adjusted <- A * (1 + 1 / (4 * n_drones))
+
+    # Try to access data using S4 method first
+    tryCatch({
+      labels <- ped@label
+      dams <- ped@dam
+      queen_ids <- labels[!is.na(dams)]
+
+      # Adjust the kinship coefficients between sister queens
+      for (i in 1:(length(queen_ids) - 1)) {
+        for (j in (i + 1):length(queen_ids)) {
+          if (dams[labels == queen_ids[i]] == dams[labels == queen_ids[j]]) {
+            A_adjusted[queen_ids[i], queen_ids[j]] <- A_adjusted[queen_ids[j], queen_ids[i]] <- 0.25 + 0.5 / n_drones
+          }
+        }
+      }
+    }, error = function(e) {
+      # Fallback to data.frame method if S4 fails
+      queen_ids <- unique(ped$id[!is.na(ped$dam)])
+      for (i in 1:(length(queen_ids) - 1)) {
+        for (j in (i + 1):length(queen_ids)) {
+          if (ped$dam[ped$id == queen_ids[i]] == ped$dam[ped$id == queen_ids[j]]) {
+            A_adjusted[queen_ids[i], queen_ids[j]] <- A_adjusted[queen_ids[j], queen_ids[i]] <- 0.25 + 0.5 / n_drones
+          }
+        }
+      }
+    })
+
+    return(A_adjusted)
+
+  }, error = function(e) {
+    warning(paste("Error in kinship calculation:", e$message, "\nReturning standard kinship matrix."))
+    return(as(getA(ped), "matrix"))
+  })
 }
 
 # Function to load and prepare the data
