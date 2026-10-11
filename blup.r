@@ -377,7 +377,8 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
       available_columns <- names(model_data)
 
       # Constructing the model formula
-      random_effects <- c("queenbee", "user", "apiary", "beehiveType", "month", "year", "drone_parent")
+      # drone_parent is handled above: adding it here would fit the same grouping factor twice
+      random_effects <- c("queenbee", "user", "apiary", "beehiveType", "month", "year")
 
       if (has_drone_info) {
         formula_parts <- c("note ~ (1|queenbee) + (1|drone_parent)")
@@ -401,15 +402,19 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
 
       if (!inherits(blup_model, "try-error")) {
         tryCatch({
-          if (has_drone_info) {
-            blup_values <- ranef(blup_model)$queenbee[, 1] + ranef(blup_model)$drone_parent[, 1]
-          } else {
-            blup_values <- ranef(blup_model)$queenbee[, 1]
-          }
+          queen_effects <- ranef(blup_model)$queenbee
+          queen_names <- rownames(queen_effects)
+          blup_values <- setNames(queen_effects[, 1], queen_names)
 
-          # Get the names of the queens from the model
-          queen_names <- rownames(ranef(blup_model)$queenbee)
-          names(blup_values) <- queen_names
+          # The drone effect is indexed by drone_parent level, not by queen:
+          # look up each queen's own drone_parent level before adding it
+          drone_effects <- ranef(blup_model)$drone_parent
+          if (has_drone_info && !is.null(drone_effects)) {
+            queen_drone <- as.character(data$drone_parent[match(queen_names, as.character(data$queenbee))])
+            drone_values <- drone_effects[queen_drone, 1]
+            drone_values[is.na(drone_values)] <- 0
+            blup_values <- blup_values + drone_values
+          }
 
           # Create an aligned vector with all the queens
           aligned_blups <- rep(NA, nrow(data))
@@ -481,6 +486,11 @@ suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
     dam = as.character(data$df$queenbee_parent)
   )
 
+  # Unknown parents are coded "0" upstream: they must not count as a shared ancestor
+  unknown_ids <- c("0", "Unknown", "")
+  ped_data$sire[ped_data$sire %in% unknown_ids] <- NA
+  ped_data$dam[ped_data$dam %in% unknown_ids] <- NA
+
   # Function to calculate genetic similarity
   calc_similarity <- function(queen1, queen2, ped_data, depth = 3) {
     # Fonction récursive pour trouver tous les ancêtres jusqu'à une certaine profondeur
@@ -494,6 +504,7 @@ suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
         ped_data$sire[ped_data$id == id],
         ped_data$dam[ped_data$id == id]
       )
+      parents <- parents[!is.na(parents)]
 
       # Récursivement trouver les ancêtres des parents
       ancestors <- parents
@@ -505,9 +516,10 @@ suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
       return(unique(ancestors))
     }
 
-    # Obtenir tous les ancêtres pour chaque reine
-    ancestors1 <- get_ancestors(queen1)
-    ancestors2 <- get_ancestors(queen2)
+    # Lignée de chaque reine : elle-même + ses ancêtres, pour qu'une mère
+    # et sa fille partagent la mère
+    ancestors1 <- unique(c(as.character(queen1), get_ancestors(queen1)))
+    ancestors2 <- unique(c(as.character(queen2), get_ancestors(queen2)))
 
     # Calculer le coefficient de similarité
     common_ancestors <- intersect(ancestors1, ancestors2)
