@@ -111,6 +111,35 @@ tests$cyclic_pedigree_does_not_abort <- function() {
   stopifnot(length(out$blup) == 2)
 }
 
+tests$model_data_keeps_record_apiary <- function() {
+  qs <- lapply(standard_queens(), function(q) {
+    q$apiary <- 999L  # ancien format : rucher au niveau de la reine
+    q
+  })
+  d <- load_beekube_data(write_input(qs))
+  md <- build_model_data(d$eval_data, d$df, "10")
+  stopifnot(nrow(md) == 10,
+            "apiary" %in% names(md),
+            !any(c("apiary.x", "apiary.y") %in% names(md)),
+            all(as.character(md$apiary) == "100"),
+            all(c("queenbee", "drone_parent", "note", "user", "beehiveType", "month", "year") %in% names(md)))
+}
+
+tests$missing_criterion_keys_are_tolerated <- function() {
+  qs <- standard_queens()
+  for (k in 4:6) qs[[k]]$evaluate[["11"]] <- NULL
+  d <- load_beekube_data(write_input(qs))
+  stopifnot(setequal(as.character(d$eval_data$queenbee[d$eval_data$critere == "11"]),
+                     c("1", "2", "3")))
+}
+
+tests$no_records_at_all_runs <- function() {
+  qs <- lapply(1:3, function(i) make_queen(i, evaluate = list("10" = list(), "20" = list())))
+  out <- run_on(qs)
+  stopifnot(length(out$blup) == 3,
+            all(vapply(out$blup, function(q) is.null(q$blups[["10"]]), logical(1))))
+}
+
 # ---- Runner (laisser en fin de fichier ; insérer les nouveaux tests au-dessus) ----
 run_all <- function(tests) {
   failures <- 0L

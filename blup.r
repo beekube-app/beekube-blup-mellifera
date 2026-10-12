@@ -124,8 +124,42 @@ has_enough_levels <- function(factor, min_levels = 2) {
   length(unique(factor)) >= min_levels
 }
 
+EVAL_COLUMNS <- c("queenbee", "critere", "note", "user", "apiary", "beehiveType", "month", "year")
+
+empty_eval_data <- function() {
+  data.frame(queenbee = character(0), critere = character(0), note = numeric(0),
+             user = character(0), apiary = character(0), beehiveType = character(0),
+             month = character(0), year = character(0), stringsAsFactors = FALSE)
+}
+
+# Notes des critères demandés, une ligne par note. Tolère les clés absentes
+# (Beekube n'envoie que les critères notés) et les listes vides.
+collect_evaluations <- function(df, criteres) {
+  rows <- lapply(as.character(criteres), function(critere) {
+    eval_list <- df$evaluate[[critere]]
+    do.call(rbind, lapply(seq_along(eval_list), function(i) {
+      ev <- eval_list[[i]]
+      if (!is.list(ev) || NROW(ev) == 0) {
+        return(NULL)
+      }
+      data.frame(
+        queenbee = as.character(df$queenbee[i]),
+        critere = critere,
+        note = as.numeric(unlist(ev$note)),
+        user = as.character(unlist(ev$user)),
+        apiary = as.character(unlist(ev$apiary)),
+        beehiveType = as.character(unlist(ev$beehiveType)),
+        month = as.character(unlist(ev$month)),
+        year = as.character(unlist(ev$year)),
+        stringsAsFactors = FALSE
+      )
+    }))
+  })
+  out <- do.call(rbind, rows)
+  if (is.null(out)) empty_eval_data() else out[, EVAL_COLUMNS]
+}
+
 # Function to load and prepare the data
-# Modification of the function load_beekube_data
 load_beekube_data <- function(json_file) {
   data <- fromJSON(json_file)
 
@@ -134,40 +168,34 @@ load_beekube_data <- function(json_file) {
 
   df <- as.data.frame(data$data)
 
-  # Replace "Unknown" and NA with "0" for pedigree
+  # Unknown parents are coded "0" (character even when every value is null)
+  df$queenbee_parent <- as.character(df$queenbee_parent)
+  df$drone_parent <- as.character(df$drone_parent)
   df$queenbee_parent[df$queenbee_parent == "Unknown" | is.na(df$queenbee_parent)] <- "0"
   df$drone_parent[df$drone_parent == "Unknown" | is.na(df$drone_parent)] <- "0"
 
-  # Convert other columns to factors if necessary
+  eval_data <- collect_evaluations(df, criteres)
+
   df <- df %>%
     mutate(across(c(queenbee, drone_parent, born, variety), as.factor))
 
-  # Prepare evaluation data
-  eval_data <- do.call(rbind, lapply(criteres, function(critere) {
-    eval_list <- df$evaluate[[critere]]
-    do.call(rbind, lapply(seq_along(eval_list), function(i) {
-      if (length(eval_list[[i]]) > 0) {
-        data.frame(
-          queenbee = df$queenbee[i],
-          critere = critere,
-          note = unlist(eval_list[[i]]$note),
-          user = unlist(eval_list[[i]]$user),
-          apiary = unlist(eval_list[[i]]$apiary),
-          beehiveType = unlist(eval_list[[i]]$beehiveType),
-          month = unlist(eval_list[[i]]$month),
-          year = unlist(eval_list[[i]]$year),
-          stringsAsFactors = FALSE
-        )
-      }
-    }))
-  }))
+  list(df = df, eval_data = eval_data, criteres = criteres,
+       criteres_eliminatoires = criteres_eliminatoires)
+}
 
-
-  # Convert columns to factors if necessary
-  eval_data <- eval_data %>%
-    mutate(across(c(queenbee, critere, user, apiary, beehiveType, month, year), as.factor))
-
-  list(df = df, eval_data = eval_data, criteres = criteres, criteres_eliminatoires = criteres_eliminatoires)
+# Notes d'un critère jointes au seul champ utile de la reine (drone_parent).
+# Sélection explicite : un champ `apiary` côté reine créerait apiary.x / apiary.y.
+build_model_data <- function(eval_data, df, critere) {
+  target <- as.character(critere)
+  queens <- data.frame(
+    queenbee = as.character(df$queenbee),
+    drone_parent = as.character(df$drone_parent),
+    stringsAsFactors = FALSE
+  )
+  eval_data[as.character(eval_data$critere) == target, , drop = FALSE] %>%
+    mutate(queenbee = as.character(queenbee)) %>%
+    left_join(queens, by = "queenbee") %>%
+    mutate(across(c(queenbee, drone_parent, user, apiary, beehiveType, month, year), as.factor))
 }
 
 # Main function for BLUP calculation
@@ -181,9 +209,7 @@ calculate_blup <- function(data, eval_data, criteres) {
 
   for (critere in criteres) {
     tryCatch({
-      model_data <- eval_data %>%
-        filter(critere == !!critere) %>%
-        left_join(data, by = "queenbee")
+      model_data <- build_model_data(eval_data, data, critere)
 
       if (nrow(model_data) < 1) {
         message(paste("Not enough data for the criterion", critere))
