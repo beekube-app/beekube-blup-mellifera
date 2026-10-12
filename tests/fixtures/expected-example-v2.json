@@ -1,0 +1,15151 @@
+{
+ "engine_version": "2.0.0",
+ "n_components": 3,
+ "parameters": {
+  "139": {
+   "h2": 0.25,
+   "n_queens": 45,
+   "n_records": 121,
+   "source": "prior"
+  },
+  "196": {
+   "h2": 0.25,
+   "n_queens": 0,
+   "n_records": 0,
+   "source": "prior"
+  },
+  "228": {
+   "h2": 0.25,
+   "n_queens": 0,
+   "n_records": 0,
+   "source": "prior"
+  },
+  "274": {
+   "h2": 0.25,
+   "n_queens": 0,
+   "n_records": 0,
+   "source": "prior"
+  },
+  "44": {
+   "h2": 0.25,
+   "n_queens": 69,
+   "n_records": 347,
+   "source": "prior"
+  },
+  "45": {
+   "h2": 0.25,
+   "n_queens": 69,
+   "n_records": 343,
+   "source": "prior"
+  },
+  "46": {
+   "h2": 0.25,
+   "n_queens": 65,
+   "n_records": 297,
+   "source": "prior"
+  },
+  "47": {
+   "h2": 0.25,
+   "n_queens": 3,
+   "n_records": 3,
+   "source": "prior"
+  }
+ },
+ "queens": {
+  "1": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "10": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.2,
+     0.044
+    ],
+    "45": [
+     "pedigree",
+     99.7,
+     0.044
+    ],
+    "46": [
+     "pedigree",
+     100.9,
+     0.044
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.3
+  },
+  "100": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "101": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     98.1,
+     0.344
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     89.2,
+     0.5
+    ],
+    "45": [
+     "evaluated",
+     93.2,
+     0.5
+    ],
+    "46": [
+     "evaluated",
+     99.7,
+     0.489
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 95.1
+  },
+  "102": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "103": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     92.8,
+     0.371
+    ],
+    "45": [
+     "evaluated",
+     92.8,
+     0.37
+    ],
+    "46": [
+     "evaluated",
+     103.2,
+     0.362
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.7
+  },
+  "104": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     109.8,
+     0.359
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     106.5,
+     0.54
+    ],
+    "45": [
+     "evaluated",
+     109.9,
+     0.54
+    ],
+    "46": [
+     "evaluated",
+     100.9,
+     0.498
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 106.8
+  },
+  "105": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "106": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "107": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "108": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "109": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "11": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.2,
+     0.011
+    ],
+    "45": [
+     "pedigree",
+     99.9,
+     0.011
+    ],
+    "46": [
+     "pedigree",
+     100.2,
+     0.011
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.1
+  },
+  "110": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "111": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "112": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "113": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "114": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "115": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "116": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     106.9,
+     0.337
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     107.7,
+     0.521
+    ],
+    "45": [
+     "evaluated",
+     105.8,
+     0.52
+    ],
+    "46": [
+     "evaluated",
+     111.7,
+     0.521
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 108.0
+  },
+  "117": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     103.0,
+     0.242
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     97.5,
+     0.484
+    ],
+    "45": [
+     "evaluated",
+     95.4,
+     0.483
+    ],
+    "46": [
+     "evaluated",
+     103.5,
+     0.486
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.9
+  },
+  "118": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.0,
+     0.005
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     99.2,
+     0.126
+    ],
+    "45": [
+     "evaluated",
+     99.3,
+     0.126
+    ],
+    "46": [
+     "evaluated",
+     100.6,
+     0.126
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.5
+  },
+  "119": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "12": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     103.6,
+     0.048
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     107.8,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     106.7,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.8,
+     0.093
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 105.0
+  },
+  "120": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "121": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "122": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "123": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "124": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "125": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "126": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     98.5,
+     0.359
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     111.6,
+     0.537
+    ],
+    "45": [
+     "evaluated",
+     105.8,
+     0.537
+    ],
+    "46": [
+     "evaluated",
+     103.1,
+     0.495
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 104.8
+  },
+  "127": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "128": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     98.7,
+     0.0
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     95.0,
+     0.426
+    ],
+    "45": [
+     "evaluated",
+     99.5,
+     0.353
+    ],
+    "46": [
+     "evaluated",
+     85.6,
+     0.423
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 94.7
+  },
+  "129": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     97.2,
+     0.428
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     93.2,
+     0.533
+    ],
+    "45": [
+     "evaluated",
+     96.6,
+     0.533
+    ],
+    "46": [
+     "evaluated",
+     95.6,
+     0.528
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 95.7
+  },
+  "13": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     109.9,
+     0.241
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     117.6,
+     0.493
+    ],
+    "45": [
+     "evaluated",
+     115.6,
+     0.493
+    ],
+    "46": [
+     "evaluated",
+     104.2,
+     0.491
+    ],
+    "47": [
+     "evaluated",
+     100.0,
+     0.0
+    ]
+   },
+   "total_index": 109.4
+  },
+  "130": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     98.5,
+     0.359
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     94.4,
+     0.497
+    ],
+    "45": [
+     "evaluated",
+     99.8,
+     0.497
+    ],
+    "46": [
+     "evaluated",
+     100.7,
+     0.493
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.3
+  },
+  "131": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "132": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "133": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     95.7,
+     0.424
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     99.8,
+     0.562
+    ],
+    "45": [
+     "evaluated",
+     100.1,
+     0.562
+    ],
+    "46": [
+     "evaluated",
+     95.7,
+     0.536
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.8
+  },
+  "134": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "135": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     107.7,
+     0.434
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     103.2,
+     0.522
+    ],
+    "45": [
+     "evaluated",
+     102.7,
+     0.522
+    ],
+    "46": [
+     "evaluated",
+     115.3,
+     0.516
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 107.2
+  },
+  "136": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "137": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.2,
+     0.078
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.3,
+     0.122
+    ],
+    "45": [
+     "pedigree",
+     103.1,
+     0.122
+    ],
+    "46": [
+     "pedigree",
+     100.2,
+     0.115
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "138": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     88.5,
+     0.171
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     96.4,
+     0.427
+    ],
+    "45": [
+     "evaluated",
+     88.7,
+     0.427
+    ],
+    "46": [
+     "evaluated",
+     93.5,
+     0.326
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 91.8
+  },
+  "139": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     100.2,
+     0.242
+    ],
+    "45": [
+     "evaluated",
+     99.2,
+     0.242
+    ],
+    "46": [
+     "evaluated",
+     102.8,
+     0.242
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.7
+  },
+  "140": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     90.6,
+     0.425
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     94.4,
+     0.499
+    ],
+    "45": [
+     "evaluated",
+     100.7,
+     0.499
+    ],
+    "46": [
+     "evaluated",
+     95.7,
+     0.444
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 95.4
+  },
+  "141": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     85.9,
+     0.418
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     113.8,
+     0.516
+    ],
+    "45": [
+     "evaluated",
+     116.8,
+     0.516
+    ],
+    "46": [
+     "evaluated",
+     101.6,
+     0.513
+    ],
+    "47": [
+     "evaluated",
+     100.0,
+     0.0
+    ]
+   },
+   "total_index": 103.6
+  },
+  "142": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     101.9,
+     0.354
+    ],
+    "45": [
+     "evaluated",
+     101.0,
+     0.354
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.5
+  },
+  "143": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "145": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "146": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     99.4,
+     0.236
+    ],
+    "45": [
+     "evaluated",
+     97.6,
+     0.236
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.5
+  },
+  "147": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     104.8,
+     0.359
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     107.1,
+     0.5
+    ],
+    "45": [
+     "evaluated",
+     103.2,
+     0.5
+    ],
+    "46": [
+     "evaluated",
+     101.2,
+     0.496
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 104.1
+  },
+  "148": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "149": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "150": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "151": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "152": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "153": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     97.3,
+     0.079
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.9,
+     0.099
+    ],
+    "45": [
+     "pedigree",
+     99.0,
+     0.099
+    ],
+    "46": [
+     "pedigree",
+     100.4,
+     0.091
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.4
+  },
+  "154": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     97.7,
+     0.356
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     104.6,
+     0.497
+    ],
+    "45": [
+     "evaluated",
+     104.5,
+     0.497
+    ],
+    "46": [
+     "evaluated",
+     104.1,
+     0.493
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 102.7
+  },
+  "155": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     109.0,
+     0.359
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     103.1,
+     0.538
+    ],
+    "45": [
+     "evaluated",
+     104.4,
+     0.538
+    ],
+    "46": [
+     "evaluated",
+     98.8,
+     0.495
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 103.9
+  },
+  "156": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.9,
+     0.123
+    ],
+    "45": [
+     "pedigree",
+     99.5,
+     0.122
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.9
+  },
+  "157": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     93.0,
+     0.055
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     98.4,
+     0.27
+    ],
+    "45": [
+     "evaluated",
+     105.6,
+     0.27
+    ],
+    "46": [
+     "pedigree",
+     96.0,
+     0.074
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.3
+  },
+  "158": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     85.9,
+     0.418
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     96.7,
+     0.55
+    ],
+    "45": [
+     "evaluated",
+     93.7,
+     0.55
+    ],
+    "46": [
+     "evaluated",
+     94.3,
+     0.523
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 92.7
+  },
+  "159": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "160": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     95.7,
+     0.323
+    ],
+    "45": [
+     "evaluated",
+     94.5,
+     0.323
+    ],
+    "46": [
+     "evaluated",
+     94.1,
+     0.242
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 94.8
+  },
+  "161": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.6,
+     0.012
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     101.0,
+     0.245
+    ],
+    "45": [
+     "evaluated",
+     100.4,
+     0.245
+    ],
+    "46": [
+     "pedigree",
+     100.5,
+     0.023
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.6
+  },
+  "162": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     100.2,
+     0.242
+    ],
+    "45": [
+     "evaluated",
+     99.2,
+     0.242
+    ],
+    "46": [
+     "evaluated",
+     94.1,
+     0.242
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.8
+  },
+  "163": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.9,
+     0.065
+    ],
+    "45": [
+     "pedigree",
+     100.5,
+     0.065
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.7
+  },
+  "164": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.6,
+     0.066
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     105.1,
+     0.099
+    ],
+    "45": [
+     "pedigree",
+     102.5,
+     0.099
+    ],
+    "46": [
+     "pedigree",
+     101.0,
+     0.091
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.8
+  },
+  "165": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.019
+    ],
+    "45": [
+     "pedigree",
+     99.8,
+     0.019
+    ],
+    "46": [
+     "pedigree",
+     99.7,
+     0.018
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.9
+  },
+  "166": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     103.6,
+     0.474
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     104.6,
+     0.582
+    ],
+    "45": [
+     "evaluated",
+     104.4,
+     0.581
+    ],
+    "46": [
+     "evaluated",
+     101.8,
+     0.584
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 103.6
+  },
+  "167": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     98.1,
+     0.441
+    ],
+    "45": [
+     "evaluated",
+     96.0,
+     0.438
+    ],
+    "46": [
+     "evaluated",
+     97.3,
+     0.437
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.5
+  },
+  "168": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     102.1,
+     0.269
+    ],
+    "45": [
+     "evaluated",
+     103.1,
+     0.268
+    ],
+    "46": [
+     "evaluated",
+     92.4,
+     0.266
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.1
+  },
+  "169": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     97.3,
+     0.402
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     96.2,
+     0.546
+    ],
+    "45": [
+     "evaluated",
+     96.8,
+     0.545
+    ],
+    "46": [
+     "evaluated",
+     95.8,
+     0.546
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 96.5
+  },
+  "17": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "170": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     112.3,
+     0.402
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     93.9,
+     0.546
+    ],
+    "45": [
+     "evaluated",
+     98.2,
+     0.546
+    ],
+    "46": [
+     "evaluated",
+     113.1,
+     0.545
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 104.4
+  },
+  "171": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "172": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.2,
+     0.009
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.5,
+     0.023
+    ],
+    "45": [
+     "pedigree",
+     99.8,
+     0.023
+    ],
+    "46": [
+     "pedigree",
+     100.3,
+     0.023
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.7
+  },
+  "173": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.6,
+     0.012
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.1,
+     0.031
+    ],
+    "45": [
+     "pedigree",
+     99.8,
+     0.031
+    ],
+    "46": [
+     "pedigree",
+     100.5,
+     0.023
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.3
+  },
+  "174": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.5,
+     0.08
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.3,
+     0.099
+    ],
+    "45": [
+     "pedigree",
+     101.1,
+     0.099
+    ],
+    "46": [
+     "pedigree",
+     106.1,
+     0.098
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 102.7
+  },
+  "175": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.8,
+     0.001
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.8,
+     0.023
+    ],
+    "45": [
+     "pedigree",
+     99.8,
+     0.023
+    ],
+    "46": [
+     "pedigree",
+     100.0,
+     0.023
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.6
+  },
+  "176": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "177": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "178": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "179": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "18": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "180": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "181": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "182": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "183": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "184": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "185": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "186": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "187": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "188": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     105.3,
+     0.24
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     98.9,
+     0.543
+    ],
+    "45": [
+     "evaluated",
+     96.4,
+     0.543
+    ],
+    "46": [
+     "evaluated",
+     93.7,
+     0.455
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.6
+  },
+  "189": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.2,
+     0.009
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.5,
+     0.023
+    ],
+    "45": [
+     "pedigree",
+     99.8,
+     0.023
+    ],
+    "46": [
+     "pedigree",
+     100.3,
+     0.023
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.7
+  },
+  "19": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.3,
+     0.059
+    ],
+    "45": [
+     "pedigree",
+     97.7,
+     0.059
+    ],
+    "46": [
+     "pedigree",
+     97.2,
+     0.044
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.7
+  },
+  "190": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     99.3,
+     0.358
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     104.9,
+     0.408
+    ],
+    "45": [
+     "evaluated",
+     100.8,
+     0.408
+    ],
+    "46": [
+     "evaluated",
+     93.4,
+     0.409
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.6
+  },
+  "191": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "192": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "193": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     103.5,
+     0.296
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     92.0,
+     0.381
+    ],
+    "45": [
+     "evaluated",
+     94.5,
+     0.38
+    ],
+    "46": [
+     "evaluated",
+     103.5,
+     0.381
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.4
+  },
+  "194": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     92.0,
+     0.345
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     99.7,
+     0.398
+    ],
+    "45": [
+     "evaluated",
+     101.2,
+     0.398
+    ],
+    "46": [
+     "evaluated",
+     97.5,
+     0.398
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.6
+  },
+  "195": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "196": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     95.4,
+     0.429
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     101.7,
+     0.538
+    ],
+    "45": [
+     "evaluated",
+     97.6,
+     0.538
+    ],
+    "46": [
+     "evaluated",
+     101.6,
+     0.495
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "197": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "198": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.4,
+     0.04
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     99.3,
+     0.274
+    ],
+    "45": [
+     "evaluated",
+     99.8,
+     0.274
+    ],
+    "46": [
+     "evaluated",
+     94.3,
+     0.273
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.9
+  },
+  "199": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "2": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "20": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "200": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     88.3,
+     0.213
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     97.1,
+     0.246
+    ],
+    "45": [
+     "evaluated",
+     99.4,
+     0.246
+    ],
+    "46": [
+     "evaluated",
+     91.6,
+     0.225
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 94.1
+  },
+  "201": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     106.9,
+     0.395
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     111.5,
+     0.427
+    ],
+    "45": [
+     "evaluated",
+     107.0,
+     0.426
+    ],
+    "46": [
+     "evaluated",
+     109.4,
+     0.426
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 108.7
+  },
+  "202": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     98.8,
+     0.389
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     115.2,
+     0.451
+    ],
+    "45": [
+     "evaluated",
+     111.3,
+     0.451
+    ],
+    "46": [
+     "evaluated",
+     98.3,
+     0.452
+    ],
+    "47": [
+     "evaluated",
+     100.0,
+     0.0
+    ]
+   },
+   "total_index": 104.7
+  },
+  "203": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     98.0,
+     0.216
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     97.2,
+     0.353
+    ],
+    "45": [
+     "evaluated",
+     100.5,
+     0.352
+    ],
+    "46": [
+     "evaluated",
+     98.6,
+     0.354
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.6
+  },
+  "204": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "205": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     95.4,
+     0.317
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     87.3,
+     0.408
+    ],
+    "45": [
+     "evaluated",
+     90.8,
+     0.408
+    ],
+    "46": [
+     "evaluated",
+     96.5,
+     0.41
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 92.5
+  },
+  "206": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     95.6,
+     0.325
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     103.2,
+     0.343
+    ],
+    "45": [
+     "evaluated",
+     102.3,
+     0.343
+    ],
+    "46": [
+     "evaluated",
+     101.8,
+     0.343
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.7
+  },
+  "207": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "208": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "209": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "21": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.9,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     100.5,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     98.7,
+     0.068
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.0
+  },
+  "210": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "211": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "212": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "213": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "214": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "215": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "216": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     104.5,
+     0.279
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     101.3,
+     0.3
+    ],
+    "45": [
+     "evaluated",
+     104.7,
+     0.3
+    ],
+    "46": [
+     "evaluated",
+     101.7,
+     0.3
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 103.0
+  },
+  "217": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "218": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "219": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     97.5,
+     0.316
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     94.6,
+     0.335
+    ],
+    "45": [
+     "evaluated",
+     92.7,
+     0.334
+    ],
+    "46": [
+     "evaluated",
+     94.1,
+     0.336
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 94.7
+  },
+  "22": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "220": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "221": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "222": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "223": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "224": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "225": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "226": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "227": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "228": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "229": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "23": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.02
+    ],
+    "45": [
+     "pedigree",
+     98.3,
+     0.02
+    ],
+    "46": [
+     "pedigree",
+     99.7,
+     0.02
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.2
+  },
+  "230": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "231": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "232": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "233": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "234": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "235": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "236": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "237": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "238": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "239": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "24": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.02
+    ],
+    "45": [
+     "pedigree",
+     98.3,
+     0.02
+    ],
+    "46": [
+     "pedigree",
+     99.7,
+     0.02
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.2
+  },
+  "240": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "241": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "242": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "243": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "244": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "245": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "246": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "247": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "248": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "249": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "25": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.5,
+     0.043
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "45": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "46": [
+     "pedigree",
+     97.6,
+     0.081
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.3
+  },
+  "250": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "251": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "252": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "253": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "254": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "255": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "256": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "257": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "258": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "259": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "26": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.6,
+     0.016
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.0,
+     0.023
+    ],
+    "45": [
+     "pedigree",
+     100.0,
+     0.023
+    ],
+    "46": [
+     "pedigree",
+     99.7,
+     0.023
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.3
+  },
+  "260": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "261": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "262": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "263": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "264": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "265": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "266": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "267": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "268": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "269": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "27": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "270": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "271": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "272": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "273": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "274": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "275": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "276": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "277": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "278": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "279": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "28": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.5,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.053
+    ],
+    "45": [
+     "pedigree",
+     100.0,
+     0.053
+    ],
+    "46": [
+     "pedigree",
+     97.3,
+     0.053
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.9
+  },
+  "280": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "281": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "282": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.2,
+     0.009
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.5,
+     0.023
+    ],
+    "45": [
+     "pedigree",
+     99.8,
+     0.023
+    ],
+    "46": [
+     "pedigree",
+     100.3,
+     0.023
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.7
+  },
+  "283": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "284": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "285": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "286": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "287": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "288": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "289": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "29": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.0,
+     0.079
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     97.2,
+     0.098
+    ],
+    "45": [
+     "pedigree",
+     98.6,
+     0.098
+    ],
+    "46": [
+     "pedigree",
+     97.8,
+     0.097
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.9
+  },
+  "290": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "291": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "292": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "293": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "294": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "295": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "296": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "297": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "298": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "299": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "3": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.8,
+     0.141
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     96.3,
+     0.466
+    ],
+    "45": [
+     "evaluated",
+     98.6,
+     0.464
+    ],
+    "46": [
+     "evaluated",
+     102.7,
+     0.463
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.6
+  },
+  "30": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.02
+    ],
+    "45": [
+     "pedigree",
+     98.3,
+     0.02
+    ],
+    "46": [
+     "pedigree",
+     99.7,
+     0.02
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.2
+  },
+  "300": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "301": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "302": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "303": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "304": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "305": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "306": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "307": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "308": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "309": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "31": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.0,
+     0.005
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "45": [
+     "pedigree",
+     100.4,
+     0.011
+    ],
+    "46": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.0
+  },
+  "310": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "311": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "312": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "313": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "314": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "315": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "316": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "317": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "318": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "319": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "32": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.02
+    ],
+    "45": [
+     "pedigree",
+     98.3,
+     0.02
+    ],
+    "46": [
+     "pedigree",
+     99.7,
+     0.02
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.2
+  },
+  "320": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "321": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "322": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "323": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "324": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.6,
+     0.012
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     97.2,
+     0.077
+    ],
+    "45": [
+     "pedigree",
+     97.8,
+     0.077
+    ],
+    "46": [
+     "pedigree",
+     102.0,
+     0.077
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.4
+  },
+  "325": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.5,
+     0.002
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.0,
+     0.017
+    ],
+    "45": [
+     "pedigree",
+     101.2,
+     0.017
+    ],
+    "46": [
+     "pedigree",
+     99.4,
+     0.017
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.3
+  },
+  "326": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "327": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "328": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "329": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.4,
+     0.01
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.8,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.068
+    ],
+    "46": [
+     "pedigree",
+     99.3,
+     0.067
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.0
+  },
+  "33": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     106.5,
+     0.189
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     99.3,
+     0.411
+    ],
+    "45": [
+     "evaluated",
+     98.6,
+     0.41
+    ],
+    "46": [
+     "evaluated",
+     103.9,
+     0.407
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 102.1
+  },
+  "330": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     100.1,
+     0.213
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     102.1,
+     0.217
+    ],
+    "45": [
+     "evaluated",
+     102.4,
+     0.217
+    ],
+    "46": [
+     "evaluated",
+     101.2,
+     0.217
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.4
+  },
+  "331": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "332": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "333": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.5,
+     0.063
+    ],
+    "45": [
+     "pedigree",
+     96.1,
+     0.063
+    ],
+    "46": [
+     "pedigree",
+     100.1,
+     0.063
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.2
+  },
+  "34": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     100.2,
+     0.129
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     102.0,
+     0.398
+    ],
+    "45": [
+     "evaluated",
+     105.1,
+     0.397
+    ],
+    "46": [
+     "evaluated",
+     103.1,
+     0.395
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 102.6
+  },
+  "35": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "36": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     93.2,
+     0.077
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     106.0,
+     0.095
+    ],
+    "45": [
+     "pedigree",
+     107.2,
+     0.095
+    ],
+    "46": [
+     "pedigree",
+     100.4,
+     0.094
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.7
+  },
+  "37": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     104.4,
+     0.357
+    ],
+    "45": [
+     "evaluated",
+     105.8,
+     0.357
+    ],
+    "46": [
+     "evaluated",
+     99.0,
+     0.35
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 102.8
+  },
+  "38": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "39": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     97.3,
+     0.058
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     88.4,
+     0.356
+    ],
+    "45": [
+     "evaluated",
+     90.7,
+     0.357
+    ],
+    "46": [
+     "evaluated",
+     106.7,
+     0.359
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 95.8
+  },
+  "4": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "40": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     96.2,
+     0.344
+    ],
+    "45": [
+     "evaluated",
+     90.9,
+     0.344
+    ],
+    "46": [
+     "evaluated",
+     100.9,
+     0.342
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 96.0
+  },
+  "41": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "42": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "43": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.0,
+     0.005
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "45": [
+     "pedigree",
+     100.4,
+     0.011
+    ],
+    "46": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.0
+  },
+  "44": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.9,
+     0.079
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     101.6,
+     0.102
+    ],
+    "45": [
+     "pedigree",
+     102.4,
+     0.102
+    ],
+    "46": [
+     "pedigree",
+     102.3,
+     0.101
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.5
+  },
+  "45": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "46": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "47": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.0,
+     0.005
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "45": [
+     "pedigree",
+     100.4,
+     0.011
+    ],
+    "46": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.0
+  },
+  "48": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "49": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.02
+    ],
+    "45": [
+     "pedigree",
+     98.3,
+     0.02
+    ],
+    "46": [
+     "pedigree",
+     99.7,
+     0.02
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.2
+  },
+  "5": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.007
+    ],
+    "45": [
+     "pedigree",
+     98.8,
+     0.007
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.0
+  },
+  "50": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     100.8,
+     0.129
+    ],
+    "45": [
+     "evaluated",
+     99.4,
+     0.129
+    ],
+    "46": [
+     "evaluated",
+     99.3,
+     0.129
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "51": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.02
+    ],
+    "45": [
+     "pedigree",
+     98.3,
+     0.02
+    ],
+    "46": [
+     "pedigree",
+     99.7,
+     0.02
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.2
+  },
+  "52": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.0,
+     0.005
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "45": [
+     "pedigree",
+     100.4,
+     0.011
+    ],
+    "46": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.0
+  },
+  "53": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "55": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.0,
+     0.005
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "45": [
+     "pedigree",
+     100.4,
+     0.011
+    ],
+    "46": [
+     "pedigree",
+     100.3,
+     0.011
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.0
+  },
+  "56": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     104.1,
+     0.24
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     101.5,
+     0.358
+    ],
+    "45": [
+     "evaluated",
+     98.1,
+     0.358
+    ],
+    "46": [
+     "evaluated",
+     101.4,
+     0.358
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.3
+  },
+  "57": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     96.9,
+     0.244
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     102.4,
+     0.343
+    ],
+    "45": [
+     "evaluated",
+     106.0,
+     0.343
+    ],
+    "46": [
+     "evaluated",
+     94.7,
+     0.343
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.0
+  },
+  "58": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "59": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     101.6,
+     0.078
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     99.5,
+     0.21
+    ],
+    "45": [
+     "evaluated",
+     99.5,
+     0.21
+    ],
+    "46": [
+     "evaluated",
+     98.9,
+     0.21
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.9
+  },
+  "6": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.0,
+     0.029
+    ],
+    "45": [
+     "pedigree",
+     97.6,
+     0.029
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.8
+  },
+  "60": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     95.8,
+     0.064
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.1,
+     0.073
+    ],
+    "45": [
+     "pedigree",
+     100.6,
+     0.073
+    ],
+    "46": [
+     "pedigree",
+     98.8,
+     0.074
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.8
+  },
+  "61": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.9,
+     0.066
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     102.2,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     100.4,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     96.9,
+     0.075
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.6
+  },
+  "62": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "63": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.3,
+     0.032
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.5,
+     0.059
+    ],
+    "45": [
+     "pedigree",
+     98.7,
+     0.059
+    ],
+    "46": [
+     "pedigree",
+     101.7,
+     0.059
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.6
+  },
+  "64": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     93.7,
+     0.234
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     103.5,
+     0.5
+    ],
+    "45": [
+     "evaluated",
+     102.8,
+     0.5
+    ],
+    "46": [
+     "evaluated",
+     95.1,
+     0.444
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.8
+  },
+  "65": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     101.7,
+     0.37
+    ],
+    "45": [
+     "evaluated",
+     101.1,
+     0.37
+    ],
+    "46": [
+     "evaluated",
+     97.7,
+     0.369
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "66": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     101.2,
+     0.323
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     103.4,
+     0.392
+    ],
+    "45": [
+     "evaluated",
+     97.6,
+     0.392
+    ],
+    "46": [
+     "evaluated",
+     98.5,
+     0.392
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  },
+  "67": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     99.7,
+     0.035
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.7,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.2,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.8
+  },
+  "68": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "69": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     103.6,
+     0.048
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     107.8,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     106.7,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.8,
+     0.093
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 105.0
+  },
+  "7": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "70": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     103.0,
+     0.419
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     95.0,
+     0.558
+    ],
+    "45": [
+     "evaluated",
+     94.2,
+     0.557
+    ],
+    "46": [
+     "evaluated",
+     106.2,
+     0.555
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.6
+  },
+  "71": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     98.7,
+     0.0
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     94.9,
+     0.16
+    ],
+    "45": [
+     "evaluated",
+     94.4,
+     0.16
+    ],
+    "46": [
+     "evaluated",
+     99.5,
+     0.0
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 96.9
+  },
+  "72": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "73": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "74": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     100.2,
+     0.003
+    ],
+    "45": [
+     "pedigree",
+     100.0,
+     0.003
+    ],
+    "46": [
+     "pedigree",
+     99.8,
+     0.003
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.0
+  },
+  "75": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     101.5,
+     0.428
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     104.0,
+     0.533
+    ],
+    "45": [
+     "evaluated",
+     106.0,
+     0.533
+    ],
+    "46": [
+     "evaluated",
+     105.9,
+     0.528
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 104.3
+  },
+  "76": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.6,
+     0.066
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     97.7,
+     0.091
+    ],
+    "45": [
+     "pedigree",
+     99.9,
+     0.091
+    ],
+    "46": [
+     "pedigree",
+     100.0,
+     0.091
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "77": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     97.9,
+     0.176
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     98.5,
+     0.323
+    ],
+    "45": [
+     "evaluated",
+     96.9,
+     0.322
+    ],
+    "46": [
+     "evaluated",
+     104.6,
+     0.321
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.5
+  },
+  "78": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     94.1,
+     0.341
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     102.6,
+     0.414
+    ],
+    "45": [
+     "evaluated",
+     103.2,
+     0.414
+    ],
+    "46": [
+     "evaluated",
+     99.8,
+     0.414
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.9
+  },
+  "79": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "evaluated",
+     96.3,
+     0.341
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     95.3,
+     0.414
+    ],
+    "45": [
+     "evaluated",
+     95.6,
+     0.414
+    ],
+    "46": [
+     "evaluated",
+     98.5,
+     0.414
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 96.4
+  },
+  "8": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "80": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "81": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "82": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "83": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "84": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "85": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "86": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     92.9,
+     0.401
+    ],
+    "45": [
+     "evaluated",
+     94.8,
+     0.401
+    ],
+    "46": [
+     "evaluated",
+     105.2,
+     0.398
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 98.8
+  },
+  "87": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "88": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "89": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "9": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     105.5,
+     0.158
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     98.0,
+     0.302
+    ],
+    "45": [
+     "pedigree",
+     99.2,
+     0.301
+    ],
+    "46": [
+     "pedigree",
+     100.4,
+     0.284
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "90": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "91": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.6,
+     0.047
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.6,
+     0.093
+    ],
+    "45": [
+     "pedigree",
+     99.3,
+     0.093
+    ],
+    "46": [
+     "pedigree",
+     101.6,
+     0.092
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.8
+  },
+  "92": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     104.0,
+     0.1
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     102.0,
+     0.16
+    ],
+    "45": [
+     "pedigree",
+     100.5,
+     0.159
+    ],
+    "46": [
+     "pedigree",
+     101.8,
+     0.158
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 102.1
+  },
+  "93": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     102.5,
+     0.448
+    ],
+    "45": [
+     "evaluated",
+     106.1,
+     0.448
+    ],
+    "46": [
+     "evaluated",
+     103.1,
+     0.372
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 101.9
+  },
+  "94": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "95": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.7,
+     0.051
+    ],
+    "45": [
+     "pedigree",
+     101.9,
+     0.051
+    ],
+    "46": [
+     "pedigree",
+     98.5,
+     0.042
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 99.1
+  },
+  "96": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     96.1,
+     0.023
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "evaluated",
+     99.8,
+     0.259
+    ],
+    "45": [
+     "evaluated",
+     100.8,
+     0.259
+    ],
+    "46": [
+     "evaluated",
+     94.2,
+     0.253
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.8
+  },
+  "97": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     98.0,
+     0.015
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     94.9,
+     0.068
+    ],
+    "45": [
+     "pedigree",
+     95.9,
+     0.069
+    ],
+    "46": [
+     "pedigree",
+     102.3,
+     0.069
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 97.8
+  },
+  "98": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "none",
+     null,
+     null
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "none",
+     null,
+     null
+    ],
+    "45": [
+     "none",
+     null,
+     null
+    ],
+    "46": [
+     "none",
+     null,
+     null
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": null
+  },
+  "99": {
+   "inbreeding": 0.0,
+   "indexes": {
+    "139": [
+     "pedigree",
+     102.1,
+     0.039
+    ],
+    "196": [
+     "none",
+     null,
+     null
+    ],
+    "228": [
+     "none",
+     null,
+     null
+    ],
+    "274": [
+     "none",
+     null,
+     null
+    ],
+    "44": [
+     "pedigree",
+     99.1,
+     0.075
+    ],
+    "45": [
+     "pedigree",
+     99.6,
+     0.075
+    ],
+    "46": [
+     "pedigree",
+     99.9,
+     0.071
+    ],
+    "47": [
+     "none",
+     null,
+     null
+    ]
+   },
+   "total_index": 100.2
+  }
+ },
+ "warnings": [
+  "disconnected_groups",
+  "few_records",
+  "no_variation",
+  "scale_mixed",
+  "unknown_parent_added"
+ ]
+}
