@@ -69,7 +69,10 @@ def test_breeder_profile_falls_back_to_standard_when_unavailable(monkeypatch):
     _break_import(monkeypatch, "blup2.model_breeder")
     out = run_blup(_inp(profile="breeder"))
     assert out.profile == "breeder"
-    assert any(w.code == "breeder_fallback" for w in out.warnings)
+    # avertissement global du moteur (sans critère, « non disponible »), pas le repli par critère
+    # de fit_breeder (< 50 % d'accouplements connus) qui donnerait aussi profile_used = "standard"
+    fallback = [w for w in out.warnings if w.code == "breeder_fallback"]
+    assert len(fallback) == 1 and fallback[0].criterion is None and "non disponible" in fallback[0].message
     assert all(p.profile_used == "standard" for p in out.parameters.values())
 
 
