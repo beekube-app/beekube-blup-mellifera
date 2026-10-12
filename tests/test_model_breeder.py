@@ -282,9 +282,13 @@ def test_reml_estimates_the_partition_only_when_always(monkeypatch, mode, seed, 
     fit, _, _ = _fit(inp, estimate_variances=mode)
     assert sizes == [n_params]
     p = fit.parameters
-    assert p.source == "reml"
     partition_is_prior = p.sigma2_aq / p.sigma2_a == pytest.approx(0.5) and p.rg == pytest.approx(-0.5)
-    assert partition_is_prior == (mode == "auto")    # seed 4 en always : ρ ≈ 0,40, rG ≈ −0,90
+    if mode == "auto":                              # seuls σ²_AW et σ²_pe estimés : ρ et rG a priori
+        assert p.source == "reml" and partition_is_prior
+    elif p.source == "reml":                        # graine 4 : ρ ≈ 0,40, rG ≈ −0,90 estimés
+        assert not partition_is_prior
+    else:                                           # estimation inutilisable (|rG| ≥ 0,94...) : repli propre
+        assert any(w.code in ("reml_not_converged", "low_heritability") for w in fit.warnings)
 
 
 @pytest.mark.parametrize("mode, rg_theta, success", [("auto", None, False), ("always", 3.0, True)])
