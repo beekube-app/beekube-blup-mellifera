@@ -33,7 +33,9 @@ Beekube BLUP Mellifera API est une application Flask qui fournit une interface A
 L'API expose les endpoints suivants :
 
 - `GET /` : Page d'accueil de l'API
-- `POST /blup` : Effectue le calcul BLUP
+- `POST /blup` : Effectue le calcul BLUP (moteur v1, R)
+- `POST /v2/blup` : Évaluation génétique v2 (parenté abeille, index base 100, accouplements) — méthode décrite dans [METHODOLOGIE.md](METHODOLOGIE.md)
+- `POST /v2/mating` : Index et consanguinité attendus pour des couples mère × source de mâles choisis
 
 Pour plus de détails sur l'utilisation de l'API, consultez la documentation OpenAPI disponible à l'adresse de l'API une fois lancée :
 `http://localhost:8081/openapi`
@@ -57,11 +59,13 @@ Pour contribuer au projet :
 ## Tests
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+# Python 3.11 ou plus requis (moteur v2)
+python3.12 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 .venv/bin/pytest -v                      # API Flask (Rscript simulé)
 docker compose build api                 # obligatoire après toute modification de blup.r ou de tests/
 docker compose run --rm api Rscript tests/r/test_blup.R   # tests R
 .venv/bin/pytest -m docker -v            # bout en bout sur data/input-example.json
+.venv/bin/pytest -m slow -v              # moteur v2 : calibration par simulation et performance
 .venv/bin/python scripts/export_openapi.py                # après un changement de modèle pydantic
 ```
 
