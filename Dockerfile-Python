@@ -43,6 +43,7 @@ RUN pip install -r requirements.txt
 # Copier le script R dans l'image
 COPY blup.r .
 COPY app.py .
+COPY tests ./tests
 
 EXPOSE 8081
 

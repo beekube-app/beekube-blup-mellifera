@@ -14,10 +14,6 @@ if (requireNamespace("rstan", quietly = TRUE)) {
   rstan::rstan_options(threads_per_chain = 1)
 }
 
-# File Paths
-current_dir <- getwd()
-input_file <- file.path(current_dir, "data/input.json")
-output_file <- file.path(current_dir, "data/resultats_index.json")
 
 
 # Function to calculate bee-adapted heritability
@@ -616,72 +612,69 @@ suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
 }
 
 
-data <- load_beekube_data(input_file)
-results <- calculate_blup(data$df, data$eval_data, data$criteres)
-
-
-# Preparing results for JSON export
-export_list <- list()
-
-# Calculer d'abord les suggestions d'accouplement
-mating_suggestions <- suggest_optimal_matings(data, results)
-
-# Dans la boucle existante, modifions pour ajouter les suggestions :
-for (i in seq_len(nrow(data$df))) {
-  queen_data <- as.list(data$df[i,])
-  queen_id <- as.character(queen_data$queenbee)
-
-  # Remove columns of type list
-  queen_data <- queen_data[!sapply(queen_data, is.list)]
-
-  # Add the BLUPs and methods
-  blups <- list()
-  methods <- list()
-  for (critere in data$criteres) {
-    blups[[critere]] <- results$blups[[critere]][i]
-    methods[[critere]] <- results$methods[[critere]][i]
+# Convertit le data.frame de suggestions d'une reine en liste JSON
+format_suggestions <- function(suggestions) {
+  if (is.null(suggestions) || nrow(suggestions) == 0) {
+    return(list())
   }
-
-  queen_data$blups <- blups
-  queen_data$methods <- methods
-
-  # Ajouter les suggestions d'accouplement
-  if (!is.null(mating_suggestions[[queen_id]])) {
-    queen_data$mating_suggestions <- lapply(
-      seq_len(nrow(mating_suggestions[[queen_id]])),
-      function(j) {
-        list(
-          queen = mating_suggestions[[queen_id]]$mate[j],
-          total_score = round(mating_suggestions[[queen_id]]$total_score[j], 3),
-          blup_score = round(mating_suggestions[[queen_id]]$blup_score[j], 3),
-          diversity_score = round(mating_suggestions[[queen_id]]$diversity_score[j], 3),
-          queen_blup = round(mating_suggestions[[queen_id]]$queen_blup[j], 3),
-          mate_blup = round(mating_suggestions[[queen_id]]$mate_blup[j], 3)
-        )
-      }
+  lapply(seq_len(nrow(suggestions)), function(j) {
+    list(
+      queen = as.character(suggestions$mate[j]),
+      total_score = round(suggestions$total_score[j], 3),
+      blup_score = round(suggestions$blup_score[j], 3),
+      diversity_score = round(suggestions$diversity_score[j], 3),
+      queen_blup = round(suggestions$queen_blup[j], 3),
+      mate_blup = round(suggestions$mate_blup[j], 3)
     )
-  } else {
-    queen_data$mating_suggestions <- list()
-  }
-
-  # Apply the function to handle NAs
-  queen_data <- replace_na_with_null(queen_data)
-
-  export_list[[i]] <- queen_data
+  })
 }
 
+# Assemble la sortie JSON du contrat v1 : list(blup = [...], heritabilities = {...})
+build_export <- function(data, results, mating_suggestions) {
+  export_list <- list()
+  for (i in seq_len(nrow(data$df))) {
+    queen_data <- as.list(data$df[i, ])
+    queen_id <- as.character(queen_data$queenbee)
 
-# Preparing results for JSON export
-export <- list()
+    # Remove columns of type list
+    queen_data <- queen_data[!sapply(queen_data, is.list)]
 
-# Adding heritabilities to the results
-export$blup <- export_list
-export$heritabilities <- results$heritabilities
+    blups <- list()
+    methods <- list()
+    for (critere in data$criteres) {
+      blups[[critere]] <- results$blups[[critere]][i]
+      methods[[critere]] <- results$methods[[critere]][i]
+    }
+    queen_data$blups <- blups
+    queen_data$methods <- methods
+    queen_data$mating_suggestions <- format_suggestions(mating_suggestions[[queen_id]])
 
-# Convert the list to JSON
-json_output <- toJSON(export, pretty = TRUE, auto_unbox = TRUE, na = "null")
+    export_list[[i]] <- replace_na_with_null(queen_data)
+  }
+  list(blup = export_list, heritabilities = results$heritabilities)
+}
 
-# Export results to JSON
-write(json_output, output_file)
+# Calcule le BLUP v1 de input_file et écrit le JSON dans output_file
+run_blup <- function(input_file, output_file) {
+  data <- load_beekube_data(input_file)
+  results <- calculate_blup(data$df, data$eval_data, data$criteres)
+  mating_suggestions <- suggest_optimal_matings(data, results)
+  export <- build_export(data, results, mating_suggestions)
+  json_output <- toJSON(export, pretty = TRUE, auto_unbox = TRUE, na = "null")
+  write(json_output, output_file)
+  invisible(export)
+}
 
-print("The results were exported to JSON with NAs replaced by null.")
+main <- function(args = commandArgs(trailingOnly = TRUE)) {
+  if (length(args) == 0) {
+    # Compatibilité temporaire avec l'app.py actuel (chemins fixes) ; supprimée à la tâche 8
+    args <- c(file.path(getwd(), "data/input.json"),
+              file.path(getwd(), "data/resultats_index.json"))
+  }
+  run_blup(args[[1]], args[[2]])
+  print("The results were exported to JSON with NAs replaced by null.")
+}
+
+if (sys.nframe() == 0L) {
+  main()
+}
