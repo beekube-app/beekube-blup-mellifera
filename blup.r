@@ -453,13 +453,11 @@ run_blup <- function(input_file, output_file) {
 }
 
 main <- function(args = commandArgs(trailingOnly = TRUE)) {
-  if (length(args) == 0) {
-    # Compatibilité temporaire avec l'app.py actuel (chemins fixes) ; supprimée à la tâche 8
-    args <- c(file.path(getwd(), "data/input.json"),
-              file.path(getwd(), "data/resultats_index.json"))
+  if (length(args) != 2) {
+    stop("Usage: Rscript blup.r <input.json> <output.json>")
   }
   run_blup(args[[1]], args[[2]])
-  print("The results were exported to JSON with NAs replaced by null.")
+  message("The results were exported to ", args[[2]])
 }
 
 if (sys.nframe() == 0L) {

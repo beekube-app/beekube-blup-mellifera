@@ -1,13 +1,18 @@
 from flask import jsonify
 from flask_openapi3 import OpenAPI, Info, Tag, Server
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, Field, RootModel, ValidationError
 import subprocess
+import tempfile
 import json
 import os
-from typing import List, Optional, Union, Dict, Any
+from typing import Any, Dict, List, Optional
 
 # Récupérer l'URL de base depuis les variables d'environnement
 API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8081')
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+BLUP_SCRIPT = os.path.join(APP_DIR, 'blup.r')
+# Doit rester strictement inférieur au --timeout de gunicorn (180 s, Dockerfile-Python)
+RSCRIPT_TIMEOUT = int(os.getenv('RSCRIPT_TIMEOUT', '170'))
 
 info = Info(title="Beekube BLUP Mellifera API", version="1.0.0", description="SDK PHP pour l'API BLUP de Beekube - Calcul génétique des abeilles mellifères")
 servers = [
@@ -47,12 +52,13 @@ class BLUPInput(BaseModel):
 
 # Output Models
 class HeritabilityStats(BaseModel):
-    heritability: float
-    se: float
-    v_additive_queen: float
-    v_additive_drone: float
-    v_colony: float
-    v_residual: float
+    # Nullables : NA côté R (pas assez de données, échec du modèle ; se n'est jamais estimée)
+    heritability: Optional[float]
+    se: Optional[float]
+    v_additive_queen: Optional[float]
+    v_additive_drone: Optional[float]
+    v_colony: Optional[float]
+    v_residual: Optional[float]
 
 class MatingSuggestion(BaseModel):
     blup_score: float
@@ -81,7 +87,7 @@ class BLUPResultOutput(BaseModel):
 
 class BLUPOutput(BaseModel):
     status: str
-    results: Union[BLUPResultOutput, dict]
+    results: BLUPResultOutput
 
 
 class WelcomeResponse(BaseModel):
@@ -94,6 +100,59 @@ class ErrorResponse(BaseModel):
     output: str
     error: str
     results: dict
+
+
+class BlupScriptError(Exception):
+    """Échec de blup.r : code retour non nul, timeout ou fichier de sortie absent."""
+
+    def __init__(self, message: str, stdout: str = '', stderr: str = ''):
+        super().__init__(message)
+        self.stdout = stdout
+        self.stderr = stderr
+
+
+def _as_text(value: Any) -> str:
+    if value is None:
+        return ''
+    if isinstance(value, bytes):
+        return value.decode('utf-8', errors='replace')
+    return value
+
+
+def run_blup_script(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Lance blup.r dans un répertoire temporaire propre à la requête et renvoie son JSON."""
+    with tempfile.TemporaryDirectory(prefix='blup-') as workdir:
+        input_path = os.path.join(workdir, 'input.json')
+        output_path = os.path.join(workdir, 'output.json')
+        with open(input_path, 'w') as f:
+            json.dump(payload, f)
+
+        try:
+            result = subprocess.run(
+                ['Rscript', BLUP_SCRIPT, input_path, output_path],
+                capture_output=True, text=True, timeout=RSCRIPT_TIMEOUT, cwd=APP_DIR,
+            )
+        except subprocess.TimeoutExpired as e:
+            raise BlupScriptError(f'Rscript timed out after {RSCRIPT_TIMEOUT} s',
+                                  _as_text(e.stdout), _as_text(e.stderr))
+
+        if result.returncode != 0:
+            raise BlupScriptError(f'Rscript exited with code {result.returncode}',
+                                  result.stdout, result.stderr)
+        if not os.path.exists(output_path):
+            raise BlupScriptError('Results file not found', result.stdout, result.stderr)
+        if result.stderr:
+            app.logger.warning('blup.r stderr (last 2000 chars): %s', result.stderr[-2000:])
+
+        with open(output_path) as f:
+            return json.load(f)
+
+
+def error_response(message: str, stdout: str = '', stderr: str = ''):
+    body = ErrorResponse(status='error', message=message, output=stdout or '',
+                         error=stderr or '', results={'error': message})
+    return jsonify(body.model_dump()), 500
+
 
 @app.get("/",
          tags=[blup_tag],
@@ -117,56 +176,23 @@ def calulate(body: BLUPInput):
     """
     Perform BLUP calculation
     """
+    if not body.data:
+        empty = BLUPOutput(status='success', results=BLUPResultOutput(blup=[], heritabilities={}))
+        return jsonify(empty.model_dump())
+
     try:
-        # Make sure that the directory "data" exists
-        os.makedirs('./data', exist_ok=True)
-
-        # Clean up any existing files
-        for filename in ['input.json', 'resultats_index.json']:
-            filepath = f'./data/{filename}'
-            if os.path.exists(filepath):
-                os.remove(filepath)
-
-        # Save input data
-        with open('./data/input.json', 'w') as f:
-            json.dump(body.dict(), f)
-
-        # Run R script
-        result = subprocess.run(['Rscript', 'blup.r'], capture_output=True, text=True)
-
-        # Read results
-        if os.path.exists('./data/resultats_index.json'):
-            with open('./data/resultats_index.json', 'r') as f:
-                results = json.load(f)
-
-            # Parse results into our output model
-            response = BLUPOutput(
-                status='success',
-                results=results
-            )
-        else:
-            response = BLUPOutput(
-                status='error',
-                results={"errorMessage": "Results file not found", "output": result.stdout, "error": result.stderr}
-            )
-
-        # Clean up
-        for filename in ['input.json', 'resultats_index.json']:
-            filepath = f'./data/{filename}'
-            if os.path.exists(filepath):
-                os.remove(filepath)
-
-        return jsonify(response.model_dump())
-
+        raw_results = run_blup_script(body.model_dump())
+    except BlupScriptError as e:
+        return error_response(str(e), e.stdout, e.stderr)
     except Exception as e:
-        error_response = ErrorResponse(
-            status='error',
-            message=str(e),
-            output=result.stdout if 'result' in locals() else '',
-            error=result.stderr if 'result' in locals() else '',
-            results={"error": "An unexpected error occurred"}
-        )
-        return jsonify(error_response.model_dump()), 500
+        return error_response(f'Unexpected error: {e}')
+
+    try:
+        results = BLUPResultOutput.model_validate(raw_results)
+    except ValidationError as e:
+        return error_response(f'Invalid output from blup.r: {e}')
+
+    return jsonify(BLUPOutput(status='success', results=results).model_dump())
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8081)

@@ -286,6 +286,20 @@ tests$export_without_criteria_has_objects <- function() {
             grepl('"methods":\\s*\\{\\s*\\}', txt))
 }
 
+tests$main_requires_two_arguments <- function() {
+  msg <- tryCatch({
+    main(character(0))
+    "no error"
+  }, error = function(e) conditionMessage(e))
+  stopifnot(grepl("Usage", msg, fixed = TRUE))
+}
+
+tests$main_writes_given_output <- function() {
+  out <- tempfile(fileext = ".json")
+  main(c(write_input(standard_queens()), out))
+  stopifnot(file.exists(out))
+}
+
 # ---- Runner (laisser en fin de fichier ; insérer les nouveaux tests au-dessus) ----
 run_all <- function(tests) {
   failures <- 0L
