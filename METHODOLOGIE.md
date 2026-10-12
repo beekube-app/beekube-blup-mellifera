@@ -4,7 +4,7 @@ Ce document décrit ce que calcule réellement le moteur v2 (`POST /v2/blup`, pa
 les hypothèses retenues et les limites connues. Il s'adresse aux apiculteurs et sélectionneurs qui
 lisent les index dans Beekube, et aux personnes qui relisent le code. Les références entre crochets
 renvoient à la section « Références » ; [BB] = Brascamp & Bijma 2014, [BER08] = Bienefeld,
-Ehrhardt & Reinhardt 2008. Version du moteur : `2.0.0`, profil `standard`.
+Ehrhardt & Reinhardt 2008. Version du moteur : `2.0.0`, profils `standard` et `breeder`.
 
 ## 1. Pourquoi un BLUP avec parenté
 
@@ -102,6 +102,41 @@ Les colonnes redondantes (par exemple un évaluateur qui note un seul rucher) so
 
 Résolution : équations du modèle mixte de Henderson, creuses, factorisées par `scipy` (SuperLU).
 
+## 5 bis. Modèle (profil `breeder`)
+
+Profil demandé par `profile = "breeder"`. La note d'une colonie dépend de deux effets génétiques
+distincts [BB éq. 1–5 ; Bienefeld et al. 2007] : l'effet des **ouvrières** (comportement du
+groupe d'ouvrières, porté par le nœud W de la colonie) et l'effet de la **reine** (ponte,
+phéromones, porté par le nœud Q de sa reine).
+
+```
+y = Xb + Z_W a_W + Z_Q a_Q + Z_pe pe + e
+[a_W ; a_Q] ~ N(0, G0 ⊗ A)    G0 = [ σ²_AW            rG σ_AW σ_AQ ]
+                                   [ rG σ_AW σ_AQ     σ²_AQ        ]
+```
+
+Effets fixes, environnement permanent et matrice de parenté A sont ceux du profil `standard` ;
+chaque nœud porte les deux effets. La corrélation génétique rG entre effet reine et effet
+ouvrières est en général **négative** [BER08 p. 2 ; BB p. 10] : une reine favorable par son effet
+reine transmet souvent des ouvrières moins favorables, ce que le profil `standard` ne voit pas.
+
+Valeurs publiées pour une reine (T = a_W + a_Q, valeur totale d'un nœud) :
+- `ebv` et `index` : T̂ du groupe d'ouvrières de sa colonie (Â_W + Â_Q du nœud W), valeur
+  génétique moyenne d'une fille de l'accouplement [BB éq. 2], comparable à l'index `standard` ;
+- `index_worker` : composante ouvrières Â_W du même nœud ;
+- `index_queen` : T̂ du nœud Q, valeur reproductrice totale de la reine ; c'est elle qui sert aux
+  accouplements (§9).
+
+Écarts-types des index : √(σ²_T ā_WW) pour `index`, √(σ²_AW ā_WW) pour `index_worker`, √σ²_T
+pour `index_queen`, avec σ²_T = σ²_AW + σ²_AQ + 2 rG σ_AW σ_AQ.
+
+**Repli** : séparer les deux effets exige de connaître le père (l'accouplement). Si moins de 50 %
+des reines notées d'un critère ont un accouplement connu, ce critère est calculé avec le profil
+`standard` et l'avertissement `breeder_fallback` en donne la proportion ; la part est aussi
+publiée dans `parameters.known_mating_share`. Sur les données Beekube actuelles, c'est le cas
+courant : un seul critère sur 170 atteint 50 % d'accouplements connus (les fécondations sont
+rarement saisies).
+
 ## 6. Paramètres de variance
 
 Par critère, dans cet ordre :
@@ -124,6 +159,27 @@ Conversion : σ²_P = variance des notes après effets fixes ; σ²_a = h² σ²
 la colonie) ; σ²_pe = (répétabilité − h²) σ²_P ; σ²_e = (1 − répétabilité) σ²_P ;
 σ²_A = σ²_a / (a_WW moyen des colonies notées).
 
+Les variances publiées dans `parameters` (`sigma2_a`, `sigma2_pe`, `sigma2_e` et, en profil
+`breeder`, `sigma2_aq`) sont dans l'unité des notes ramenées sur [0, 1] (§2), soit la variance sur
+l'échelle brute divisée par (`scale_max` − `scale_min`)² ; les rapports (h², répétabilité, ρ) ne
+dépendent pas de cette unité.
+
+Profil `breeder` : mêmes règles, avec deux paramètres de plus, `queen_ratio` ρ = σ²_AQ / σ²_AW
+(défaut 0,5) et `rg` (défaut −0,5, ramené dans [−0,95 ; 0,95]) [BB p. 10]. Si l'un des quatre
+paramètres (h², répétabilité, ρ, rG) est fourni, `source = "input"` et les autres prennent leur
+valeur par défaut ; quand seule la répétabilité est fournie, h² = min(0,25 ; répétabilité), dans
+les deux profils. h² reste l'héritabilité de la **note de colonie** :
+σ²_colonie = h² σ²_P = σ²_AW (ā_WW + ρ ā_QQ + 2 rG √ρ ā_WQ), moyennes des parentés prises sur les
+colonies notées. REML : en `"auto"` (mêmes seuils), seuls σ²_AW et σ²_pe sont estimés, ρ et rG
+restent a priori (sur un millier de colonies simulées, ρ estimé librement varie de 0,1 à 1,3
+pour une vraie valeur de 0,5) ; en `"always"`, σ²_AW, σ²_pe, ρ et rG sont tous estimés. Dans
+`parameters`, `sigma2_a` vaut alors σ²_AW (variance de base de l'effet ouvrières, et non la
+variance génétique de la colonie comme en `standard`), `sigma2_aq` = σ²_AQ et `rg` = rG utilisé.
+Validité du REML : mêmes règles qu'en `standard` (σ²_pe nulle valide ; σ²_AW et σ²_AQ nulles →
+a priori et `low_heritability`), plus |rG| ≥ 0,94, jugé inutilisable (a priori et
+`reml_not_converged`) ; ces règles sont appliquées par cohérence : aucune exploitation réelle
+n'atteint encore le seuil du profil.
+
 Critère sans variation : si les notes d'un critère ne varient pas une fois retirés les effets fixes
 (par exemple toutes identiques), le critère ne classe pas les reines : pas de REML, index 100 pour
 toutes et avertissement `no_variation`.
@@ -136,6 +192,13 @@ jusqu'à 6 000 équations ; au-delà, **approximation** (`reliability_method = "
 avertissement `reliability_approx`) : information propre de chaque colonie après absorption des
 effets fixes, propagée dans le pedigree [Misztal & Wiggans 1988]. Sur simulation, l'approximation
 suit le classement exact (corrélation 0,92 à 0,99) mais **surestime la fiabilité d'environ 0,1**.
+
+Profil `breeder` : r² de la valeur totale T du nœud W publié ; PEV(T) = PEV(a_W) + PEV(a_Q) +
+2 cov(a_W, a_Q), lues sur le bloc 2 × 2 de l'inverse. Chaque nœud portant deux effets, il faut
+environ 5 équations par reine (contre 3 en `standard`) : la limite de 6 000 équations est atteinte
+dès 1 200 reines environ (2 000 en `standard`). Au-delà, la fiabilité du modèle à un effet
+équivalent est multipliée par corr²(T_W, valeur génétique mesurée par la note) ; sur simulation,
+corrélation 0,82 à 0,88 avec l'exacte et surestimation moyenne de 0,04 à 0,05.
 
 ## 8. Index
 
@@ -185,11 +248,30 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
   du prototype d'analyse (environ 0,61) parce que le groupe de contemporaines du moteur (rucher ×
   année) est, dans cette simulation, confondu avec la génération ; un solveur de référence des
   équations du modèle mixte avec le même modèle donne 0,572.
+- Profil `breeder` : comparaison aux formules de Henderson denses (EBV et PEV de T), calcul à la
+  main sur deux colonies, convergence vers le profil `standard` quand σ²_AQ → 0. Calibration par
+  simulation (`pytest -m slow`, 20 populations simulées au schéma de BB p. 10 : σ²_AW = 1,
+  σ²_AQ = 0,5, rG = −0,5, 5 générations, 450 reines, accouplements tous connus, paramètres vrais
+  fournis) : corrélation index / vraie valeur totale 0,546 (seuil ≥ 0,45), pente de la vraie valeur
+  sur l'index 1,082 pour la valeur totale et 1,050 pour la valeur reine (nœud Q) (seuils
+  0,8–1,2), 1,120 pour la composante ouvrières (plus bruitée, seuils 0,7–1,4), fiabilité moyenne
+  annoncée 0,252 pour une corrélation au carré de 0,307 (écart toléré 0,08). Sur ces données, le
+  classement des colonies est très proche de celui du profil `standard` (EBV breeder / standard
+  corrélées à 0,98 ; corrélation avec la vraie valeur totale 0,543 en standard contre 0,546 en
+  breeder) : l'apport du profil est la séparation reine / ouvrières et l'index reine utilisé aux
+  accouplements. Le REML complet (`"always"`) converge sur deux populations simulées d'environ
+  1 000 colonies notées ; ρ y reste peu précis (§6).
 - Performance : 3 000 reines et 30 000 notes en moins de 60 s pour un critère (environ 24 s
   mesurées, pic mémoire d'environ 640 Mio) ; le REML coûte environ 15 s par critère éligible à
   3 000 reines (5 critères : environ 70 s ; 10 : environ 99 s). Au-delà d'environ 12 critères
   éligibles à cette taille, le délai de 180 s du serveur est dépassé ; fournir h² / répétabilité
   évite le REML.
+- Performance du profil `breeder` : 3 000 reines et 30 000 notes en moins de 60 s pour un critère
+  (environ 30 s mesurées, dont environ 27 s de REML ; 15 380 équations, fiabilité approchée), avec
+  au moins 50 % d'accouplements connus (sinon le critère est calculé en profil `standard`). Le REML
+  coûte donc environ 27 s par critère éligible à 3 000 reines : au-delà d'environ 6 critères
+  `breeder` éligibles à cette taille, le délai de 180 s du serveur est dépassé (environ 12 en
+  profil `standard`) ; fournir h², répétabilité, ρ ou rG évite le REML.
 - Non-régression sur le jeu d'exemple anonymisé (`data/input-example.json`).
 
 ## 11. Hypothèses et limites (ce qui n'est pas fait)
@@ -206,13 +288,19 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
 - **h² et répétabilité a priori** (0,25 et 0,30) tant que les effectifs sont faibles ; ce sont
   des valeurs de travail, à affiner par critère [Bienefeld & Pirchner 1990].
 - **D et S** : 12 mâles par défaut ; la simulation montre qu'ils changent peu le classement.
-- **Fiabilité approchée** au-delà de 6 000 équations : surestimée d'environ 0,1.
-- **Profil `breeder`** (effets reine et ouvrières séparés, corrélation génétique négative
-  [BER08 p. 2 ; BB p. 10]) : décrit dans un document séparé ; tant qu'il n'est pas disponible, le
-  moteur applique le profil `standard` et renvoie `breeder_fallback`.
+- **Fiabilité approchée** au-delà de 6 000 équations : surestimée d'environ 0,1 (profil
+  `standard`).
+- **Profil `breeder`** (§5 bis) : ρ et rG ne sont estimés qu'en `"always"` et restent imprécis
+  jusqu'à un millier de colonies au moins ; par défaut ce sont les valeurs de BB p. 10 (ρ = 0,5,
+  rG = −0,5), à confirmer par critère. La fiabilité approchée (> 6 000 équations) surestime
+  d'environ 0,05. La composante reine seule (Â_Q du nœud W) n'a pas d'index propre. Repli sur le
+  profil `standard`, critère par critère, sous 50 % d'accouplements connus. Le profil n'a pas
+  été validé sur données réelles (aucune exploitation n'atteint ce seuil) : ses réglages viennent
+  de la simulation et du profil `standard`.
 - **Évaluation univariée** : chaque critère est ajusté séparément ; l'index total est une moyenne
   pondérée des index par critère, pas un index de sélection économique. Aucune corrélation
-  génétique entre critères, ni covariance reine / ouvrières (profil `breeder`, plan ultérieur).
+  génétique entre critères ; la covariance reine / ouvrières n'est modélisée que par le profil
+  `breeder` (§5 bis).
 - **Groupe de contemporaines fixe** (rucher × année) : il peut absorber des différences
   génétiques quand un rucher-année ne contient qu'une famille ou qu'une génération ; c'est ce qui
   abaisse la corrélation mesurée en simulation (§10). Les avertissements de connexion aident à
