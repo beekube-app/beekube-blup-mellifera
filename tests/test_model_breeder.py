@@ -217,3 +217,78 @@ def test_approximate_reliabilities_track_exact_ones(seed):
     assert abs(float(np.mean(r_ap - r_ex))) <= 0.10
     assert np.allclose([exact.ebv[k] for k in q], [approx.ebv[k] for k in q])
     assert any(w.code == "reliability_approx" for w in approx.warnings)
+
+
+def test_auto_reml_keeps_the_queen_worker_partition():
+    # ≥ 100 reines notées : REML en auto, mais ρ et rG restent a priori (seuls σ²_AW et σ²_pe estimés)
+    inp, _, recorded, _ = simulate_breeder_scenario(1, true_parameters=False)
+    assert len(recorded) >= 100
+    fit, _, _ = _fit(inp)
+    p = fit.parameters
+    assert p.source == "reml"
+    assert p.sigma2_aq / p.sigma2_a == pytest.approx(0.5) and p.rg == pytest.approx(-0.5)
+
+
+def test_full_reml_when_always():
+    inp, _, _, _ = simulate_breeder_scenario(4, true_parameters=False)
+    fit, _, _ = _fit(inp, estimate_variances="always")
+    p = fit.parameters
+    assert p.source in ("reml", "prior")
+    if p.source == "prior":
+        assert any(w.code in ("reml_not_converged", "low_heritability") for w in fit.warnings)
+    else:
+        assert abs(p.rg) <= 0.95 and p.sigma2_aq > 0 and 0.0 < p.h2 < 1.0
+
+
+def test_spd_factorisation_gives_the_reference_likelihood():
+    # neg2_reml_spd (sans pivotage) == variance.neg2_reml_loglik (plan standard) sur le système breeder
+    import scipy.sparse as sp
+
+    from blup2.model_breeder import neg2_reml_spd
+    from blup2.model_standard import incidence
+    from blup2.variance import neg2_reml_loglik
+
+    inp, _, _, _ = simulate_breeder_scenario(3)
+    v = BlupV2Input.model_validate(inp)
+    ped, _ = build_pedigree(v.queens, 12)
+    cdata = prepare_criterion(v, 1)
+    n = ped.n_nodes
+    rec = {q: k for k, q in enumerate(cdata.recorded_queens)}
+    Z = [incidence([ped.w_node(q) for q in cdata.queen_ids], n),
+         incidence([ped.q_node(q) for q in cdata.queen_ids], n),
+         incidence([rec[q] for q in cdata.queen_ids], len(rec))]
+    g0 = np.array([[0.4, -0.15], [-0.15, 0.25]])
+    Gi = sp.block_diag([genetic_inverse(g0, inverse_relationship(ped)), sp.identity(len(rec)) / 0.3],
+                       format="csr")
+    logdet = n * float(np.linalg.slogdet(g0)[1]) + len(rec) * float(np.log(0.3))
+    ref, s2e_ref = neg2_reml_loglik(cdata.X, Z, Gi, logdet, cdata.y)
+    val, s2e = neg2_reml_spd(cdata.X, Z, Gi, logdet, cdata.y)
+    assert val == pytest.approx(ref, rel=1e-9) and s2e == pytest.approx(s2e_ref, rel=1e-9)
+
+
+def test_null_permanent_environment_is_a_usable_estimate():
+    # σ²_pe vraie nulle (répétabilité = h²) : σ²_pe finit au bord inférieur, estimation valide
+    inp, _, recorded, _ = simulate_breeder_scenario(8, s2pe=0.0, true_parameters=False)
+    assert len(recorded) >= 100
+    fit, _, _ = _fit(inp)
+    p = fit.parameters
+    assert p.source == "reml" and p.sigma2_pe < 1e-3 * p.sigma2_e
+    assert all(w.code not in ("reml_not_converged", "low_heritability") for w in fit.warnings)
+
+
+def test_null_genetic_variance_gives_low_heritability():
+    # σ²_AW et σ²_AQ vraies quasi nulles : σ²_AW au bord inférieur -> a priori et low_heritability
+    inp, _, _, _ = simulate_breeder_scenario(1, s2aw=1e-8, s2aq=0.5e-8, true_parameters=False)
+    fit, _, _ = _fit(inp)
+    assert fit.parameters.source == "prior" and fit.parameters.profile_used == "breeder"
+    assert [w.code for w in fit.warnings] == ["low_heritability"]
+
+
+def test_constant_notes_give_no_variation_without_reml():
+    inp, _, _, _ = simulate_breeder_scenario(1, true_parameters=False)
+    for r in inp["records"]:
+        r["value"] = r["scale_min"]
+    fit, _, _ = _fit(inp)
+    assert fit.parameters.source == "prior" and fit.parameters.profile_used == "breeder"
+    assert [(w.code, w.criterion) for w in fit.warnings] == [("no_variation", 1)]
+    assert max(abs(e) for e in fit.ebv.values()) < 1e-6 * fit.sigma_index

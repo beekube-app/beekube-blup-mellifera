@@ -17,7 +17,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+import scipy.optimize
 import scipy.sparse as sp
+import scipy.sparse.linalg as spla
 
 from .kinship import relationship, relationship_diagonal
 from .mme import solve_mme
@@ -37,7 +39,9 @@ from .schemas import CriterionParameters, WarningOut
 from .variance import (
     DEFAULT_H2,
     DEFAULT_REPEATABILITY,
+    NO_VARIATION_SIGMA2_P,
     phenotypic_variance,
+    should_estimate,
 )
 
 DEFAULT_QUEEN_RATIO = 0.5     # σ²_AQ / σ²_AW [BB p. 10]
@@ -109,6 +113,94 @@ def prior_breeder(sigma2_p: float, h2: float, repeatability: float, queen_ratio:
 def genetic_inverse(g0: np.ndarray, Ainv: sp.spmatrix) -> sp.csr_matrix:
     """(G0 ⊗ A)⁻¹ = G0⁻¹ ⊗ A⁻¹, ordre [a_W (tous les nœuds) ; a_Q (tous les nœuds)]."""
     return sp.kron(sp.csr_matrix(np.linalg.inv(g0)), Ainv, format="csr")
+
+
+def neg2_reml_spd(X, Z_list: list, Gstar_inv, logdet_gstar: float, y: np.ndarray) -> tuple[float, float]:
+    """Même valeur que variance.neg2_reml_loglik (σ²_e profilée), mais factorisation sans pivotage
+    (C est symétrique définie positive) : remplissage et temps divisés par deux environ sur le
+    système à deux effets."""
+    X = sp.csr_matrix(X)
+    W = sp.hstack([X] + [sp.csr_matrix(Z) for Z in Z_list], format="csr")
+    p, N = X.shape[1], len(y)
+    pad = sp.block_diag([sp.csr_matrix((p, p)), sp.csr_matrix(Gstar_inv)], format="csc")
+    C = (W.T @ W).tocsc() + pad
+    rhs = W.T @ y
+    lu = spla.splu(C, permc_spec="MMD_AT_PLUS_A", diag_pivot_thresh=0.0, options={"SymmetricMode": True})
+    sol = lu.solve(rhs)
+    ssr = max(float(y @ y - sol @ rhs), 1e-300)
+    logdet_c = float(np.sum(np.log(np.abs(lu.U.diagonal()))))
+    sigma2_e = ssr / (N - p)
+    return (N - p) * (1.0 + np.log(sigma2_e)) + logdet_gstar + logdet_c, sigma2_e
+
+
+@dataclass
+class BreederReml:
+    sigma2_AW: float
+    sigma2_AQ: float
+    rg: float
+    sigma2_pe: float
+    sigma2_e: float
+    converged: bool
+    n_iter: int
+    genetic_at_bound: bool = False   # σ²_AW et σ²_AQ au bord inférieur (variance génétique nulle)
+
+
+def reml_breeder(X, Zw, Zq, Zpe, Ainv, y: np.ndarray, start: BreederComponents, estimate_partition: bool,
+                 max_evals: int = 400, bound: float = 1e4) -> BreederReml:
+    """REML sans dérivées (σ²_e profilée, Nelder-Mead) du modèle à deux effets corrélés.
+
+    θ = (log σ²_AW/σ²_e, log σ²_pe/σ²_e) et, si estimate_partition, (log ρ, atanh(rG / 0,95)) ;
+    sinon ρ = σ²_AQ/σ²_AW et rG restent à leur valeur de départ. −2 log L est celle du plan
+    standard (variance.neg2_reml_loglik) avec G* = blocdiag(G0* ⊗ A, I γ_pe), log|G*| =
+    n_nœuds log|G0*| + n_pe log γ_pe (+ 2 log|A|, constant). Rapports bornés à [1/bound, bound].
+    Non convergé (estimation inutilisable) : échec de l'optimiseur, σ²_AW ou σ²_AQ à un bord
+    (inférieur ou supérieur ; σ²_AQ = ρ σ²_AW : bord de σ²_AW, ou de ρ si estimate_partition),
+    σ²_pe au bord supérieur ou |rG| ≥ 0,94. σ²_pe au bord inférieur (nulle) est valide.
+    """
+    n = Ainv.shape[0]
+    n_pe = Zpe.shape[1]
+    lo, hi = -np.log(bound), np.log(bound)
+    rho0 = start.sigma2_AQ / start.sigma2_AW
+    z_max = float(np.arctanh(0.999))
+
+    def system(theta: np.ndarray):
+        """(γ_W, γ_pe, ρ, rG, G*⁻¹, log|G*|) pour θ ; rapports γ = variance / σ²_e."""
+        g_w, g_pe = np.exp(np.clip(theta[0], lo, hi)), np.exp(np.clip(theta[1], lo, hi))
+        if estimate_partition:
+            rho = np.exp(np.clip(theta[2], lo, hi))
+            rg = RG_MAX * np.tanh(np.clip(theta[3], -z_max, z_max))
+        else:
+            rho, rg = rho0, start.rg
+        c = rg * g_w * np.sqrt(rho)
+        g0 = np.array([[g_w, c], [c, rho * g_w]])
+        Gi = sp.block_diag([genetic_inverse(g0, Ainv), sp.identity(n_pe, format="csr") / g_pe], format="csr")
+        logdet = n * float(np.linalg.slogdet(g0)[1]) + n_pe * float(np.log(g_pe))
+        return g_w, g_pe, rho, rg, Gi, logdet
+
+    def f(theta: np.ndarray) -> float:
+        *_, Gi, logdet = system(theta)
+        return neg2_reml_spd(X, [Zw, Zq, Zpe], Gi, logdet, y)[0]
+
+    theta0 = [np.log(start.sigma2_AW / start.sigma2_e), np.log(start.sigma2_pe / start.sigma2_e)]
+    if estimate_partition:
+        theta0 += [np.log(rho0), np.arctanh(start.rg / RG_MAX)]
+    theta0 = np.clip(np.array(theta0, dtype=float), lo + 1.0, hi - 1.0)
+    res = scipy.optimize.minimize(f, theta0, method="Nelder-Mead",
+                                  options={"xatol": 1e-2, "fatol": 1e-2, "maxfev": max_evals})
+    g_w, g_pe, rho, rg, Gi, logdet = system(res.x)
+    _, s2e = neg2_reml_spd(X, [Zw, Zq, Zpe], Gi, logdet, y)
+    # Même règle que le profil standard : σ²_pe nulle est une estimation valide (répétabilité = h²).
+    # Non validé sur données réelles (aucun jeu n'atteint le seuil du profil breeder) : appliqué par
+    # cohérence avec le profil standard.
+    genetic = [res.x[0]] + ([res.x[2]] if estimate_partition else [])     # log σ²_AW/σ²_e, log ρ
+    unusable = (any(t <= lo + 0.05 or t >= hi - 0.05 for t in genetic) or res.x[1] >= hi - 0.05
+                or abs(rg) >= 0.94)
+    log_aw = float(np.log(g_w))
+    genetic_at_bound = bool(log_aw <= lo + 0.05 and log_aw + float(np.log(rho)) <= lo + 0.05)
+    return BreederReml(sigma2_AW=float(g_w * s2e), sigma2_AQ=float(rho * g_w * s2e), rg=float(rg),
+                       sigma2_pe=float(g_pe * s2e), sigma2_e=float(s2e),
+                       converged=bool(res.success) and not unusable, n_iter=int(res.nfev),
+                       genetic_at_bound=genetic_at_bound)
 
 
 def known_mating_share(cdata: CriterionData, ped: BeePedigree) -> float:
@@ -186,9 +278,32 @@ def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, par
     mean_aww = float(np.mean(diag[rec_w]))
     mean_aqq = float(np.mean(diag[rec_q]))
     mean_awq = float(np.mean([relationship(ped, w, q) for w, q in zip(rec_w, rec_q)]))
-    sigma2_p = phenotypic_variance(cdata.X, cdata.y)
+    raw_p = phenotypic_variance(cdata.X, cdata.y, floor=0.0)
+    no_variation = raw_p < NO_VARIATION_SIGMA2_P
+    if no_variation:   # pas de REML : il partirait vers des variances de 1e-300 (index aberrants)
+        warnings.append(WarningOut(
+            code="no_variation", criterion=cid,
+            message="notes sans variation une fois retirés les effets fixes : le critère ne classe pas les reines"))
+    sigma2_p = max(raw_p, 1e-8)       # plancher de phenotypic_variance (σ²_P sert de diviseur)
     source, h2, rep, ratio, rg = _breeder_source(cdata)
     comp = prior_breeder(sigma2_p, h2, rep, ratio, rg, mean_aww, mean_aqq, mean_awq)
+    mode = params.estimate_variances
+    if source == "prior" and not no_variation and should_estimate(
+            mode, n_q, cdata.n_raw_records, cdata.n_contemporary_groups):
+        res = reml_breeder(cdata.X, Zw, Zq, Zpe, Ainv, cdata.y, comp, estimate_partition=(mode == "always"))
+        if res.converged:
+            comp = BreederComponents(sigma2_AW=res.sigma2_AW, sigma2_AQ=res.sigma2_AQ, rg=res.rg,
+                                     sigma2_pe=res.sigma2_pe, sigma2_e=res.sigma2_e, mean_aww=mean_aww,
+                                     mean_aqq=mean_aqq, mean_awq=mean_awq)
+            source = "reml"
+        elif res.genetic_at_bound:
+            warnings.append(WarningOut(
+                code="low_heritability", criterion=cid,
+                message="Héritabilité estimée nulle sur vos données : valeur par défaut appliquée"))
+        else:
+            warnings.append(WarningOut(
+                code="reml_not_converged", criterion=cid,
+                message=f"REML non convergé ({res.n_iter} évaluations) : paramètres a priori utilisés"))
     Ginv = sp.block_diag([genetic_inverse(comp.g0, Ainv), sp.identity(n_q, format="csr") / comp.sigma2_pe],
                          format="csr")
     sol = solve_mme(cdata.X, [Zw, Zq, Zpe], Ginv, comp.sigma2_e, cdata.y, need_inverse=True,
