@@ -65,6 +65,8 @@ docker compose run --rm api Rscript tests/r/test_blup.R   # tests R
 .venv/bin/python scripts/export_openapi.py                # après un changement de modèle pydantic
 ```
 
+`pytest -m docker` démarre puis arrête le service `api` du projet Compose courant (`docker compose up -d --build api` puis `down`). Sur un poste où l'API tourne déjà sur le port 8081, isoler le test : `COMPOSE_PROJECT_NAME=blup-test BLUP_API_PORT=8082 BLUP_API_URL=http://localhost:8082 .venv/bin/pytest -m docker -v`.
+
 ## Licence
 MIT Licence
 
