@@ -79,6 +79,482 @@
         "title": "BLUPResultOutput",
         "type": "object"
       },
+      "BaseInfo": {
+        "properties": {
+          "birth_years": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Birth Years",
+            "type": "array"
+          },
+          "n_queens": {
+            "title": "N Queens",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "birth_years",
+          "n_queens"
+        ],
+        "title": "BaseInfo",
+        "type": "object"
+      },
+      "BlupV2Input": {
+        "additionalProperties": false,
+        "properties": {
+          "criteria": {
+            "items": {
+              "$ref": "#/components/schemas/CriterionIn"
+            },
+            "title": "Criteria",
+            "type": "array"
+          },
+          "exploitation": {
+            "title": "Exploitation",
+            "type": "integer"
+          },
+          "options": {
+            "$ref": "#/components/schemas/OptionsIn"
+          },
+          "profile": {
+            "default": "standard",
+            "enum": [
+              "standard",
+              "breeder"
+            ],
+            "title": "Profile",
+            "type": "string"
+          },
+          "queens": {
+            "items": {
+              "$ref": "#/components/schemas/QueenIn"
+            },
+            "title": "Queens",
+            "type": "array"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/RecordIn"
+            },
+            "title": "Records",
+            "type": "array"
+          }
+        },
+        "required": [
+          "exploitation",
+          "criteria",
+          "queens"
+        ],
+        "title": "BlupV2Input",
+        "type": "object"
+      },
+      "BlupV2Output": {
+        "properties": {
+          "base": {
+            "$ref": "#/components/schemas/BaseInfo"
+          },
+          "connectivity": {
+            "$ref": "#/components/schemas/Connectivity"
+          },
+          "engine_version": {
+            "title": "Engine Version",
+            "type": "string"
+          },
+          "matings": {
+            "items": {
+              "$ref": "#/components/schemas/MatingOut"
+            },
+            "title": "Matings",
+            "type": "array"
+          },
+          "parameters": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/CriterionParameters"
+            },
+            "title": "Parameters",
+            "type": "object"
+          },
+          "profile": {
+            "enum": [
+              "standard",
+              "breeder"
+            ],
+            "title": "Profile",
+            "type": "string"
+          },
+          "queens": {
+            "items": {
+              "$ref": "#/components/schemas/QueenOut"
+            },
+            "title": "Queens",
+            "type": "array"
+          },
+          "status": {
+            "default": "success",
+            "title": "Status",
+            "type": "string"
+          },
+          "trend": {
+            "additionalProperties": {
+              "items": {
+                "$ref": "#/components/schemas/TrendPoint"
+              },
+              "type": "array"
+            },
+            "title": "Trend",
+            "type": "object"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/WarningOut"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "engine_version",
+          "profile",
+          "parameters",
+          "base",
+          "queens",
+          "matings",
+          "trend",
+          "connectivity",
+          "warnings"
+        ],
+        "title": "BlupV2Output",
+        "type": "object"
+      },
+      "Connectivity": {
+        "properties": {
+          "components": {
+            "items": {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "title": "Components",
+            "type": "array"
+          },
+          "minor_share": {
+            "default": 0.0,
+            "title": "Minor Share",
+            "type": "number"
+          },
+          "n_components": {
+            "title": "N Components",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "n_components",
+          "components"
+        ],
+        "title": "Connectivity",
+        "type": "object"
+      },
+      "CriterionIn": {
+        "additionalProperties": false,
+        "properties": {
+          "direction": {
+            "default": 1,
+            "enum": [
+              1,
+              -1
+            ],
+            "title": "Direction",
+            "type": "integer"
+          },
+          "elimination": {
+            "default": false,
+            "title": "Elimination",
+            "type": "boolean"
+          },
+          "h2": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 1.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "H2"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "default": "note",
+            "enum": [
+              "note",
+              "percentage",
+              "harvest"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "queen_ratio": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Queen Ratio"
+          },
+          "repeatability": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 1.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repeatability"
+          },
+          "rg": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": -1.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rg"
+          },
+          "weight": {
+            "default": 1.0,
+            "minimum": 0.0,
+            "title": "Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "CriterionIn",
+        "type": "object"
+      },
+      "CriterionIndex": {
+        "properties": {
+          "ebv": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ebv"
+          },
+          "index": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index"
+          },
+          "index_queen": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index Queen"
+          },
+          "index_worker": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index Worker"
+          },
+          "n_evaluators": {
+            "default": 0,
+            "title": "N Evaluators",
+            "type": "integer"
+          },
+          "n_records": {
+            "default": 0,
+            "title": "N Records",
+            "type": "integer"
+          },
+          "n_years": {
+            "default": 0,
+            "title": "N Years",
+            "type": "integer"
+          },
+          "reliability": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reliability"
+          },
+          "status": {
+            "enum": [
+              "evaluated",
+              "pedigree",
+              "none",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "CriterionIndex",
+        "type": "object"
+      },
+      "CriterionParameters": {
+        "properties": {
+          "h2": {
+            "title": "H2",
+            "type": "number"
+          },
+          "known_mating_share": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Known Mating Share"
+          },
+          "n_contemporary_groups": {
+            "title": "N Contemporary Groups",
+            "type": "integer"
+          },
+          "n_queens": {
+            "title": "N Queens",
+            "type": "integer"
+          },
+          "n_records": {
+            "title": "N Records",
+            "type": "integer"
+          },
+          "profile_used": {
+            "default": "standard",
+            "enum": [
+              "standard",
+              "breeder"
+            ],
+            "title": "Profile Used",
+            "type": "string"
+          },
+          "reliability_method": {
+            "enum": [
+              "exact",
+              "approx",
+              "none"
+            ],
+            "title": "Reliability Method",
+            "type": "string"
+          },
+          "repeatability": {
+            "title": "Repeatability",
+            "type": "number"
+          },
+          "rg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rg"
+          },
+          "sigma2_a": {
+            "title": "Sigma2 A",
+            "type": "number"
+          },
+          "sigma2_aq": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sigma2 Aq"
+          },
+          "sigma2_e": {
+            "title": "Sigma2 E",
+            "type": "number"
+          },
+          "sigma2_pe": {
+            "title": "Sigma2 Pe",
+            "type": "number"
+          },
+          "source": {
+            "enum": [
+              "input",
+              "reml",
+              "prior"
+            ],
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "h2",
+          "repeatability",
+          "sigma2_a",
+          "sigma2_pe",
+          "sigma2_e",
+          "n_records",
+          "n_queens",
+          "n_contemporary_groups",
+          "reliability_method"
+        ],
+        "title": "CriterionParameters",
+        "type": "object"
+      },
       "ErrorResponse": {
         "properties": {
           "error": {
@@ -111,6 +587,43 @@
           "results"
         ],
         "title": "ErrorResponse",
+        "type": "object"
+      },
+      "ErrorV2Out": {
+        "properties": {
+          "errors": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Errors"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "status": {
+            "default": "error",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "title": "ErrorV2Out",
         "type": "object"
       },
       "Evaluation": {
@@ -231,6 +744,181 @@
         "title": "HeritabilityStats",
         "type": "object"
       },
+      "MatingIn": {
+        "additionalProperties": false,
+        "properties": {
+          "drone_queens": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Drone Queens",
+            "type": "array"
+          },
+          "drone_queens_mother": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Drone Queens Mother"
+          },
+          "external_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Ref"
+          },
+          "n_drone_queens": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Drone Queens"
+          },
+          "n_drones": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Drones"
+          },
+          "station": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Station"
+          },
+          "type": {
+            "default": "unknown",
+            "enum": [
+              "natural",
+              "station",
+              "insemination",
+              "unknown"
+            ],
+            "title": "Type",
+            "type": "string"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "maximum": 9999.0,
+                "minimum": 1000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          }
+        },
+        "title": "MatingIn",
+        "type": "object"
+      },
+      "MatingOut": {
+        "properties": {
+          "drone_source": {
+            "title": "Drone Source",
+            "type": "integer"
+          },
+          "expected_inbreeding": {
+            "title": "Expected Inbreeding",
+            "type": "number"
+          },
+          "expected_indexes": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Expected Indexes",
+            "type": "object"
+          },
+          "expected_total_index": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Total Index"
+          },
+          "mother": {
+            "title": "Mother",
+            "type": "integer"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "mother",
+          "drone_source",
+          "expected_indexes",
+          "expected_inbreeding",
+          "score"
+        ],
+        "title": "MatingOut",
+        "type": "object"
+      },
+      "MatingPairIn": {
+        "additionalProperties": false,
+        "properties": {
+          "drone_source": {
+            "title": "Drone Source",
+            "type": "integer"
+          },
+          "mother": {
+            "title": "Mother",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "mother",
+          "drone_source"
+        ],
+        "title": "MatingPairIn",
+        "type": "object"
+      },
       "MatingSuggestion": {
         "properties": {
           "blup_score": {
@@ -267,6 +955,156 @@
           "total_score"
         ],
         "title": "MatingSuggestion",
+        "type": "object"
+      },
+      "MatingV2Input": {
+        "additionalProperties": false,
+        "properties": {
+          "criteria": {
+            "items": {
+              "$ref": "#/components/schemas/CriterionIn"
+            },
+            "title": "Criteria",
+            "type": "array"
+          },
+          "exploitation": {
+            "title": "Exploitation",
+            "type": "integer"
+          },
+          "options": {
+            "$ref": "#/components/schemas/OptionsIn"
+          },
+          "pairs": {
+            "items": {
+              "$ref": "#/components/schemas/MatingPairIn"
+            },
+            "title": "Pairs",
+            "type": "array"
+          },
+          "profile": {
+            "default": "standard",
+            "enum": [
+              "standard",
+              "breeder"
+            ],
+            "title": "Profile",
+            "type": "string"
+          },
+          "queens": {
+            "items": {
+              "$ref": "#/components/schemas/QueenIn"
+            },
+            "title": "Queens",
+            "type": "array"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/RecordIn"
+            },
+            "title": "Records",
+            "type": "array"
+          }
+        },
+        "required": [
+          "exploitation",
+          "criteria",
+          "queens"
+        ],
+        "title": "MatingV2Input",
+        "type": "object"
+      },
+      "MatingV2Output": {
+        "properties": {
+          "engine_version": {
+            "title": "Engine Version",
+            "type": "string"
+          },
+          "matings": {
+            "items": {
+              "$ref": "#/components/schemas/MatingOut"
+            },
+            "title": "Matings",
+            "type": "array"
+          },
+          "profile": {
+            "enum": [
+              "standard",
+              "breeder"
+            ],
+            "title": "Profile",
+            "type": "string"
+          },
+          "status": {
+            "default": "success",
+            "title": "Status",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/WarningOut"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "engine_version",
+          "profile",
+          "matings",
+          "warnings"
+        ],
+        "title": "MatingV2Output",
+        "type": "object"
+      },
+      "OptionsIn": {
+        "additionalProperties": false,
+        "properties": {
+          "base_years": {
+            "default": 5,
+            "maximum": 50.0,
+            "minimum": 1.0,
+            "title": "Base Years",
+            "type": "integer"
+          },
+          "default_n_drones": {
+            "default": 12,
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Default N Drones",
+            "type": "integer"
+          },
+          "estimate_variances": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ],
+            "title": "Estimate Variances",
+            "type": "string"
+          },
+          "inbreeding_penalty": {
+            "default": 100.0,
+            "minimum": 0.0,
+            "title": "Inbreeding Penalty",
+            "type": "number"
+          },
+          "max_inbreeding": {
+            "default": 0.0625,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Max Inbreeding",
+            "type": "number"
+          },
+          "n_suggestions": {
+            "default": 10,
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "N Suggestions",
+            "type": "integer"
+          }
+        },
+        "title": "OptionsIn",
         "type": "object"
       },
       "QueenBeeEvaluations": {
@@ -430,6 +1268,252 @@
         "title": "QueenBeeOutput",
         "type": "object"
       },
+      "QueenIn": {
+        "additionalProperties": false,
+        "properties": {
+          "available_as_drone_source": {
+            "default": true,
+            "title": "Available As Drone Source",
+            "type": "boolean"
+          },
+          "available_as_mother": {
+            "default": true,
+            "title": "Available As Mother",
+            "type": "boolean"
+          },
+          "born": {
+            "title": "Born",
+            "type": "integer"
+          },
+          "died": {
+            "default": false,
+            "title": "Died",
+            "type": "boolean"
+          },
+          "eliminated": {
+            "default": false,
+            "title": "Eliminated",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "mating": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MatingIn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mother": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mother"
+          },
+          "mother_ref_ext": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mother Ref Ext"
+          },
+          "variety": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variety"
+          }
+        },
+        "required": [
+          "id",
+          "born"
+        ],
+        "title": "QueenIn",
+        "type": "object"
+      },
+      "QueenOut": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "inbreeding": {
+            "title": "Inbreeding",
+            "type": "number"
+          },
+          "inbreeding_workers": {
+            "title": "Inbreeding Workers",
+            "type": "number"
+          },
+          "indexes": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/CriterionIndex"
+            },
+            "title": "Indexes",
+            "type": "object"
+          },
+          "total_index": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Index"
+          },
+          "total_reliability": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Reliability"
+          }
+        },
+        "required": [
+          "id",
+          "inbreeding",
+          "inbreeding_workers",
+          "indexes"
+        ],
+        "title": "QueenOut",
+        "type": "object"
+      },
+      "RecordIn": {
+        "additionalProperties": false,
+        "properties": {
+          "apiary": {
+            "title": "Apiary",
+            "type": "integer"
+          },
+          "criterion": {
+            "title": "Criterion",
+            "type": "integer"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "evaluator": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluator"
+          },
+          "hive_class": {
+            "default": "hive",
+            "enum": [
+              "hive",
+              "nuc",
+              "split"
+            ],
+            "title": "Hive Class",
+            "type": "string"
+          },
+          "hive_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hive Type"
+          },
+          "queen": {
+            "title": "Queen",
+            "type": "integer"
+          },
+          "scale_max": {
+            "default": 1.0,
+            "title": "Scale Max",
+            "type": "number"
+          },
+          "scale_min": {
+            "default": 0.0,
+            "title": "Scale Min",
+            "type": "number"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          },
+          "visit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visit"
+          }
+        },
+        "required": [
+          "queen",
+          "criterion",
+          "value",
+          "date",
+          "apiary"
+        ],
+        "title": "RecordIn",
+        "type": "object"
+      },
+      "TrendPoint": {
+        "properties": {
+          "birth_year": {
+            "title": "Birth Year",
+            "type": "integer"
+          },
+          "mean_index": {
+            "title": "Mean Index",
+            "type": "number"
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "birth_year",
+          "mean_index",
+          "n"
+        ],
+        "title": "TrendPoint",
+        "type": "object"
+      },
       "ValidationErrorModel": {
         "properties": {
           "ctx": {
@@ -488,6 +1572,48 @@
         "title": "ValidationErrorModel",
         "type": "object"
       },
+      "WarningOut": {
+        "properties": {
+          "code": {
+            "enum": [
+              "disconnected_groups",
+              "breeder_fallback",
+              "few_records",
+              "reml_not_converged",
+              "low_heritability",
+              "scale_mixed",
+              "unknown_parent_added",
+              "self_reference_removed",
+              "no_variation",
+              "reliability_approx",
+              "criterion_failed"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "criterion": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Criterion"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "WarningOut",
+        "type": "object"
+      },
       "WelcomeResponse": {
         "properties": {
           "results": {
@@ -511,7 +1637,7 @@
   "info": {
     "description": "SDK PHP pour l'API BLUP de Beekube - Calcul génétique des abeilles mellifères",
     "title": "Beekube BLUP Mellifera API",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "openapi": "3.1.0",
   "paths": {
@@ -585,6 +1711,108 @@
           }
         },
         "summary": "Perform BLUP calculation",
+        "tags": [
+          "blup"
+        ]
+      }
+    },
+    "/v2/blup": {
+      "post": {
+        "operationId": "blup_v2_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlupV2Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlupV2Output"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorV2Out"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorV2Out"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Évaluation génétique v2 : index par critère, index total, accouplements suggérés.",
+        "tags": [
+          "blup"
+        ]
+      }
+    },
+    "/v2/mating": {
+      "post": {
+        "operationId": "mating_v2_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatingV2Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatingV2Output"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorV2Out"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorV2Out"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Évalue des couples mère × source de mâles choisis (index attendu, consanguinité attendue).",
         "tags": [
           "blup"
         ]

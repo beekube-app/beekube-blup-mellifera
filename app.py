@@ -1,5 +1,6 @@
-from flask import jsonify
+from flask import jsonify, make_response, request
 from flask_openapi3 import OpenAPI, Info, Tag, Server
+from flask_openapi3.utils import make_validation_error_response
 from pydantic import BaseModel, Field, RootModel, ValidationError
 import subprocess
 import tempfile
@@ -14,11 +15,20 @@ BLUP_SCRIPT = os.path.join(APP_DIR, 'blup.r')
 # Doit rester strictement inférieur au --timeout de gunicorn (180 s, Dockerfile-Python)
 RSCRIPT_TIMEOUT = int(os.getenv('RSCRIPT_TIMEOUT', '170'))
 
-info = Info(title="Beekube BLUP Mellifera API", version="1.0.0", description="SDK PHP pour l'API BLUP de Beekube - Calcul génétique des abeilles mellifères")
+info = Info(title="Beekube BLUP Mellifera API", version="2.0.0", description="SDK PHP pour l'API BLUP de Beekube - Calcul génétique des abeilles mellifères")
 servers = [
     Server(url=API_BASE_URL),
 ]
-app = OpenAPI(__name__, info=info, servers=servers)
+def validation_error(e):
+    """422 au format v2 ({"status": "error", "errors": [...]}) sur /v2/*, format v1 inchangé ailleurs."""
+    if not request.path.startswith("/v2/"):
+        return make_validation_error_response(e)
+    response = make_response(jsonify({"status": "error", "errors": json.loads(e.json(include_url=False))}))
+    response.status_code = 422
+    return response
+
+
+app = OpenAPI(__name__, info=info, servers=servers, validation_error_callback=validation_error)
 # Une exploitation réelle pèse environ 1 Ko par reine : 50 Mo laissent une marge très large
 # tout en bornant ce qu'un corps de requête peut allouer en mémoire (413 au-delà).
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
@@ -196,6 +206,29 @@ def calulate(body: BLUPInput):
         return error_response(f'Invalid output from blup.r: {e}')
 
     return jsonify(BLUPOutput(status='success', results=results).model_dump())
+
+# ------------------------------------------------------------------ v2 (moteur Python blup2)
+from blup2.engine import run_blup, run_matings  # noqa: E402
+from blup2.schemas import BlupV2Input, BlupV2Output, ErrorV2Out, MatingV2Input, MatingV2Output  # noqa: E402
+
+# Même tag que v1 (`blup_tag`) : le SDK PHP génère une seule classe BlupApi (plan 04, tâche A1).
+@app.post("/v2/blup", tags=[blup_tag], operation_id="blup_v2_post", responses={200: BlupV2Output, 422: ErrorV2Out, 500: ErrorV2Out})
+def blup_v2(body: BlupV2Input):
+    """Évaluation génétique v2 : index par critère, index total, accouplements suggérés."""
+    try:
+        return jsonify(run_blup(body).model_dump(mode="json"))
+    except Exception as e:  # filet de sécurité : jamais de 200 avec status = error (spec §5.2)
+        return jsonify(ErrorV2Out(message=f"{type(e).__name__}: {e}").model_dump()), 500
+
+
+@app.post("/v2/mating", tags=[blup_tag], operation_id="mating_v2_post", responses={200: MatingV2Output, 422: ErrorV2Out, 500: ErrorV2Out})
+def mating_v2(body: MatingV2Input):
+    """Évalue des couples mère × source de mâles choisis (index attendu, consanguinité attendue)."""
+    try:
+        return jsonify(run_matings(body).model_dump(mode="json"))
+    except Exception as e:  # filet de sécurité
+        return jsonify(ErrorV2Out(message=f"{type(e).__name__}: {e}").model_dump()), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8081)
