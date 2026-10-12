@@ -234,6 +234,58 @@ tests$heritability_se_is_null <- function() {
             is.na(h$se), !is.na(h$heritability))
 }
 
+blups_fixture <- function() {
+  list(
+    "10" = stats::setNames(c(NA, 0.1, 0.2, NA, NA, 0.3), as.character(1:6)),
+    "11" = stats::setNames(c(0.4, NA, NA, NA, NA, NA), as.character(1:6))
+  )
+}
+
+tests$candidates_use_any_criterion <- function() {
+  d <- load_standard()
+  # 1 n'a d'index que sur le 2e critère ; 6 est morte ; 4 et 5 n'ont aucun index
+  stopifnot(identical(mating_candidates(d$df, blups_fixture()), c("1", "2", "3")))
+}
+
+tests$candidates_exclude_eliminated <- function() {
+  d <- load_standard()
+  stopifnot(identical(mating_candidates(d$df, blups_fixture(), eliminated = "2"), c("1", "3")))
+}
+
+tests$elimination_records_mark_queen <- function() {
+  d <- load_beekube_data(write_input(standard_queens(eliminated_queen = 2L)))
+  stopifnot(identical(d$eliminated, "2"))
+}
+
+tests$empty_elimination_lists_mark_nobody <- function() {
+  stopifnot(length(load_standard()$eliminated) == 0)
+}
+
+tests$suggestions_skip_eliminated_queen <- function() {
+  d <- load_standard()
+  s <- suggest_optimal_matings(d$df, list(blups = blups_fixture()), eliminated = "2")
+  stopifnot(nrow(s[["2"]]) == 0, nrow(s[["6"]]) == 0,
+            identical(s[["1"]]$mate, "3"), identical(s[["3"]]$mate, "1"))
+}
+
+tests$run_blup_never_suggests_eliminated_queen <- function() {
+  out <- run_on(standard_queens(eliminated_queen = 2L))
+  mates <- unlist(lapply(out$blup, function(q) {
+    vapply(q$mating_suggestions, function(m) m$queen, character(1))
+  }))
+  stopifnot(length(out$blup[[2]]$mating_suggestions) == 0,
+            !("2" %in% mates), length(mates) > 0)
+}
+
+tests$export_without_criteria_has_objects <- function() {
+  out <- tempfile(fileext = ".json")
+  run_blup(write_input(standard_queens(), evaluate = integer(0)), out)
+  txt <- paste(readLines(out), collapse = "\n")
+  stopifnot(grepl('"heritabilities":\\s*\\{\\s*\\}', txt),
+            grepl('"blups":\\s*\\{\\s*\\}', txt),
+            grepl('"methods":\\s*\\{\\s*\\}', txt))
+}
+
 # ---- Runner (laisser en fin de fichier ; insérer les nouveaux tests au-dessus) ----
 run_all <- function(tests) {
   failures <- 0L

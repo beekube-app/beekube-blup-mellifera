@@ -125,6 +125,15 @@ collect_evaluations <- function(df, criteres) {
   if (is.null(out)) empty_eval_data() else out[, EVAL_COLUMNS]
 }
 
+# Reines éliminées : au moins une note sur un critère éliminatoire.
+# NB : Beekube envoie aujourd'hui [] pour ces critères (EvaluateBLUP.php:84-88) : liste vide en pratique.
+eliminated_queens <- function(df, criteres_eliminatoires) {
+  if (length(criteres_eliminatoires) == 0) {
+    return(character(0))
+  }
+  unique(as.character(collect_evaluations(df, criteres_eliminatoires)$queenbee))
+}
+
 # Function to load and prepare the data
 load_beekube_data <- function(json_file) {
   data <- fromJSON(json_file)
@@ -146,7 +155,8 @@ load_beekube_data <- function(json_file) {
     mutate(across(c(queenbee, drone_parent, born, variety), as.factor))
 
   list(df = df, eval_data = eval_data, criteres = criteres,
-       criteres_eliminatoires = criteres_eliminatoires)
+       criteres_eliminatoires = criteres_eliminatoires,
+       eliminated = eliminated_queens(df, criteres_eliminatoires))
 }
 
 # Notes d'un critère jointes au seul champ utile de la reine (drone_parent).
@@ -284,17 +294,31 @@ calculate_blup <- function(data, eval_data, criteres) {
 }
 
 
+has_any_index <- function(blup_values, queen) {
+  any(vapply(blup_values, function(x) !is.na(x[queen]), logical(1)))
+}
+
+# Reines candidates (mère comme partenaire) : vivantes, non éliminées, indexées sur au moins un critère
+mating_candidates <- function(df, blup_values, eliminated = character(0)) {
+  ids <- as.character(df$queenbee)
+  died <- if (is.null(df$died)) rep(FALSE, length(ids)) else as.logical(df$died)
+  died[is.na(died)] <- FALSE
+  indexed <- vapply(ids, function(q) has_any_index(blup_values, q), logical(1), USE.NAMES = FALSE)
+  ids[indexed & !died & !(ids %in% eliminated)]
+}
+
 # Function to suggest optimal matings based on genetic values and diversity
-suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
-  queens <- data$df$queenbee
+suggest_optimal_matings <- function(df, blup_results, eliminated = character(0), n_suggestions = 10) {
+  queens <- as.character(df$queenbee)
   blup_values <- blup_results$blups
-  died_status <- data$df$died
+  candidates <- mating_candidates(df, blup_values, eliminated)
 
   # Create pedigree data
   ped_data <- data.frame(
-    id = as.character(data$df$queenbee),
-    sire = as.character(data$df$drone_parent),
-    dam = as.character(data$df$queenbee_parent)
+    id = queens,
+    sire = as.character(df$drone_parent),
+    dam = as.character(df$queenbee_parent),
+    stringsAsFactors = FALSE
   )
 
   # Unknown parents are coded "0" upstream: they must not count as a shared ancestor
@@ -309,22 +333,16 @@ suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
       if (current_depth >= depth || is.na(id)) {
         return(character(0))
       }
-
-      # Trouver les parents directs
       parents <- c(
         ped_data$sire[ped_data$id == id],
         ped_data$dam[ped_data$id == id]
       )
       parents <- parents[!is.na(parents)]
-
-      # Récursivement trouver les ancêtres des parents
       ancestors <- parents
-      for (parent in parents[!is.na(parents)]) {
-        ancestors <- c(ancestors,
-                       get_ancestors(parent, current_depth + 1))
+      for (parent in parents) {
+        ancestors <- c(ancestors, get_ancestors(parent, current_depth + 1))
       }
-
-      return(unique(ancestors))
+      unique(ancestors)
     }
 
     # Lignée de chaque reine : elle-même + ses ancêtres, pour qu'une mère
@@ -332,98 +350,50 @@ suggest_optimal_matings <- function(data, blup_results, n_suggestions = 10) {
     ancestors1 <- unique(c(as.character(queen1), get_ancestors(queen1)))
     ancestors2 <- unique(c(as.character(queen2), get_ancestors(queen2)))
 
-    # Calculer le coefficient de similarité
     common_ancestors <- intersect(ancestors1, ancestors2)
     total_ancestors <- union(ancestors1, ancestors2)
-
     if (length(total_ancestors) == 0) {
       return(1) # Diversité maximale si pas d'ancêtres communs connus
     }
-
-    # Calculer la similarité comme proportion d'ancêtres communs
-    similarity <- length(common_ancestors) / length(total_ancestors)
-
-    # Retourner la diversité (1 - similarité)
-    return(1 - similarity)
+    1 - length(common_ancestors) / length(total_ancestors)
   }
+
+  empty_suggestions <- data.frame(
+    mate = character(0), total_score = numeric(0), blup_score = numeric(0),
+    diversity_score = numeric(0), queen_blup = numeric(0), mate_blup = numeric(0),
+    stringsAsFactors = FALSE
+  )
 
   suggestions <- list()
   for (queen in queens) {
-    suggestions[[queen]] <- data.frame(
-      mate = character(0),
-      total_score = numeric(0),
-      blup_score = numeric(0),
-      diversity_score = numeric(0),
-      queen_blup = numeric(0),
-      mate_blup = numeric(0),
-      stringsAsFactors = FALSE
-    )
-
-    # Skip if queen has NA BLUP values or is dead
-    queen_index <- which(queens == queen)
-    if (all(is.na(blup_values[[1]][queen])) || died_status[queen_index]) {
+    suggestions[[queen]] <- empty_suggestions
+    if (!(queen %in% candidates)) {
       next
     }
 
-    # Calculate scores for each potential mate
-    mate_details <- lapply(seq_along(queens), function(i) {
-      mate <- queens[i]
-      mate_index <- i
-
-      if (mate == queen ||
-        all(is.na(blup_values[[1]][as.character(mate)])) ||
-        died_status[mate_index]) {
-        return(NULL)
-      }
-
-      # Calculate individual BLUP scores
-      queen_blup <- mean(unlist(lapply(blup_values, function(x) x[as.character(queen)])), na.rm = TRUE)
-      mate_blup <- mean(unlist(lapply(blup_values, function(x) x[as.character(mate)])), na.rm = TRUE)
-
-      # Calculate average BLUP score
+    mate_details <- lapply(setdiff(candidates, queen), function(mate) {
+      queen_blup <- mean(unlist(lapply(blup_values, function(x) x[queen])), na.rm = TRUE)
+      mate_blup <- mean(unlist(lapply(blup_values, function(x) x[mate])), na.rm = TRUE)
       blup_score <- mean(c(queen_blup, mate_blup), na.rm = TRUE)
 
       # Normalisation du blup_score (plage initiale supposée : -0.5 à 0.5)
-      blup_rescaled <- (blup_score + 0.5) / 1  # Transforme [-0.5, 0.5] en [0, 1]
-
-      # Calculate diversity score
+      blup_rescaled <- (blup_score + 0.5) / 1
       diversity_score <- calc_similarity(queen, mate, ped_data)
-
-      # Calculate weighted total score
       total_score <- 0.7 * blup_rescaled + 0.3 * diversity_score
 
-      return(list(
-        mate = mate,
-        total_score = total_score,
-        blup_score = blup_score,
-        diversity_score = diversity_score,
-        queen_blup = queen_blup,
-        mate_blup = mate_blup
-      ))
+      data.frame(mate = mate, total_score = total_score, blup_score = blup_score,
+                 diversity_score = diversity_score, queen_blup = queen_blup,
+                 mate_blup = mate_blup, stringsAsFactors = FALSE)
     })
 
-    # Remove NULL entries and convert to data frame
-    mate_details <- Filter(Negate(is.null), mate_details)
     if (length(mate_details) > 0) {
-      mate_df <- do.call(rbind, lapply(mate_details, function(x) {
-        data.frame(
-          mate = x$mate,
-          total_score = x$total_score,
-          blup_score = x$blup_score,
-          diversity_score = x$diversity_score,
-          queen_blup = x$queen_blup,
-          mate_blup = x$mate_blup,
-          stringsAsFactors = FALSE
-        )
-      }))
-
-      # Sort by total score and select top suggestions
-      mate_df <- mate_df[order(mate_df$total_score, decreasing = TRUE),]
+      mate_df <- do.call(rbind, mate_details)
+      mate_df <- mate_df[order(mate_df$total_score, decreasing = TRUE), ]
       suggestions[[queen]] <- head(mate_df, n_suggestions)
     }
   }
 
-  return(suggestions)
+  suggestions
 }
 
 
@@ -475,7 +445,7 @@ build_export <- function(data, results, mating_suggestions) {
 run_blup <- function(input_file, output_file) {
   data <- load_beekube_data(input_file)
   results <- calculate_blup(data$df, data$eval_data, data$criteres)
-  mating_suggestions <- suggest_optimal_matings(data, results)
+  mating_suggestions <- suggest_optimal_matings(data$df, results, data$eliminated)
   export <- build_export(data, results, mating_suggestions)
   json_output <- toJSON(export, pretty = TRUE, auto_unbox = TRUE, na = "null")
   write(json_output, output_file)
