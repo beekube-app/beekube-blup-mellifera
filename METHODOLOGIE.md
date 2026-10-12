@@ -29,7 +29,9 @@ an) [BER08 p. 3].
 - **Critères** : sens (+1 si « plus = mieux », −1 sinon), type (`note`, `percentage`, `harvest`),
   poids dans l'index total, caractère éliminatoire, h² et répétabilité facultatives (si une seule
   des deux est fournie, l'autre prend sa valeur par défaut ; répétabilité seule : h² = min(0,25,
-  répétabilité)).
+  répétabilité)), et, pour le profil `breeder` seulement, `queen_ratio` (ρ) et `rg` (rG)
+  facultatifs (§6).
+- **Profil** : champ `profile` de la requête, `"standard"` (défaut) ou `"breeder"` (§5, §5 bis).
 
 Préparation des notes, critère par critère :
 - une note est ramenée sur [0, 1] : (valeur − `scale_min`) / (`scale_max` − `scale_min`) ; les
@@ -128,14 +130,15 @@ Valeurs publiées pour une reine (T = a_W + a_Q, valeur totale d'un nœud) :
   accouplements (§9).
 
 Écarts-types des index : √(σ²_T ā_WW) pour `index`, √(σ²_AW ā_WW) pour `index_worker`, √σ²_T
-pour `index_queen`, avec σ²_T = σ²_AW + σ²_AQ + 2 rG σ_AW σ_AQ.
+pour `index_queen`, avec σ²_T = σ²_AW + σ²_AQ + 2 rG σ_AW σ_AQ et ā_WW = parenté moyenne a(W, W)
+des colonies notées (§6).
 
 **Repli** : séparer les deux effets exige de connaître le père (l'accouplement). Si moins de 50 %
 des reines notées d'un critère ont un accouplement connu, ce critère est calculé avec le profil
 `standard` et l'avertissement `breeder_fallback` en donne la proportion ; la part est aussi
 publiée dans `parameters.known_mating_share`. Sur les données Beekube actuelles, c'est le cas
-courant : un seul critère sur 170 atteint 50 % d'accouplements connus (les fécondations sont
-rarement saisies).
+courant : parmi les 170 critères comptant au moins 10 reines notées, un seul atteint 50 %
+d'accouplements connus, avec 14 reines notées (les fécondations sont rarement saisies).
 
 ## 6. Paramètres de variance
 
@@ -160,25 +163,33 @@ la colonie) ; σ²_pe = (répétabilité − h²) σ²_P ; σ²_e = (1 − rép�
 σ²_A = σ²_a / (a_WW moyen des colonies notées).
 
 Les variances publiées dans `parameters` (`sigma2_a`, `sigma2_pe`, `sigma2_e` et, en profil
-`breeder`, `sigma2_aq`) sont dans l'unité des notes ramenées sur [0, 1] (§2), soit la variance sur
-l'échelle brute divisée par (`scale_max` − `scale_min`)² ; les rapports (h², répétabilité, ρ) ne
-dépendent pas de cette unité.
+`breeder`, `sigma2_aq`) sont dans l'unité des notes ramenées sur [0, 1] (§2) : pour un critère de
+type `note`, la variance sur l'échelle brute divisée par (`scale_max` − `scale_min`)² (le diviseur
+est celui de chaque note si les échelles diffèrent, `scale_mixed`) ; les pourcentages et récoltes,
+déjà sur [0, 1], sont inchangés. Les rapports (h², répétabilité, ρ) ne dépendent pas de cette
+unité.
 
 Profil `breeder` : mêmes règles, avec deux paramètres de plus, `queen_ratio` ρ = σ²_AQ / σ²_AW
 (défaut 0,5) et `rg` (défaut −0,5, ramené dans [−0,95 ; 0,95]) [BB p. 10]. Si l'un des quatre
 paramètres (h², répétabilité, ρ, rG) est fourni, `source = "input"` et les autres prennent leur
 valeur par défaut ; quand seule la répétabilité est fournie, h² = min(0,25 ; répétabilité), dans
 les deux profils. h² reste l'héritabilité de la **note de colonie** :
-σ²_colonie = h² σ²_P = σ²_AW (ā_WW + ρ ā_QQ + 2 rG √ρ ā_WQ), moyennes des parentés prises sur les
-colonies notées. REML : en `"auto"` (mêmes seuils), seuls σ²_AW et σ²_pe sont estimés, ρ et rG
-restent a priori (sur un millier de colonies simulées, ρ estimé librement varie de 0,1 à 1,3
-pour une vraie valeur de 0,5) ; en `"always"`, σ²_AW, σ²_pe, ρ et rG sont tous estimés. Dans
-`parameters`, `sigma2_a` vaut alors σ²_AW (variance de base de l'effet ouvrières, et non la
-variance génétique de la colonie comme en `standard`), `sigma2_aq` = σ²_AQ et `rg` = rG utilisé.
-Validité du REML : mêmes règles qu'en `standard` (σ²_pe nulle valide ; σ²_AW et σ²_AQ nulles →
-a priori et `low_heritability`), plus |rG| ≥ 0,94, jugé inutilisable (a priori et
-`reml_not_converged`) ; ces règles sont appliquées par cohérence : aucune exploitation réelle
-n'atteint encore le seuil du profil.
+σ²_colonie = h² σ²_P = σ²_AW (ā_WW + ρ ā_QQ + 2 rG √ρ ā_WQ), où ā_WW, ā_QQ et ā_WQ sont les
+moyennes, sur les colonies notées, des parentés a(W, W), a(Q, Q) et a(W, Q).
+
+REML du profil `breeder` : en `"auto"` (mêmes seuils), seuls σ²_AW et σ²_pe sont estimés, ρ et rG
+restent a priori (sur 6 populations simulées, ce REML partiel converge 5 fois sur 6, avec un h²
+moyen de 0,18 pour une vraie valeur de 0,22). En `"always"`, σ²_AW, σ²_pe, ρ et rG sont tous
+estimés, mais ils sont peu identifiables : sur des populations simulées d'environ 360 colonies, le
+REML complet ne converge que 2 fois sur 10 ; sur environ 970 colonies, il converge mais ρ estimé
+varie de 0,10 à 1,29 pour une vraie valeur de 0,5, et rG de −0,52 à −0,81 pour −0,5. Dans
+`parameters`, en profil `breeder`, `sigma2_a` vaut σ²_AW (variance de base de l'effet ouvrières,
+et non la variance génétique de la colonie comme en `standard`), `sigma2_aq` = σ²_AQ et `rg` = rG
+utilisé. Validité du REML : mêmes règles qu'en `standard` (σ²_pe nulle valide ; σ²_AW et σ²_AQ
+nulles → a priori et `low_heritability`) ; en plus, |rG| ≥ 0,94, ou ρ à une borne en `"always"`,
+rend l'estimation inutilisable (a priori et `reml_not_converged`). Ces règles sont appliquées par
+cohérence avec le profil `standard`, sans validation sur données réelles : aucune exploitation n'a
+encore 100 reines notées dont au moins la moitié à accouplement connu (§11).
 
 Critère sans variation : si les notes d'un critère ne varient pas une fois retirés les effets fixes
 (par exemple toutes identiques), le critère ne classe pas les reines : pas de REML, index 100 pour
@@ -193,12 +204,15 @@ avertissement `reliability_approx`) : information propre de chaque colonie aprè
 effets fixes, propagée dans le pedigree [Misztal & Wiggans 1988]. Sur simulation, l'approximation
 suit le classement exact (corrélation 0,92 à 0,99) mais **surestime la fiabilité d'environ 0,1**.
 
-Profil `breeder` : r² de la valeur totale T du nœud W publié ; PEV(T) = PEV(a_W) + PEV(a_Q) +
-2 cov(a_W, a_Q), lues sur le bloc 2 × 2 de l'inverse. Chaque nœud portant deux effets, il faut
-environ 5 équations par reine (contre 3 en `standard`) : la limite de 6 000 équations est atteinte
-dès 1 200 reines environ (2 000 en `standard`). Au-delà, la fiabilité du modèle à un effet
-équivalent est multipliée par corr²(T_W, valeur génétique mesurée par la note) ; sur simulation,
-corrélation 0,82 à 0,88 avec l'exacte et surestimation moyenne de 0,04 à 0,05.
+Profil `breeder` : r² = 1 − PEV(T) / (a_ii σ²_T) pour la valeur totale T du nœud W publié
+(σ²_T : §5 bis) ; PEV(T) = PEV(a_W) + PEV(a_Q) + 2 cov(a_W, a_Q), lues sur le bloc 2 × 2 de
+l'inverse. Chaque nœud portant deux effets, il faut environ 5 équations par reine (contre 3 en
+`standard`) : la limite de 6 000 équations est atteinte dès 1 200 reines environ (2 000 en
+`standard`). Au-delà, l'approximation ci-dessus est appliquée à un modèle à un seul effet
+équivalent (même variance génétique d'une note, σ²_A = σ²_colonie / ā_WW), puis la fiabilité
+obtenue au nœud W est multipliée par corr²(T_W, g), g = a_W + a_Q étant la valeur génétique que
+mesure la note ; sur simulation, corrélation 0,82 à 0,88 avec l'exacte et surestimation moyenne de
+0,04 à 0,05.
 
 ## 8. Index
 
@@ -208,8 +222,10 @@ corrélation 0,82 à 0,88 avec l'exacte et surestimation moyenne de 0,04 à 0,05
 - **Index base 100** : `index = 100 + 10 × sens × (EBV − m) / σ`, m = moyenne des EBV des reines
   de la **base** (reines informées nées dans les `base_years` (5 par défaut) dernières années de
   naissance présentes, base
-  mobile [BER08 p. 2]), σ = écart-type génétique du nœud publié (√σ²_a pour la colonie,
-  √σ²_A pour `index_queen`). **10 points = 1 écart-type génétique.** Comme en Allemagne, les
+  mobile [BER08 p. 2]), σ = écart-type génétique du nœud publié (profil `standard` : √σ²_a pour
+  la colonie, √σ²_A pour `index_queen` ; profil `breeder` : √(σ²_T ā_WW) pour `index`,
+  √(σ²_AW ā_WW) pour `index_worker`, √σ²_T pour `index_queen`, §5 bis). **10 points = 1
+  écart-type génétique.** Comme en Allemagne, les
   anciens index « baissent » quand la population progresse.
 - **Index total** : moyenne des index pondérée par les poids des critères non éliminatoires
   (poids > 0) où la reine a un index ; fiabilité totale = moyenne pondérée des r².
@@ -260,7 +276,8 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
   corrélées à 0,98 ; corrélation avec la vraie valeur totale 0,543 en standard contre 0,546 en
   breeder) : l'apport du profil est la séparation reine / ouvrières et l'index reine utilisé aux
   accouplements. Le REML complet (`"always"`) converge sur deux populations simulées d'environ
-  1 000 colonies notées ; ρ y reste peu précis (§6).
+  1 000 colonies notées, mais ρ et rG y sont peu précis et le REML complet est instable sur de
+  plus petites populations (§6).
 - Performance : 3 000 reines et 30 000 notes en moins de 60 s pour un critère (environ 24 s
   mesurées, pic mémoire d'environ 640 Mio) ; le REML coûte environ 15 s par critère éligible à
   3 000 reines (5 critères : environ 70 s ; 10 : environ 99 s). Au-delà d'environ 12 critères
@@ -295,8 +312,10 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
   rG = −0,5), à confirmer par critère. La fiabilité approchée (> 6 000 équations) surestime
   d'environ 0,05. La composante reine seule (Â_Q du nœud W) n'a pas d'index propre. Repli sur le
   profil `standard`, critère par critère, sous 50 % d'accouplements connus. Le profil n'a pas
-  été validé sur données réelles (aucune exploitation n'atteint ce seuil) : ses réglages viennent
-  de la simulation et du profil `standard`.
+  été validé sur données réelles : aucune exploitation n'a assez de reines notées à accouplement
+  connu (il en faut au moins la moitié des reines notées d'un critère, et 100 reines notées pour
+  le REML) ; le seul critère à 50 % ne compte que 14 reines notées. Ses réglages viennent de la
+  simulation et du profil `standard`.
 - **Évaluation univariée** : chaque critère est ajusté séparément ; l'index total est une moyenne
   pondérée des index par critère, pas un index de sélection économique. Aucune corrélation
   génétique entre critères ; la covariance reine / ouvrières n'est modélisée que par le profil
