@@ -3,3 +3,6 @@
 /data/resultats_index.json
 .env.production
 .env.development
+.venv/
+__pycache__/
+.pytest_cache/
