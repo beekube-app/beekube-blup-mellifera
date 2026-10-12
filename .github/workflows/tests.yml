@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
-        python-version: ["3.9", "3.12"]
+        python-version: ["3.12", "3.14"]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -24,6 +24,8 @@ jobs:
           cache-dependency-path: requirements-dev.txt
       - run: pip install -r requirements-dev.txt
       - run: pytest -v
+      - name: Calibration et performance du moteur v2
+        run: pytest -m slow -v
 
   docker:
     runs-on: ubuntu-latest

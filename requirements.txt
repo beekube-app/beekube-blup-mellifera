@@ -3,3 +3,5 @@ pydantic==2.12.3
 flask-openapi3[swagger]==4.0.1
 gunicorn==23.0.0
 python-dotenv==1.0.1
+numpy==2.3.5
+scipy==1.16.3

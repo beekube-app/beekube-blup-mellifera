@@ -69,3 +69,13 @@ def test_operation_id_kept_for_sdk():
     spec = json.loads(committed_text())
     assert spec["paths"]["/blup"]["post"]["operationId"] == "calulate_blup_post"
     assert spec["servers"] == [{"url": "https://mellifera.beekube.com"}]
+
+
+def test_all_422_responses_use_the_python_312_label():
+    # http.HTTPStatus libelle 422 « Unprocessable Content » dès Python 3.13 ; le fichier versionné
+    # doit être identique sous 3.12 et 3.14 (matrice CI)
+    responses = [operation["responses"]["422"]
+                 for path_item in json.loads(committed_text())["paths"].values()
+                 for operation in path_item.values() if "422" in operation.get("responses", {})]
+    assert responses, "aucune réponse 422 dans openapi.json"
+    assert {r["description"] for r in responses} == {"Unprocessable Entity"}

@@ -21,6 +21,12 @@ def build_spec():
 
     spec = json.loads(json.dumps(app.api_doc))
     spec["servers"] = [{"url": PUBLIC_SERVER_URL}]
+    for path_item in spec.get("paths", {}).values():
+        for operation in path_item.values():
+            response = operation.get("responses", {}).get("422") if isinstance(operation, dict) else None
+            if response is not None:
+                # http.HTTPStatus libelle 422 « Unprocessable Content » dès Python 3.13 : on fige le libellé pour 3.12 et 3.14
+                response["description"] = "Unprocessable Entity"
     return spec
 
 
