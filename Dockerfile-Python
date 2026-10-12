@@ -27,9 +27,8 @@ RUN cat requirements-bin.txt | xargs apt-get install -y -qq
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-# Installer et vérifier chaque package R individuellement
-RUN R -e "install.packages('lm.beta', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(lm.beta)" && \
-    R -e "install.packages('pedigreemm', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(pedigreemm)"
+# pedigreemm : retiré à la tâche 4 du plan de durcissement v1
+RUN R -e "install.packages('pedigreemm', dependencies=TRUE, repos='http://cran.rstudio.com/'); library(pedigreemm)"
 
 # Créer et activer un environnement virtuel
 RUN python3 -m venv /opt/venv

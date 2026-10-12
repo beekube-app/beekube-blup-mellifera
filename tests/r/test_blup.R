@@ -63,6 +63,16 @@ tests$run_blup_writes_output_file <- function() {
   stopifnot(length(out$blup) == 6, !is.null(out$heritabilities))
 }
 
+tests$heavy_packages_not_loaded <- function() {
+  stopifnot(!any(c("brms", "rstan", "lm.beta") %in% loadedNamespaces()))
+}
+
+tests$ranef_is_called_from_lme4 <- function() {
+  code <- paste(readLines("blup.r"), collapse = "\n")
+  stopifnot(!grepl("(^|[^:])ranef\\(", code), !grepl("(^|[^:])VarCorr\\(", code),
+            !grepl("(^|[^:])lmer\\(", code))
+}
+
 # ---- Runner (laisser en fin de fichier ; insérer les nouveaux tests au-dessus) ----
 run_all <- function(tests) {
   failures <- 0L

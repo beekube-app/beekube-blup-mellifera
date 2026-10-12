@@ -1,18 +1,10 @@
-library(jsonlite)
-library(dplyr)
-library(pedigreemm)
-library(Matrix)
-library(lme4)
-library(brms)
-library(rstan)
-library(lm.beta)
-
-options(mc.cores = parallel::detectCores())
-
-if (requireNamespace("rstan", quietly = TRUE)) {
-  rstan::rstan_options(auto_write = TRUE)
-  rstan::rstan_options(threads_per_chain = 1)
-}
+suppressPackageStartupMessages({
+  library(jsonlite)
+  library(dplyr)
+  library(pedigreemm)
+  library(Matrix)
+  library(lme4)
+})
 
 
 
@@ -69,15 +61,15 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
     }
 
     # Fit the mixed model
-    model <- lmer(formula,
+    model <- lme4::lmer(formula,
                   data = data,
-                  control = lmerControl(
+                  control = lme4::lmerControl(
                     check.nobs.vs.nlev = "ignore",
                     check.nobs.vs.nRE = "ignore"
                   ))
 
     # Extract variance components
-    vc <- VarCorr(model)
+    vc <- lme4::VarCorr(model)
     v_a <- as.numeric(vc$queenbee[1])  # Additive genetic variance of the queen
     v_c <- as.numeric(vc$apiary[1])    # Variance due to the effect of the colony/apiary
     v_d <- if (has_drone_info && !is.null(vc$drone_parent)) {
@@ -393,18 +385,18 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
       A_subset <- A[as.character(model_data$queenbee), as.character(model_data$queenbee)]
 
       # Method 1: BLUP with lmer
-      blup_model <- lmer(as.formula(formula_str), data = model_data, weights = diag(A_subset))
+      blup_model <- lme4::lmer(as.formula(formula_str), data = model_data, weights = diag(A_subset))
 
 
       if (!inherits(blup_model, "try-error")) {
         tryCatch({
-          queen_effects <- ranef(blup_model)$queenbee
+          queen_effects <- lme4::ranef(blup_model)$queenbee
           queen_names <- rownames(queen_effects)
           blup_values <- setNames(queen_effects[, 1], queen_names)
 
           # The drone effect is indexed by drone_parent level, not by queen:
           # look up each queen's own drone_parent level before adding it
-          drone_effects <- ranef(blup_model)$drone_parent
+          drone_effects <- lme4::ranef(blup_model)$drone_parent
           if (has_drone_info && !is.null(drone_effects)) {
             queen_drone <- as.character(data$drone_parent[match(queen_names, as.character(data$queenbee))])
             drone_values <- drone_effects[queen_drone, 1]
