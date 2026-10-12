@@ -23,7 +23,7 @@ def validation_error(e):
     """422 au format v2 ({"status": "error", "errors": [...]}) sur /v2/*, format v1 inchangé ailleurs."""
     if not request.path.startswith("/v2/"):
         return make_validation_error_response(e)
-    response = make_response(jsonify({"status": "error", "errors": json.loads(e.json(include_url=False))}))
+    response = make_response(jsonify({"status": "error", "errors": json.loads(e.json(include_url=False, include_input=False))}))
     response.status_code = 422
     return response
 
@@ -218,6 +218,7 @@ def blup_v2(body: BlupV2Input):
     try:
         return jsonify(run_blup(body).model_dump(mode="json"))
     except Exception as e:  # filet de sécurité : jamais de 200 avec status = error (spec §5.2)
+        app.logger.exception("erreur inattendue dans /v2/blup")
         return jsonify(ErrorV2Out(message=f"{type(e).__name__}: {e}").model_dump()), 500
 
 
@@ -227,6 +228,7 @@ def mating_v2(body: MatingV2Input):
     try:
         return jsonify(run_matings(body).model_dump(mode="json"))
     except Exception as e:  # filet de sécurité
+        app.logger.exception("erreur inattendue dans /v2/mating")
         return jsonify(ErrorV2Out(message=f"{type(e).__name__}: {e}").model_dump()), 500
 
 

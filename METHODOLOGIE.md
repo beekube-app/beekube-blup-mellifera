@@ -28,7 +28,8 @@ an) [BER08 p. 3].
   rucher, classe de ruche (`hive`, `nuc`, `split`), visite.
 - **Critères** : sens (+1 si « plus = mieux », −1 sinon), type (`note`, `percentage`, `harvest`),
   poids dans l'index total, caractère éliminatoire, h² et répétabilité facultatives (si une seule
-  des deux est fournie, l'autre prend sa valeur par défaut, avec répétabilité ≥ h²).
+  des deux est fournie, l'autre prend sa valeur par défaut ; répétabilité seule : h² = min(0,25,
+  répétabilité)).
 
 Préparation des notes, critère par critère :
 - une note est ramenée sur [0, 1] : (valeur − `scale_min`) / (`scale_max` − `scale_min`) ; les
@@ -105,7 +106,7 @@ Résolution : équations du modèle mixte de Henderson, creuses, factorisées pa
 
 Par critère, dans cet ordre :
 1. h² et répétabilité fournies par Beekube (`source = "input"` ; si une seule est fournie, l'autre
-   prend sa valeur par défaut, la répétabilité étant au moins égale à h²) ;
+   prend sa valeur par défaut ; répétabilité seule : h² = min(0,25, répétabilité)) ;
 2. estimation **REML** (`source = "reml"`) si l'option `estimate_variances` vaut `"always"`, ou `"auto"`
    (défaut) avec au
    moins 100 reines notées, 300 notes et 2 groupes de contemporaines. L'algorithme est un REML sans
@@ -117,7 +118,7 @@ Par critère, dans cet ordre :
    `low_heritability` ;
 3. valeurs a priori (`source = "prior"`) : h² = 0,25, répétabilité = 0,30. Sur les données réelles
    de Beekube, la vraisemblance de l'exploitation la plus riche rejette une répétabilité de 0,40
-   (intervalle de confiance à 95 % d'environ 0,1 à moins de 0,4) ; le passage à 0,30 ne change pas les classements.
+   (intervalle de confiance d'environ 0,1 à moins de 0,4) ; le passage à 0,30 ne change pas les classements.
 
 Conversion : σ²_P = variance des notes après effets fixes ; σ²_a = h² σ²_P (variance génétique de
 la colonie) ; σ²_pe = (répétabilité − h²) σ²_P ; σ²_e = (1 − répétabilité) σ²_P ;
@@ -162,7 +163,7 @@ suit le classement exact (corrélation 0,92 à 0,99) mais **surestime la fiabili
 Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées, disponibles, P ≠ M) :
 - index attendu des filles par critère = 100 + ½ (index_Q(M) − 100) + ½ (index_Q(P) − 100), à
   partir de l'index de la **reine** (nœud Q) ; une reine sans index compte pour 100 ;
-- consanguinité attendue des filles F = ½ a(M, P) ;
+- consanguinité attendue des filles F = ½ a(M, P) (un couple au pedigree inconnu est noté F = 0) ;
 - score = index total attendu − `inbreeding_penalty` × F (100 par défaut : 1 % de consanguinité
   coûte 1 point) ; avertissement
   `high_inbreeding` si F ≥ `max_inbreeding` (0,0625 par défaut) ;
@@ -175,9 +176,8 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
   préparation des notes, solveur comparé aux formules de Henderson denses, REML comparé à la
   vraisemblance dense, index, accouplements, API.
 - Calibration par simulation (`pytest -m slow`, 20 populations simulées de 4 générations, sires
-  de 8 RPM, D = 12). Valeurs mesurées avec ce moteur : corrélation index / vraie valeur 0,571 (corrélation index / vraie valeur des reines sans note :
-  0,440)
-  (seuil ≥ 0,55), pente de la vraie valeur sur l'index 1,009 (attendu 1 [BB p. 9–10], seuil
+  de 8 RPM, D = 12). Valeurs mesurées avec ce moteur : corrélation index / vraie valeur 0,571
+  (seuil ≥ 0,55 ; corrélation des reines sans note : 0,440), pente de la vraie valeur sur l'index 1,009 (attendu 1 [BB p. 9–10], seuil
   0,8–1,2), fiabilité moyenne annoncée 0,308 pour une corrélation au carré de 0,333 (écart toléré
   0,08). Le REML sous-estime légèrement l'héritabilité simulée : h² moyen 0,144 pour une vraie valeur
   d'environ 0,17 (soit environ 15 % de moins), avec une forte dispersion selon les tirages
@@ -185,8 +185,11 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
   du prototype d'analyse (environ 0,61) parce que le groupe de contemporaines du moteur (rucher ×
   année) est, dans cette simulation, confondu avec la génération ; un solveur de référence des
   équations du modèle mixte avec le même modèle donne 0,572.
-- Performance : 3 000 reines et 30 000 notes en moins de 60 s (environ 24 s mesurées, pic mémoire
-  d'environ 640 Mio).
+- Performance : 3 000 reines et 30 000 notes en moins de 60 s pour un critère (environ 24 s
+  mesurées, pic mémoire d'environ 640 Mio) ; le REML coûte environ 15 s par critère éligible à
+  3 000 reines (5 critères : environ 70 s ; 10 : environ 99 s). Au-delà d'environ 12 critères
+  éligibles à cette taille, le délai de 180 s du serveur est dépassé ; fournir h² / répétabilité
+  évite le REML.
 - Non-régression sur le jeu d'exemple anonymisé (`data/input-example.json`).
 
 ## 11. Hypothèses et limites (ce qui n'est pas fait)

@@ -150,3 +150,16 @@ def test_reml_reports_a_genetic_variance_at_the_lower_bound():
     assert null.genetic_at_bound is True and null.converged is False
     res = reml(X, [Z], K, y + rng.standard_normal(q)[rows], start=[0.5], sigma2_e_start=1.0)
     assert res.genetic_at_bound is False and res.converged is True
+
+
+def test_reml_upper_bound_when_residual_is_null_is_not_converged_without_genetic_at_bound():
+    # notes identiques pour les deux observations d'une même reine : résidu ≈ 0, rapport σ²_g / σ²_e
+    # infini (bord supérieur) -> estimation inutilisable, mais la variance génétique n'est pas nulle
+    rng = np.random.default_rng(8)
+    q, k = 50, 2
+    rows = np.repeat(np.arange(q), k)
+    y = rng.standard_normal(q)[rows]
+    X = sp.csr_matrix(np.ones((q * k, 1)))
+    Z = sp.csr_matrix((np.ones(q * k), (np.arange(q * k), rows)), shape=(q * k, q))
+    res = reml(X, [Z], [sp.identity(q, format="csr")], y, start=[0.5], sigma2_e_start=1.0)
+    assert res.converged is False and res.genetic_at_bound is False

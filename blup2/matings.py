@@ -15,7 +15,8 @@ def _queen_vectors(table: IndexTable, ids: list[int]) -> tuple[dict[int, np.ndar
     """index_queen par critère (null -> 100) et index total reine attendu t (moyenne pondérée)."""
     vec = {c.id: np.array([v if (v := table.index_queen[c.id][q]) is not None else 100.0 for q in ids])
            for c in table.criteria}
-    weighted = [c for c in table.criteria if is_weighted(c)]
+    weighted = [c for c in table.criteria if is_weighted(c)
+                and not all(s == "failed" for s in table.status[c.id].values())]
     den = sum(c.weight for c in weighted)
     if den <= 0:
         return vec, np.full(len(ids), 100.0), False

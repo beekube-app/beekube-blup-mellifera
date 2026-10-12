@@ -345,6 +345,7 @@
           },
           "weight": {
             "default": 1.0,
+            "maximum": 1000000.0,
             "minimum": 0.0,
             "title": "Weight",
             "type": "number"
@@ -1085,6 +1086,7 @@
           },
           "inbreeding_penalty": {
             "default": 100.0,
+            "maximum": 1000000.0,
             "minimum": 0.0,
             "title": "Inbreeding Penalty",
             "type": "number"

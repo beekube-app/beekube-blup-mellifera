@@ -129,3 +129,19 @@ def test_connectivity_same_apiary_two_years():
                       records=recs + [record(1, 0.5, apiary=1, date="2024-07-01")])
     c = connectivity(inp, build_pedigree(inp.queens, 12)[0])
     assert c.n_components == 1 and c.components == [[1]]
+
+
+def test_failed_criterion_does_not_change_expected_total_index():
+    inp, ped, t = _setup()
+    ref = evaluate_pairs(inp, ped, t, [MatingPairIn(mother=2, drone_source=3)])[0]
+    inp2 = BlupV2Input(exploitation=1, criteria=[criterion(1), criterion(2)], queens=inp.queens,
+                       options=inp.options)
+    t2 = compute_indexes(inp2, {1: make_fit(1, {1: 0.0, 2: 1.0, 3: 2.0, 4: -3.0}), 2: None})
+    out = evaluate_pairs(inp2, ped, t2, [MatingPairIn(mother=2, drone_source=3)])[0]
+    assert out.expected_total_index == ref.expected_total_index == 115.0
+
+
+def test_mother_daughter_pair_has_quarter_inbreeding_and_flag():
+    inp, ped, t = _setup()
+    m = evaluate_pairs(inp, ped, t, [MatingPairIn(mother=1, drone_source=2)])[0]
+    assert m.expected_inbreeding == 0.25 and "high_inbreeding" in m.warnings

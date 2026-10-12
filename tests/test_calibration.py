@@ -33,7 +33,7 @@ def _replicate(seed):
 def test_calibration_on_simulated_populations():
     res = np.array([_replicate(seed) for seed in range(1, N_REPLICATES + 1)])
     corr, slope, mean_rel, corr_unrec = res.mean(axis=0)
-    # prototype (20 répétitions) : corrélation 0,613, pente 1,018, r² moyen 0,352, corr² 0,381
+    # moteur v2, CG fixe rucher × année : 0,571 ; prototype rucher aléatoire : 0,60–0,61 (pente 1,018, r² moyen 0,352, corr² 0,381)
     assert corr >= 0.55
     assert 0.8 <= slope <= 1.2                                  # EBV sans biais d'échelle
     assert abs(mean_rel - float(np.mean(res[:, 0] ** 2))) <= 0.08  # fiabilité annoncée ≈ corr²

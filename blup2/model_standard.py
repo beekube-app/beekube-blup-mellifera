@@ -60,7 +60,7 @@ def incidence(rows: list[int], n_cols: int) -> sp.csr_matrix:
 def _variance_source(cdata: CriterionData) -> tuple[str, float, float]:
     c = cdata.criterion
     if c.h2 is not None or c.repeatability is not None:
-        h2 = c.h2 if c.h2 is not None else DEFAULT_H2
+        h2 = c.h2 if c.h2 is not None else min(DEFAULT_H2, c.repeatability)
         rep = c.repeatability if c.repeatability is not None else max(DEFAULT_REPEATABILITY, h2)
         return "input", h2, rep
     return "prior", DEFAULT_H2, DEFAULT_REPEATABILITY

@@ -151,3 +151,19 @@ def test_approximate_reliabilities_track_exact_ones(seed):
     assert abs(float(np.mean(r_ap - r_ex))) <= 0.15
     assert np.allclose([exact.ebv[k] for k in q], [approx.ebv[k] for k in q])   # mêmes solutions
     assert any(w.code == "reliability_approx" for w in approx.warnings)
+
+
+def test_repeatability_alone_caps_h2_at_the_repeatability():
+    inp = _family_input(None, 0.1)
+    fit, _, _ = _fit(inp)
+    p = fit.parameters
+    assert p.source == "input" and p.h2 <= 0.1 and p.repeatability == pytest.approx(0.1, abs=1e-6)
+    assert [w.code for w in fit.warnings] == ["few_records"]      # seul avertissement : peu de reines notées
+
+
+def test_scale_mixed_warning_when_two_scales_for_one_criterion():
+    inp = _family_input()
+    inp.records[0].scale_min, inp.records[0].scale_max = 0.0, 4.0
+    inp.records[0].value = 3.0
+    fit, _, _ = _fit(inp)
+    assert any(w.code == "scale_mixed" and w.criterion == 1 for w in fit.warnings)

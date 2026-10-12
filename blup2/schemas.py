@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import re
 from collections import Counter
 from typing import Literal, Optional
 
@@ -11,14 +12,14 @@ BORN_MIN = 1900   # born : entre 1900 et l'année courante + 1 (spec §5.1)
 
 
 class _In(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
 
 
 class OptionsIn(_In):
     base_years: int = Field(5, ge=1, le=50)
     estimate_variances: Literal["auto", "always", "never"] = "auto"
     default_n_drones: int = Field(12, ge=1, le=100)
-    inbreeding_penalty: float = Field(100.0, ge=0)
+    inbreeding_penalty: float = Field(100.0, ge=0, le=1e6)
     max_inbreeding: float = Field(0.0625, ge=0, le=1)
     n_suggestions: int = Field(10, ge=0, le=1000)
 
@@ -28,7 +29,7 @@ class CriterionIn(_In):
     name: str = ""
     direction: Literal[1, -1] = 1
     kind: Literal["note", "percentage", "harvest"] = "note"
-    weight: float = Field(1.0, ge=0)
+    weight: float = Field(1.0, ge=0, le=1e6)
     elimination: bool = False
     h2: Optional[float] = Field(None, gt=0, lt=1)
     repeatability: Optional[float] = Field(None, gt=0, lt=1)
@@ -94,7 +95,7 @@ class RecordIn(_In):
     def _iso_date(cls, v):
         if isinstance(v, dt.date) and not isinstance(v, dt.datetime):
             return v                      # relecture d'un modèle déjà validé (model_dump)
-        if not isinstance(v, str) or len(v) != 10:
+        if not isinstance(v, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
             raise ValueError("date au format ISO YYYY-MM-DD attendue")
         return dt.date.fromisoformat(v)
 
@@ -146,11 +147,11 @@ class BlupV2Input(_In):
                 break
         if errors:
             raise ValueError(" ; ".join(errors))
-        from .pedigree import find_cycle
+        from .pedigree import find_cycle, listed_ids
 
         cycle = find_cycle(self.queens)
         if cycle:
-            raise ValueError(f"pedigree cyclique : reines concernées {cycle}")
+            raise ValueError(f"pedigree cyclique : reines concernées {listed_ids(cycle)}")
         return self
 
 

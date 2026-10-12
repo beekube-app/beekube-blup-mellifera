@@ -113,7 +113,9 @@ def prepare_criterion(
     yrs: dict[int, set] = {}
     for r in recs:
         n_rec[r.queen] = n_rec.get(r.queen, 0) + 1
-        evs.setdefault(r.queen, set()).add(r.evaluator)
+        evs.setdefault(r.queen, set())
+        if r.evaluator is not None:
+            evs[r.queen].add(r.evaluator)
         yrs.setdefault(r.queen, set()).add(r.date.year)
     return CriterionData(
         criterion=crit,

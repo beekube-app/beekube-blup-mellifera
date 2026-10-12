@@ -75,6 +75,8 @@ def _build(ped: BeePedigree) -> dict:
             else:
                 Fd = diag[d] - 1.0
                 par, ph = [(d, 0.5)], (0.75 - 0.25 * Fd) / nS  # cas 3 et 6
+        if ph < -1e-12:
+            raise ValueError(f"variance de ségrégation négative au nœud {i} ({ph:.3g}) : pedigree incohérent")
         ph = max(ph, _PHI_MIN)
         row = {i: 1.0}
         for p, c in par:

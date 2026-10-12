@@ -52,13 +52,31 @@ def test_failed_criterion_does_not_stop_the_others(monkeypatch):
     assert out.queens[3].total_index == out.queens[3].indexes["1"].index
 
 
+def _break_import(monkeypatch, module_name):
+    import builtins
+
+    real = builtins.__import__
+
+    def fake(name, globals=None, locals=None, fromlist=(), level=0):
+        if name.endswith("model_breeder") or (level > 0 and name == "" and "model_breeder" in (fromlist or ())):
+            raise ModuleNotFoundError(f"No module named {module_name!r}", name=module_name)
+        return real(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", fake)
+
+
 def test_breeder_profile_falls_back_to_standard_when_unavailable(monkeypatch):
-    import sys
-    monkeypatch.setitem(sys.modules, "blup2.model_breeder", None)    # import impossible
+    _break_import(monkeypatch, "blup2.model_breeder")
     out = run_blup(_inp(profile="breeder"))
     assert out.profile == "breeder"
     assert any(w.code == "breeder_fallback" for w in out.warnings)
     assert all(p.profile_used == "standard" for p in out.parameters.values())
+
+
+def test_breeder_import_error_of_another_module_is_raised(monkeypatch):
+    _break_import(monkeypatch, "scipy_missing")
+    with pytest.raises(ModuleNotFoundError):
+        run_blup(_inp(profile="breeder"))
 
 
 def test_unknown_parent_and_disconnected_warnings():

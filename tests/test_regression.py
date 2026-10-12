@@ -55,6 +55,8 @@ def test_example_matches_snapshot(example):
     got, ref = snapshot(out), _load("expected-example-v2.json")
     assert got["parameters"] == ref["parameters"] and got["warnings"] == ref["warnings"]
     assert got["n_components"] == ref["n_components"]
+    assert set(got["queens"]) == set(ref["queens"])
+    assert all(set(got["queens"][q]["indexes"]) == set(r["indexes"]) for q, r in ref["queens"].items())
     for qid, r in ref["queens"].items():
         g = got["queens"][qid]
         assert g["inbreeding"] == pytest.approx(r["inbreeding"], abs=1e-4)

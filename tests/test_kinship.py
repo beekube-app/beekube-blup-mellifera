@@ -147,3 +147,9 @@ def test_result_does_not_depend_on_input_order():
     n1 = [p1.q_node(q) for q in p1.queen_ids] + [p1.w_node(q) for q in p1.queen_ids]
     n2 = [p2.q_node(q) for q in p1.queen_ids] + [p2.w_node(q) for q in p1.queen_ids]
     assert np.abs(relationship_matrix(p1, n1) - relationship_matrix(p2, n2)).max() < 1e-12
+
+
+def test_relationship_matrix_of_inbred_line_is_positive_definite():
+    ped, _ = build_pedigree(_inbred_line(), 12)
+    A = relationship_matrix(ped, list(range(ped.n_nodes)))
+    assert np.linalg.eigvalsh(A).min() > 0

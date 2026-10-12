@@ -110,3 +110,8 @@ def test_only_records_of_the_requested_criterion():
                       records=[record(1, 0.1, criterion=1), record(2, 0.5, criterion=2)])
     d = prepare_criterion(inp, 2)
     assert d.recorded_queens == [2] and d.y.tolist() == pytest.approx([0.5])
+
+
+def test_none_evaluator_is_not_counted():
+    d = prepare_criterion(_inp([record(1, 0.2, evaluator=None), record(1, 0.4, date="2024-06-01", evaluator=5)]), 1)
+    assert d.n_evaluators[1] == 1

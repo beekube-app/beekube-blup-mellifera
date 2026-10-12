@@ -67,7 +67,7 @@ def test_absent_parents_are_added_as_base_queens_with_warning():
     assert ped.added_queen_ids == [3257, 3301]
     assert ped.dam[ped.q_node(3257)] is None and ped.sire[ped.q_node(3257)] is None
     assert [w.code for w in warnings] == ["unknown_parent_added"]
-    assert "[3257, 3301]" in warnings[0].message
+    assert warnings[0].message.endswith("(3257, 3301)")
     assert ped.queen_ids == [10]
     assert ped.D[ped.w_node(10)] == 8          # D vient de l'accouplement de la reine 10
 
@@ -95,7 +95,7 @@ def test_cyclic_pedigree_is_a_validation_error():
         {"id": 3, "born": 2020, "mother": 2}, {"id": 4, "born": 2020, "mother": 1}]}
     with pytest.raises(ValidationError) as exc:
         BlupV2Input.model_validate(d)
-    assert "pedigree cyclique : reines concernées [1, 2, 3]" in str(exc.value)
+    assert "pedigree cyclique : reines concernées 1, 2, 3" in str(exc.value)
 
 
 def test_shared_external_ref_uses_the_first_declared_mother_of_drone_queens():
@@ -136,3 +136,17 @@ def test_self_reference_warning_lists_at_most_20_queens():
     assert len(warnings) == 1 and warnings[0].code == "self_reference_removed"
     assert warnings[0].message.startswith("25 reine(s)")
     assert warnings[0].message.endswith("(" + ", ".join(str(k) for k in range(1, 21)) + " … et 5 autres)")
+
+
+def test_unknown_parent_and_cycle_messages_are_capped():
+    qs = [queen(k, mother=1000 + k) for k in range(1, 26)]
+    _, warnings = build_pedigree(qs, 12)
+    msg = [w for w in warnings if w.code == "unknown_parent_added"][0].message
+    assert msg.startswith("25 reine(s)") and msg.endswith(" … et 5 autres)")
+    cyc = [queen(k, mother=k % 25 + 1) for k in range(1, 26)]
+    with pytest.raises(ValidationError) as exc:
+        BlupV2Input.model_validate({"exploitation": 1, "criteria": [],
+                                    "queens": [q.model_dump() for q in cyc]})
+    assert "… et 5 autres" in str(exc.value)
+    with pytest.raises(ValueError, match="… et 5 autres"):
+        build_pedigree(cyc, 12)

@@ -1,4 +1,5 @@
 import copy
+import json
 
 import pytest
 from pydantic import ValidationError
@@ -145,3 +146,26 @@ def test_date_objects_are_accepted_but_json_dates_must_be_iso_strings():
     assert again.records[0].date == dt.date(2024, 3, 15)
     assert_invalid(mutate(("records", 0, "date"), 20240315), "date")
     assert_invalid(mutate(("records", 0, "date"), "2024-03-15T10:00"), "date")
+
+
+@pytest.mark.parametrize("path,value", [
+    (("criteria", 0, "weight"), float("inf")),
+    (("criteria", 0, "weight"), float("nan")),
+    (("criteria", 0, "weight"), 1e7),
+    (("options", "inbreeding_penalty"), 1e7),
+    (("records", 0, "date"), "2024-W11-5"),
+])
+def test_non_finite_oversized_and_non_calendar_values_rejected(path, value):
+    with pytest.raises(ValidationError):
+        BlupV2Input.model_validate(mutate(path, value))
+
+
+def test_json_infinity_and_overflow_are_422_on_the_api():
+    from app import app
+
+    app.config["TESTING"] = True
+    with app.test_client() as c:
+        for raw in ("Infinity", "1e400"):
+            body = json.dumps(VALID).replace('"weight": 3', f'"weight": {raw}')
+            r = c.post("/v2/blup", data=body, content_type="application/json")
+            assert r.status_code == 422, raw

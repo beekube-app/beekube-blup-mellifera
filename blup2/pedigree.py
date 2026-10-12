@@ -224,7 +224,7 @@ def build_pedigree(queens: list["QueenIn"], default_n_drones: int) -> tuple[BeeP
     order, cyc = _toposort(deps)
     if cyc:
         qs = sorted({q for q in (_queen_of_key(k, s_info) for k in cyc) if q is not None})
-        raise ValueError(f"pedigree cyclique : reines concernées {qs}")
+        raise ValueError(f"pedigree cyclique : reines concernées {listed_ids(qs)}")
 
     def n_drones(qid: Optional[int]) -> int:
         if qid is None:
@@ -283,7 +283,7 @@ def build_pedigree(queens: list["QueenIn"], default_n_drones: int) -> tuple[BeeP
             WarningOut(
                 code="unknown_parent_added",
                 message=f"{len(added)} reine(s) citée(s) comme parent mais absente(s) de queens, "
-                f"ajoutée(s) comme reines de base : {sorted(added)}",
+                f"ajoutée(s) comme reines de base : ({listed_ids(sorted(added))})",
             )
         )
     return ped, warnings

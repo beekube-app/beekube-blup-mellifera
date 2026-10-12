@@ -71,3 +71,29 @@ def test_openapi_documents_v1_and_v2_routes():
     assert paths["/v2/mating"]["post"]["operationId"] == "mating_v2_post"
     for route in ("/blup", "/v2/blup", "/v2/mating"):
         assert paths[route]["post"]["tags"] == ["blup"]
+
+
+def test_v2_validation_error_does_not_echo_the_input(client):
+    cyc = copy.deepcopy(VALID)
+    cyc["queens"] = [{"id": 1, "born": 2020, "mother": 2}, {"id": 2, "born": 2020, "mother": 1}]
+    cyc["records"] = []
+    r = client.post("/v2/blup", json=cyc)
+    assert r.status_code == 422
+    errors = r.get_json()["errors"]
+    assert errors and all("input" not in e for e in errors)
+
+
+@pytest.mark.parametrize("path,runner", [("/v2/blup", "run_blup"), ("/v2/mating", "run_matings")])
+def test_v2_unexpected_exception_is_500_in_error_format(client, monkeypatch, caplog, path, runner):
+    import app as app_module
+
+    def boom(_):
+        raise RuntimeError("boum")
+
+    monkeypatch.setattr(app_module, runner, boom)
+    r = client.post(path, json=VALID)
+    assert r.status_code == 500
+    body = r.get_json()
+    assert body["status"] == "error" and body["message"] == "RuntimeError: boum"
+    assert "Traceback" not in json.dumps(body)
+    assert any("boum" in (rec.exc_text or "") or rec.exc_info for rec in caplog.records)

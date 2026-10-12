@@ -1,6 +1,7 @@
 """Moteur v2 : pedigree -> parenté -> modèle par critère -> index -> accouplements."""
 from __future__ import annotations
 
+import logging
 from typing import Optional
 
 from . import ENGINE_VERSION
@@ -14,6 +15,8 @@ from .records import prepare_criterion
 from .schemas import BlupV2Input, BlupV2Output, MatingV2Input, MatingV2Output, WarningOut
 from .trend import genetic_trend
 
+logger = logging.getLogger(__name__)
+
 MIN_DISCONNECTED_SHARE = 0.10   # disconnected_groups si au moins 10 % des reines notées sont hors du bloc principal
 
 
@@ -22,7 +25,9 @@ def _fitter(profile: str, warnings: list[WarningOut]):
         try:
             from .model_breeder import fit_breeder  # plan « profil breeder »
             return fit_breeder
-        except ImportError:
+        except ModuleNotFoundError as exc:
+            if exc.name != "blup2.model_breeder":
+                raise
             warnings.append(WarningOut(code="breeder_fallback", message="profil breeder non disponible dans "
                                        "cette version du moteur : profil standard utilisé"))
     return fit_standard
@@ -43,6 +48,7 @@ def _evaluate(inp: BlupV2Input):
             fits[c.id] = fit
             warnings.extend(fit.warnings)
         except Exception as exc:  # un critère en échec n'empêche pas les autres
+            logger.exception("échec du calcul du critère %s", c.id)
             fits[c.id] = None
             warnings.append(WarningOut(code="criterion_failed", criterion=c.id,
                                        message=f"échec du calcul : {type(exc).__name__}: {exc}"))
