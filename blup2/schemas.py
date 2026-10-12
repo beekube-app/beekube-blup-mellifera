@@ -146,6 +146,11 @@ class BlupV2Input(_In):
                 break
         if errors:
             raise ValueError(" ; ".join(errors))
+        from .pedigree import find_cycle
+
+        cycle = find_cycle(self.queens)
+        if cycle:
+            raise ValueError(f"pedigree cyclique : reines concernées {cycle}")
         return self
 
 
