@@ -140,6 +140,100 @@ tests$no_records_at_all_runs <- function() {
             all(vapply(out$blup, function(q) is.null(q$blups[["10"]]), logical(1))))
 }
 
+fit_standard <- function(critere, ...) {
+  d <- load_standard()
+  fit_criterion(d$eval_data, d$df, critere, FALSE, ...)
+}
+
+tests$one_note_per_queen_gets_blup <- function() {
+  f <- fit_standard("11")
+  stopifnot(identical(unname(f$methods[c("1", "2", "3")]), rep("BLUP", 3)),
+            !any(is.na(f$blups[c("1", "2", "3")])),
+            all(f$methods[c("4", "5", "6")] == "no_data"),
+            all(is.na(f$blups[c("4", "5", "6")])))
+}
+
+tests$criterion_without_records_is_no_data <- function() {
+  f <- fit_standard("12")
+  stopifnot(all(f$methods == "no_data"), all(is.na(f$blups)),
+            is.na(f$heritability$heritability))
+}
+
+tests$methods_cover_every_queen <- function() {
+  d <- load_standard()
+  r <- calculate_blup(d$df, d$eval_data, d$criteres)
+  stopifnot(identical(names(r$methods), c("10", "11", "12")),
+            identical(names(r$blups), c("10", "11", "12")),
+            identical(names(r$heritabilities), c("10", "11", "12")))
+  for (k in names(r$methods)) {
+    stopifnot(length(r$methods[[k]]) == 6, length(r$blups[[k]]) == 6,
+              identical(names(r$methods[[k]]), as.character(1:6)),
+              all(r$methods[[k]] %in% c("BLUP", "lm", "no_data", "failed")))
+  }
+  stopifnot(r$methods[["10"]][["5"]] == "no_data")
+}
+
+tests$fallback_lm_when_mixed_model_fails <- function() {
+  f <- fit_standard("10", fit_mixed = function(...) stop("boom"))
+  d <- load_standard()
+  notes <- d$eval_data[d$eval_data$critere == "10", ]
+  m <- tapply(notes$note, notes$queenbee, mean)
+  expected <- m - mean(m)
+  rated <- c("1", "2", "3", "4", "6")
+  stopifnot(all(f$methods[rated] == "lm"), f$methods[["5"]] == "no_data",
+            # as.numeric : tapply renvoie un tableau 1-d, all.equal comparerait aussi l'attribut dim
+            isTRUE(all.equal(unname(f$blups[rated]), as.numeric(expected[rated]), tolerance = 1e-8)))
+}
+
+tests$failed_when_every_method_fails <- function() {
+  boom <- function(...) stop("boom")
+  f <- fit_standard("10", fit_mixed = boom, fit_fallback = boom)
+  stopifnot(all(f$methods[c("1", "2", "3", "4", "6")] == "failed"),
+            f$methods[["5"]] == "no_data", all(is.na(f$blups)))
+}
+
+tests$single_rated_queen_is_failed_not_dropped <- function() {
+  qs <- list(
+    make_queen(1L, evaluate = list("10" = list(rec(0.5, 1L, "03"), rec(0.75, 2L, "04")), "20" = list())),
+    make_queen(2L, evaluate = list("10" = list(), "20" = list()))
+  )
+  d <- load_beekube_data(write_input(qs, evaluate = 10L))
+  f <- fit_criterion(d$eval_data, d$df, "10", FALSE)
+  stopifnot(f$methods[["1"]] == "failed", f$methods[["2"]] == "no_data")
+}
+
+tests$mixed_model_is_unweighted <- function() {
+  d <- load_standard()
+  md <- build_model_data(d$eval_data, d$df, "10")
+  values <- fit_mixed_lmer(md, FALSE)
+  ref <- lme4::lmer(stats::as.formula(build_formula(md, FALSE)), data = md,
+                    control = lme4::lmerControl(check.nobs.vs.nlev = "ignore",
+                                                check.nobs.vs.nRE = "ignore"))
+  re <- lme4::ranef(ref)$queenbee
+  stopifnot(isTRUE(all.equal(unname(values[rownames(re)]), re[, 1], tolerance = 1e-8)))
+}
+
+tests$drone_effect_needs_two_levels <- function() {
+  one <- data.frame(drone_parent = factor(c("7", "7", "7")))
+  two <- data.frame(drone_parent = factor(c("7", "8", "7")))
+  stopifnot(!use_drone_effect(one, TRUE), use_drone_effect(two, TRUE),
+            !use_drone_effect(two, FALSE),
+            !grepl("drone_parent", build_formula(two, FALSE)),
+            grepl("(1|drone_parent)", build_formula(two, TRUE), fixed = TRUE))
+}
+
+tests$heritability_se_is_null <- function() {
+  md <- data.frame(
+    queenbee = factor(rep(1:6, each = 2)),
+    apiary = factor(rep(c(100, 200), times = 6)),
+    note = c(0.2, 0.4, 0.5, 0.6, 0.7, 0.9, 0.3, 0.2, 0.8, 0.9, 0.5, 0.4)
+  )
+  h <- calculate_bee_heritability(md, "note", FALSE)
+  stopifnot(identical(names(h), c("heritability", "se", "v_additive_queen",
+                                  "v_additive_drone", "v_colony", "v_residual")),
+            is.na(h$se), !is.na(h$heritability))
+}
+
 # ---- Runner (laisser en fin de fichier ; insérer les nouveaux tests au-dessus) ----
 run_all <- function(tests) {
   failures <- 0L

@@ -6,6 +6,16 @@ suppressPackageStartupMessages({
 
 
 
+METHOD_BLUP <- "BLUP"
+METHOD_FALLBACK <- "lm"
+METHOD_NO_DATA <- "no_data"
+METHOD_FAILED <- "failed"
+
+empty_heritability <- function() {
+  list(heritability = NA_real_, se = NA_real_, v_additive_queen = NA_real_,
+       v_additive_drone = NA_real_, v_colony = NA_real_, v_residual = NA_real_)
+}
+
 # Function to calculate bee-adapted heritability
 calculate_bee_heritability <- function(data, trait, has_drone_info = TRUE) {
   required_columns <- c("queenbee", trait)
@@ -24,85 +34,41 @@ calculate_bee_heritability <- function(data, trait, has_drone_info = TRUE) {
     data$apiary <- factor(1)
   }
 
-  # Convert identifiers to factors
   data$queenbee <- factor(data$queenbee)
   if (has_drone_info) {
     data$drone_parent <- factor(data$drone_parent)
   }
   data$apiary <- factor(data$apiary)
-
-  # Ensure the data is numeric
   data[[trait]] <- as.numeric(data[[trait]])
+  data <- data[complete.cases(data[, c(trait, "queenbee", "apiary")]), ]
 
-  # Remove rows with NAs in important columns
-  data <- data[complete.cases(data[, c(trait, "queenbee", "apiary")]),]
-
-  # Check that there is enough data left
   if (nrow(data) < 10) {  # arbitrary minimum number
     warning("Pas assez de données pour calculer l'héritabilité")
-    return(list(
-      heritability = NA,
-      se = NA,
-      v_additive_queen = NA,
-      v_additive_drone = NA,
-      v_colony = NA,
-      v_residual = NA
-    ))
+    return(empty_heritability())
   }
 
   tryCatch({
-    # Building the formula
     formula <- if (has_drone_info) {
       as.formula(paste(trait, "~ (1|queenbee) + (1|drone_parent) + (1|apiary)"))
     } else {
       as.formula(paste(trait, "~ (1|queenbee) + (1|apiary)"))
     }
-
-    # Fit the mixed model
-    model <- lme4::lmer(formula,
-                  data = data,
-                  control = lme4::lmerControl(
-                    check.nobs.vs.nlev = "ignore",
-                    check.nobs.vs.nRE = "ignore"
-                  ))
-
-    # Extract variance components
+    model <- lme4::lmer(formula, data = data,
+                        control = lme4::lmerControl(check.nobs.vs.nlev = "ignore",
+                                                    check.nobs.vs.nRE = "ignore"))
     vc <- lme4::VarCorr(model)
-    v_a <- as.numeric(vc$queenbee[1])  # Additive genetic variance of the queen
-    v_c <- as.numeric(vc$apiary[1])    # Variance due to the effect of the colony/apiary
-    v_d <- if (has_drone_info && !is.null(vc$drone_parent)) {
-      as.numeric(vc$drone_parent[1])
-    } else {
-      0
-    }  # Variance due to drones
-    v_e <- attr(vc, "sc")^2  # Residual variance
-
-    # Calculate heritability
+    v_a <- as.numeric(vc$queenbee[1])
+    v_c <- as.numeric(vc$apiary[1])
+    v_d <- if (has_drone_info && !is.null(vc$drone_parent)) as.numeric(vc$drone_parent[1]) else 0
+    v_e <- attr(vc, "sc")^2
     h2 <- (v_a + v_d) / (v_a + v_d + v_c + v_e)
 
-    # Calculate the standard error of heritability
-    # Here we use a simplified delta-method approximation
-    se_h2 <- sqrt(2) * sqrt(1 / nrow(data))  # A simple approximation
-
-    return(list(
-      heritability = h2,
-      se = se_h2,
-      v_additive_queen = v_a,
-      v_additive_drone = v_d,
-      v_colony = v_c,
-      v_residual = v_e
-    ))
-
+    # Pas d'erreur standard sans profil de vraisemblance ou bootstrap : null (ROADMAP item 2)
+    list(heritability = h2, se = NA_real_, v_additive_queen = v_a,
+         v_additive_drone = v_d, v_colony = v_c, v_residual = v_e)
   }, error = function(e) {
     warning(paste("Error in calculating heritability:", e$message))
-    return(list(
-      heritability = NA,
-      se = NA,
-      v_additive_queen = NA,
-      v_additive_drone = NA,
-      v_colony = NA,
-      v_residual = NA
-    ))
+    empty_heritability()
   })
 }
 
@@ -198,117 +164,120 @@ build_model_data <- function(eval_data, df, critere) {
     mutate(across(c(queenbee, drone_parent, user, apiary, beehiveType, month, year), as.factor))
 }
 
+# L'effet drone_parent n'entre dans le modèle que s'il a au moins 2 niveaux parmi les reines notées
+use_drone_effect <- function(model_data, has_drone_info) {
+  isTRUE(has_drone_info) && has_enough_levels(model_data$drone_parent)
+}
+
+build_formula <- function(model_data, use_drone) {
+  parts <- "note ~ (1|queenbee)"
+  if (use_drone) {
+    parts <- c(parts, "(1|drone_parent)")
+  }
+  for (effect in c("user", "apiary", "beehiveType", "month", "year")) {
+    if (effect %in% names(model_data) && has_enough_levels(model_data[[effect]])) {
+      parts <- c(parts, paste0("(1|", effect, ")"))
+    }
+  }
+  paste(parts, collapse = " + ")
+}
+
+# BLUP lmer : effet reine + effet de son drone_parent (non pondéré)
+fit_mixed_lmer <- function(model_data, use_drone) {
+  model <- lme4::lmer(
+    stats::as.formula(build_formula(model_data, use_drone)),
+    data = model_data,
+    control = lme4::lmerControl(check.nobs.vs.nlev = "ignore", check.nobs.vs.nRE = "ignore")
+  )
+  effects <- lme4::ranef(model)
+  queen_effects <- effects$queenbee
+  values <- stats::setNames(queen_effects[, 1], rownames(queen_effects))
+
+  # The drone effect is indexed by drone_parent level, not by queen
+  drone_effects <- effects$drone_parent
+  if (use_drone && !is.null(drone_effects)) {
+    queen_drone <- as.character(model_data$drone_parent[match(names(values), as.character(model_data$queenbee))])
+    drone_values <- drone_effects[queen_drone, 1]
+    drone_values[is.na(drone_values)] <- 0
+    values <- values + drone_values
+  }
+  values
+}
+
+# Repli : moyenne par reine centrée = coefficients de lm(note ~ 0 + queenbee) centrés
+fit_fallback_lm <- function(model_data) {
+  d <- model_data
+  d$queenbee <- droplevels(factor(as.character(d$queenbee)))
+  if (nlevels(d$queenbee) < 2) {
+    stop("fallback lm needs at least 2 rated queens")
+  }
+  coefs <- stats::coef(stats::lm(note ~ 0 + queenbee, data = d))
+  names(coefs) <- sub("^queenbee", "", names(coefs))
+  coefs - mean(coefs, na.rm = TRUE)
+}
+
+# Calcule un critère et RENVOIE ses résultats (aucune affectation perdue dans un gestionnaire)
+fit_criterion <- function(eval_data, df, critere, has_drone_info,
+                          fit_mixed = fit_mixed_lmer, fit_fallback = fit_fallback_lm) {
+  queen_ids <- as.character(df$queenbee)
+  blups <- stats::setNames(rep(NA_real_, length(queen_ids)), queen_ids)
+  methods <- stats::setNames(rep(METHOD_NO_DATA, length(queen_ids)), queen_ids)
+
+  in_criterion <- as.character(eval_data$critere) == as.character(critere)
+  rated <- intersect(queen_ids, unique(as.character(eval_data$queenbee[in_criterion])))
+  if (length(rated) == 0) {
+    message(sprintf("No data for criterion %s", critere))
+    return(list(blups = blups, methods = methods, heritability = empty_heritability()))
+  }
+
+  tryCatch({
+    model_data <- build_model_data(eval_data, df, critere)
+    use_drone <- use_drone_effect(model_data, has_drone_info)
+
+    method <- METHOD_BLUP
+    values <- tryCatch(fit_mixed(model_data, use_drone), error = function(e) {
+      message(sprintf("Mixed model failed for criterion %s: %s", critere, conditionMessage(e)))
+      NULL
+    })
+    if (is.null(values)) {
+      method <- METHOD_FALLBACK
+      values <- tryCatch(fit_fallback(model_data), error = function(e) {
+        message(sprintf("Fallback lm failed for criterion %s: %s", critere, conditionMessage(e)))
+        NULL
+      })
+    }
+
+    methods[rated] <- METHOD_FAILED
+    if (!is.null(values)) {
+      ok <- intersect(rated, names(values)[!is.na(values)])
+      blups[ok] <- values[ok]
+      methods[ok] <- method
+    }
+
+    list(blups = blups, methods = methods,
+         heritability = calculate_bee_heritability(model_data, "note", use_drone))
+  }, error = function(e) {
+    message(sprintf("Unable to calculate the BLUP for criterion %s: %s", critere, conditionMessage(e)))
+    methods[rated] <- METHOD_FAILED
+    list(blups = stats::setNames(rep(NA_real_, length(queen_ids)), queen_ids),
+         methods = methods, heritability = empty_heritability())
+  })
+}
+
 # Main function for BLUP calculation
 calculate_blup <- function(data, eval_data, criteres) {
-  blups <- list()
-  methods <- list()
-  heritabilities <- list()
+  has_drone_info <- !all(is.na(data$drone_parent) | as.character(data$drone_parent) == "0")
 
-  # Check if information about drones is available
-  has_drone_info <- !all(is.na(data$drone_parent) | data$drone_parent == "0")
+  # Listes nommées même vides : toJSON les écrit {} et non []
+  blups <- stats::setNames(list(), character(0))
+  methods <- stats::setNames(list(), character(0))
+  heritabilities <- stats::setNames(list(), character(0))
 
   for (critere in criteres) {
-    tryCatch({
-      model_data <- build_model_data(eval_data, data, critere)
-
-      if (nrow(model_data) < 1) {
-        message(paste("Not enough data for the criterion", critere))
-        blups[[critere]] <- rep(NA, nrow(data))
-        methods[[critere]] <- "Not enough data"
-        next
-      }
-
-      # Check which columns are available
-      available_columns <- names(model_data)
-
-      # Constructing the model formula
-      # drone_parent is handled above: adding it here would fit the same grouping factor twice
-      random_effects <- c("queenbee", "user", "apiary", "beehiveType", "month", "year")
-
-      if (has_drone_info) {
-        formula_parts <- c("note ~ (1|queenbee) + (1|drone_parent)")
-      } else {
-        formula_parts <- c("note ~ (1|queenbee)")
-      }
-
-      for (effect in random_effects[-1]) {
-        if (effect %in% available_columns && has_enough_levels(model_data[[effect]])) {
-          formula_parts <- c(formula_parts, paste0("(1|", effect, ")"))
-        }
-      }
-      formula_str <- paste(formula_parts, collapse = " + ")
-
-      # Method 1: BLUP with lmer (sans poids : diag(A) donnait plus de poids aux reines consanguines)
-      blup_model <- lme4::lmer(as.formula(formula_str), data = model_data)
-
-
-      if (!inherits(blup_model, "try-error")) {
-        tryCatch({
-          queen_effects <- lme4::ranef(blup_model)$queenbee
-          queen_names <- rownames(queen_effects)
-          blup_values <- setNames(queen_effects[, 1], queen_names)
-
-          # The drone effect is indexed by drone_parent level, not by queen:
-          # look up each queen's own drone_parent level before adding it
-          drone_effects <- lme4::ranef(blup_model)$drone_parent
-          if (has_drone_info && !is.null(drone_effects)) {
-            queen_drone <- as.character(data$drone_parent[match(queen_names, as.character(data$queenbee))])
-            drone_values <- drone_effects[queen_drone, 1]
-            drone_values[is.na(drone_values)] <- 0
-            blup_values <- blup_values + drone_values
-          }
-
-          # Create an aligned vector with all the queens
-          aligned_blups <- rep(NA, nrow(data))
-          aligned_methods <- rep(NA, nrow(data))
-          names(aligned_blups) <- names(aligned_methods) <- as.character(data$queenbee)
-
-          # Use a more robust matching method
-          common_names <- intersect(names(aligned_blups), names(blup_values))
-          aligned_blups[common_names] <- blup_values[common_names]
-          aligned_methods[common_names] <- "BLUP"  # Explicit method assignment
-
-          blups[[critere]] <- aligned_blups
-          methods[[critere]] <- aligned_methods  # Storage of aligned methods
-
-        }, error = function(e) {
-          message(paste("Error extracting BLUPs for criterion", critere, ":", e$message))
-          blups[[critere]] <- rep(NA, nrow(data))
-          methods[[critere]] <- rep("Failure (extraction)", nrow(data))
-        })
-      } else {
-        # Alternative method
-        lm_model <- lm(note ~ queenbee, data = model_data)
-        blup_values <- coef(lm_model)[-1]
-
-        aligned_blups <- rep(NA, nrow(data))
-        aligned_methods <- rep(NA, nrow(data))
-        names(aligned_blups) <- names(aligned_methods) <- as.character(data$queenbee)
-
-        # Filling values
-        aligned_blups[names(blup_values)] <- blup_values
-        aligned_methods[names(blup_values)] <- "Linear regression"
-
-        blups[[critere]] <- aligned_blups
-        methods[[critere]] <- aligned_methods
-      }
-
-      # Calculation of heritability
-      h2_result <- calculate_bee_heritability(model_data, "note", has_drone_info)
-      heritabilities[[critere]] <- list(
-        heritability = h2_result$heritability,
-        se = h2_result$se,
-        v_additive_queen = h2_result$v_additive_queen,
-        v_additive_drone = h2_result$v_additive_drone,
-        v_colony = h2_result$v_colony,
-        v_residual = h2_result$v_residual
-      )
-
-    }, error = function(e) {
-      message(paste("Unable to calculate the BLUP for the criterion", critere, ":", e$message))
-      blups[[critere]] <- rep(NA, nrow(data))
-      methods[[critere]] <- "Failure"
-    })
+    fit <- fit_criterion(eval_data, data, critere, has_drone_info)
+    blups[[critere]] <- fit$blups
+    methods[[critere]] <- fit$methods
+    heritabilities[[critere]] <- fit$heritability
   }
 
   list(blups = blups, methods = methods, heritabilities = heritabilities)
@@ -484,18 +453,20 @@ build_export <- function(data, results, mating_suggestions) {
 
     # Remove columns of type list
     queen_data <- queen_data[!sapply(queen_data, is.list)]
+    queen_data <- replace_na_with_null(queen_data)
 
-    blups <- list()
-    methods <- list()
+    # Objets JSON même sans critère : {} et non []
+    blups <- stats::setNames(list(), character(0))
+    methods <- stats::setNames(list(), character(0))
     for (critere in data$criteres) {
-      blups[[critere]] <- results$blups[[critere]][i]
-      methods[[critere]] <- results$methods[[critere]][i]
+      blups[[critere]] <- unname(results$blups[[critere]][i])
+      methods[[critere]] <- unname(results$methods[[critere]][i])
     }
     queen_data$blups <- blups
     queen_data$methods <- methods
     queen_data$mating_suggestions <- format_suggestions(mating_suggestions[[queen_id]])
 
-    export_list[[i]] <- replace_na_with_null(queen_data)
+    export_list[[i]] <- queen_data
   }
   list(blup = export_list, heritabilities = results$heritabilities)
 }
