@@ -114,3 +114,90 @@ def big_population(seed: int = 7, n_queens: int = 3000, records_per_queen: int =
     return {"exploitation": 1, "profile": "standard", "options": {},
             "criteria": [{"id": 1, "name": "perf", "direction": 1, "kind": "note", "weight": 1}],
             "queens": queens, "records": records}
+
+
+def breeder_pedigree(rng: np.random.Generator, n_gen: int = 5, n_base: int = 75, n_sires: int = 5,
+                     n_dams: int = 25, n_daughters: int = 3, S: int = 8, D: int = 12):
+    """Schéma de BB p. 10 en petit : par génération, n_sires sires (groupes de S RPM sœurs, filles
+    d'une reine de la génération précédente), n_dams mères × n_daughters filles pleines sœurs ;
+    chaque reine est fécondée sur un sire de sa génération (accouplements tous connus).
+    Mêmes sorties que scenario_pedigree."""
+    from simulate import build_bb, gen_pedigree
+
+    inds, mate = gen_pedigree(rng, G=n_gen, n0=n_base, ns=n_sires, n_dams=n_dams, kmin=n_daughters,
+                              kmax=n_daughters)
+    P = build_bb(inds, S, D)
+    queens = [x for x in inds if x["kind"] == "Q"]
+    sires = {x["id"]: x for x in inds if x["kind"] == "S"}
+    qid = {x["id"]: 1000 + k for k, x in enumerate(queens)}
+    station = {sid: 100 + k for k, sid in enumerate(sires)}
+
+    def mating_of(q):
+        s = sires[mate[q]]
+        return {"type": "station", "station": station[s["id"]], "year": 2000 + s["gen"],
+                "drone_queens_mother": qid[s["dam"]] if s["dam"] is not None else None,
+                "n_drone_queens": S, "n_drones": D}
+
+    q_in = [{"id": qid[x["id"]], "born": 2015 + x["gen"],
+             "mother": qid[x["dam"]] if x["dam"] is not None else None,
+             "mating": mating_of(x["id"])} for x in queens]
+    return P, inds, q_in, qid
+
+
+def simulate_breeder_scenario(seed: int, s2aw: float = 1.0, s2aq: float = 0.5, rg: float = -0.5,
+                              s2pe: float = 0.5, s2e: float = 1.5, s2ap: float = 0.5, p_notes: float = 0.8,
+                              n_ap: int = 4, true_parameters: bool = True, **pedigree_kw):
+    """Modèle reine / ouvrières de BB (p. 10 : σ²_AW = 1, σ²_AQ = 0,5, rG = −0,5, σ²_E = 2 réparti en
+    σ²_pe = 0,5 + σ²_e = 1,5). Vraies valeurs [a_W ; a_Q] ~ N(0, G0 ⊗ A) avec la matrice A de
+    référence (bee_kinship.BeePedigree) ; note d'une colonie = 5 + a_W(W) + a_Q(Q) + pe + rucher + e,
+    1 à 3 notes par colonie notée.
+    true_parameters : transmet h², répétabilité, queen_ratio et rg vrais (h² = variance génétique
+    moyenne d'une note / variance phénotypique, spec §2.3) ; sinon tout à None.
+    Retourne (entrée v2 en dict, vérité : {"total", "worker", "queen_total"} -> {reine: valeur en unités
+    normalisées}, ensemble des reines notées, paramètres vrais (dict)).
+    """
+    rng = np.random.default_rng(seed)
+    P, inds, q_in, qid = breeder_pedigree(rng, **pedigree_kw)
+    A = P.build()
+    n = len(inds)
+    cov = rg * np.sqrt(s2aw * s2aq)
+    G0 = np.array([[s2aw, cov], [cov, s2aq]])
+    L = np.linalg.cholesky(A + 1e-12 * np.eye(n))
+    U = L @ rng.standard_normal((n, 2)) @ np.linalg.cholesky(G0).T     # vec(U) ~ N(0, G0 ⊗ A)
+    a_w, a_q = U[:, 0], U[:, 1]
+    idx = {x["id"]: i for i, x in enumerate(inds)}
+    queens = [x for x in inds if x["kind"] == "Q"]
+    apiary_of = {x["id"]: int(rng.integers(n_ap)) for x in queens}
+    ap_eff = rng.standard_normal(n_ap) * np.sqrt(s2ap)
+    width = SCALE_MAX - SCALE_MIN
+    records, recorded = [], set()
+    truth = {"total": {}, "worker": {}, "queen_total": {}}
+    for x in queens:
+        q = x["id"]
+        w, qq = idx["W_" + q], idx[q]
+        truth["total"][qid[q]] = (a_w[w] + a_q[w]) / width
+        truth["worker"][qid[q]] = a_w[w] / width
+        truth["queen_total"][qid[q]] = (a_w[qq] + a_q[qq]) / width
+        if rng.random() >= p_notes:
+            continue
+        recorded.add(qid[q])
+        pe = rng.standard_normal() * np.sqrt(s2pe)
+        for k in range(int(rng.integers(1, 4))):
+            y = 5.0 + a_w[w] + a_q[qq] + pe + ap_eff[apiary_of[q]] + rng.standard_normal() * np.sqrt(s2e)
+            records.append({"queen": qid[q], "criterion": 1, "value": float(y), "scale_min": SCALE_MIN,
+                            "scale_max": SCALE_MAX, "date": f"{2016 + x['gen']}-0{4 + k}-10",
+                            "evaluator": 1, "apiary": apiary_of[q] + 1})
+    rec = [x["id"] for x in queens if qid[x["id"]] in recorded]
+    aww = float(np.mean([A[idx["W_" + q], idx["W_" + q]] for q in rec]))
+    aqq = float(np.mean([A[idx[q], idx[q]] for q in rec]))
+    awq = float(np.mean([A[idx["W_" + q], idx[q]] for q in rec]))
+    s2col = s2aw * aww + s2aq * aqq + 2.0 * cov * awq
+    s2p = s2col + s2pe + s2e
+    true = {"h2": s2col / s2p, "repeatability": (s2col + s2pe) / s2p, "queen_ratio": s2aq / s2aw, "rg": rg,
+            "sigma2_AW": s2aw / width ** 2}
+    crit = {"id": 1, "name": "sim", "direction": 1, "kind": "note", "weight": 1}
+    if true_parameters:
+        crit.update({k: true[k] for k in ("h2", "repeatability", "queen_ratio", "rg")})
+    inp = {"exploitation": 1, "profile": "breeder", "options": {"n_suggestions": 0},
+           "criteria": [crit], "queens": q_in, "records": records}
+    return inp, truth, recorded, true

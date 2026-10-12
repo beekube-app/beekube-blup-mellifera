@@ -9,6 +9,7 @@ from blup2.pedigree import build_pedigree
 from blup2.records import prepare_criterion
 from blup2.schemas import BlupV2Input
 from tests.builders import criterion, mating, queen, record
+from tests.simdata import simulate_breeder_scenario
 
 
 def _fit(inp, fn=fit_breeder, **kw):
@@ -200,3 +201,19 @@ def test_criterion_without_records():
     fit, _, _ = _fit(v)
     assert set(fit.status.values()) == {"none"} and fit.parameters.profile_used == "breeder"
     assert [w.code for w in fit.warnings] == ["few_records"]
+
+
+@pytest.mark.parametrize("seed", [1, 2])
+def test_approximate_reliabilities_track_exact_ones(seed):
+    inp, _, _, _ = simulate_breeder_scenario(seed)
+    exact, _, _ = _fit(inp, estimate_variances="never")
+    approx, _, _ = _fit(inp, estimate_variances="never", exact_limit=0)
+    assert exact.parameters.reliability_method == "exact" and approx.parameters.reliability_method == "approx"
+    q = list(exact.reliability)
+    r_ex = np.array([exact.reliability[k] for k in q])
+    r_ap = np.array([approx.reliability[k] for k in q])
+    # prototype (graines 1 à 6) : corrélation 0,81-0,87, surestimation moyenne 0,04-0,05
+    assert np.corrcoef(r_ex, r_ap)[0, 1] >= 0.75
+    assert abs(float(np.mean(r_ap - r_ex))) <= 0.10
+    assert np.allclose([exact.ebv[k] for k in q], [approx.ebv[k] for k in q])
+    assert any(w.code == "reliability_approx" for w in approx.warnings)

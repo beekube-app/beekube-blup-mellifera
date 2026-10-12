@@ -32,6 +32,7 @@ from .model_standard import (
 )
 from .pedigree import BeePedigree
 from .records import CriterionData
+from .reliability import approx_pev, effective_records
 from .schemas import CriterionParameters, WarningOut
 from .variance import (
     DEFAULT_H2,
@@ -131,6 +132,30 @@ def _breeder_source(cdata: CriterionData) -> tuple[str, float, float, float, flo
     return source, h2, rep, ratio, rg
 
 
+def _approx_pev_total(cdata: CriterionData, ped: BeePedigree, comp: BreederComponents, w_obs: list[int],
+                      diag: np.ndarray) -> np.ndarray:
+    """PEV approchée de T = a_W + a_Q pour chaque nœud (> exact_limit équations).
+
+    Modèle à un effet équivalent (même variance génétique d'une note, σ²_A = σ²_colonie / ā_WW) traité
+    par l'approximation du plan standard (reliability.approx_pev), puis, au nœud W de chaque colonie,
+    r²(T_W) ≈ r²(g) × corr²(T_W, g), g = a_W(W) + a_Q(Q) étant la valeur génétique que mesure la note.
+    Les autres nœuds (Q, S) gardent r²(g)."""
+    n = ped.n_nodes
+    s2a_eq = comp.sigma2_colony / comp.mean_aww
+    n_eff = effective_records({"mean": [0] * cdata.n_obs, **cdata.factor_labels}, w_obs, n)
+    rel_eq = 1.0 - approx_pev(ped, n_eff, s2a_eq, comp.sigma2_pe, comp.sigma2_e) / (diag * s2a_eq)
+    rho = comp.sigma2_AQ / comp.sigma2_AW
+    c = comp.rg * np.sqrt(rho)
+    shrink = np.ones(n)
+    for q in ped.queen_ids:
+        w, qn = ped.w_node(q), ped.q_node(q)
+        aww, aqq, awq = diag[w], diag[qn], relationship(ped, w, qn)
+        cov_tg = aww + c * (awq + aww) + rho * awq        # cov(T_W, g) / σ²_AW
+        var_g = aww + rho * aqq + 2.0 * c * awq           # var(g) / σ²_AW
+        shrink[w] = cov_tg ** 2 / (aww * (1.0 + rho + 2.0 * c) * var_g)
+    return (1.0 - np.clip(rel_eq, 0.0, 1.0) * shrink) * diag * comp.sigma2_T
+
+
 def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, params: FitParams) -> CriterionFit:
     cid = cdata.criterion.id
     share = known_mating_share(cdata, ped)
@@ -175,9 +200,12 @@ def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, par
         p, idx, cinv = sol.n_fixed, np.arange(n), sol.cinv
         pev = cinv[p + idx, p + idx] + cinv[p + n + idx, p + n + idx] + 2.0 * cinv[p + idx, p + n + idx]
         method = "exact"
-    else:   # fiabilité approchée : tâche 2
-        raise NotImplementedError(f"{sol.n_equations} équations (> {params.exact_limit}) : "
-                                  "fiabilité approchée du profil breeder non encore écrite")
+    else:
+        pev = _approx_pev_total(cdata, ped, comp, w_obs, diag)
+        method = "approx"
+        warnings.append(WarningOut(
+            code="reliability_approx", criterion=cid,
+            message=f"{sol.n_equations} équations (> {params.exact_limit}) : fiabilités approchées"))
     rel_nodes = np.clip(1.0 - pev / prior_var, 0.0, 1.0)
     ebv, ebv_w, ebv_q, rel, status = {}, {}, {}, {}, {}
     for q in ped.queen_ids:
