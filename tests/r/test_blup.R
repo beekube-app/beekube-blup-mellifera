@@ -73,6 +73,44 @@ tests$ranef_is_called_from_lme4 <- function() {
             !grepl("(^|[^:])lmer\\(", code))
 }
 
+# drone_parent renseigné (ids 1 à 5, toujours < i) : sans info mâle, l'ancien
+# calculate_bee_kinship sautait la double boucle et le test passerait à tort
+big_queens <- function(n = 2000L, rated = 50L) {
+  lapply(seq_len(n), function(i) {
+    parent <- if (i > 1L) as.integer(i %/% 2L) else NULL
+    drone <- if (i > 10L) as.integer(i %% 5L + 1L) else NULL
+    ev <- if (i > n - rated) {
+      list("10" = list(rec(0.25 + 0.5 * (i %% 2), 1L, "03"), rec(0.5, 2L, "04")), "20" = list())
+    } else {
+      list("10" = list(), "20" = list())
+    }
+    make_queen(as.integer(i), parent = parent, drone = drone, evaluate = ev)
+  })
+}
+
+tests$kinship_code_removed <- function() {
+  stopifnot(!exists("calculate_bee_kinship"), !exists("sort_pedigree"),
+            !exists("check_and_clean_pedigree"),
+            !("pedigreemm" %in% loadedNamespaces()),
+            !("pedigree" %in% names(formals(calculate_bee_heritability))))
+}
+
+tests$large_pedigree_runs_quickly <- function() {
+  setTimeLimit(elapsed = 60, transient = TRUE)
+  on.exit(setTimeLimit(elapsed = Inf), add = TRUE)
+  out <- run_on(big_queens(), evaluate = 10L)
+  stopifnot(length(out$blup) == 2000)
+}
+
+tests$cyclic_pedigree_does_not_abort <- function() {
+  qs <- list(
+    make_queen(1L, parent = 2L, evaluate = list("10" = list(rec(0.5, 1L, "03"), rec(0.75, 2L, "04")), "20" = list())),
+    make_queen(2L, parent = 1L, evaluate = list("10" = list(rec(1, 1L, "03"), rec(0.25, 2L, "04")), "20" = list()))
+  )
+  out <- run_on(qs, evaluate = 10L)
+  stopifnot(length(out$blup) == 2)
+}
+
 # ---- Runner (laisser en fin de fichier ; insérer les nouveaux tests au-dessus) ----
 run_all <- function(tests) {
   failures <- 0L

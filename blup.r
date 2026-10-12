@@ -1,15 +1,13 @@
 suppressPackageStartupMessages({
   library(jsonlite)
   library(dplyr)
-  library(pedigreemm)
-  library(Matrix)
   library(lme4)
 })
 
 
 
 # Function to calculate bee-adapted heritability
-calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has_drone_info = TRUE) {
+calculate_bee_heritability <- function(data, trait, has_drone_info = TRUE) {
   required_columns <- c("queenbee", trait)
   if (has_drone_info) {
     required_columns <- c(required_columns, "drone_parent")
@@ -108,84 +106,6 @@ calculate_bee_heritability <- function(data, trait, pedigree, n_drones = 12, has
   })
 }
 
-# Function to properly sort the pedigree
-sort_pedigree <- function(ped, max_iterations = 1000) {
-  ped$sorted <- FALSE
-  sorted_ped <- data.frame()
-  iteration <- 0
-
-  while (nrow(ped) > 0 && iteration < max_iterations) {
-    iteration <- iteration + 1
-
-    # Find individuals without parents or whose parents are already sorted
-    to_add <- ped[is.na(ped$sire) & is.na(ped$dam) |
-                    (is.na(ped$sire) | ped$sire %in% sorted_ped$id) &
-                      (is.na(ped$dam) | ped$dam %in% sorted_ped$id),]
-
-    if (nrow(to_add) == 0) {
-      # Diagnosis: Identify problematic individuals
-      problem_individuals <- ped[1:min(5, nrow(ped)),]
-      print("Problematic individuals:")
-      print(problem_individuals)
-
-      # Verify potential cycles
-      for (i in seq_len(nrow(problem_individuals))) {
-        individual <- problem_individuals$id[i]
-        sire <- problem_individuals$sire[i]
-        dam <- problem_individuals$dam[i]
-
-        if (!is.na(sire) && sire == individual) {
-          stop(paste("Cycle detected: The individual", individual, "is his own father"))
-        }
-        if (!is.na(dam) && dam == individual) {
-          stop(paste("Cycle detected: The individual", individual, "is their own mother"))
-        }
-      }
-
-      stop("Unable to sort the pedigree. There might be cycles or inconsistencies.")
-    }
-
-    sorted_ped <- rbind(sorted_ped, to_add)
-    ped <- ped[!ped$id %in% to_add$id,]
-  }
-
-  if (iteration == max_iterations) {
-    stop("Maximum number of iterations reached. The pedigree might be too large or contain cycles.")
-  }
-
-  return(sorted_ped)
-}
-
-# Function to check and clean the pedigree
-check_and_clean_pedigree <- function(ped) {
-  # Convert all columns to characters
-  ped$id <- as.character(ped$id)
-  ped$sire <- as.character(ped$sire)
-  ped$dam <- as.character(ped$dam)
-
-  # Replace empty values with NA
-  ped$sire[ped$sire == ""] <- NA
-  ped$dam[ped$dam == ""] <- NA
-
-  # Check for duplicates
-  if (any(duplicated(ped$id))) {
-    warning("Duplicate IDs have been detected. They will be removed.")
-    ped <- ped[!duplicated(ped$id),]
-  }
-
-  # Check for missing parents
-  missing_sires <- setdiff(ped$sire, c(ped$id, NA))
-  missing_dams <- setdiff(ped$dam, c(ped$id, NA))
-
-  if (length(c(missing_sires, missing_dams)) > 0) {
-    warning("Some parents are not present in the list of IDs. They will be replaced by NA.")
-    ped$sire[ped$sire %in% missing_sires] <- NA
-    ped$dam[ped$dam %in% missing_dams] <- NA
-  }
-
-  return(ped)
-}
-
 # Recursive function to handle NA
 replace_na_with_null <- function(x) {
   if (is.list(x)) {
@@ -202,56 +122,6 @@ replace_na_with_null <- function(x) {
 # function to check if a factor has enough levels
 has_enough_levels <- function(factor, min_levels = 2) {
   length(unique(factor)) >= min_levels
-}
-
-# Function to calculate the kinship matrix adapted for bees
-calculate_bee_kinship <- function(ped, n_drones = 12, has_drone_info = TRUE) {
-  tryCatch({
-    # Check if information about drones is available
-    if (!has_drone_info) {
-      # If no information on drones, use a standard kinship matrix
-      A <- as(getA(ped), "matrix")
-      return(A)
-    }
-
-    # Calculation based on Bienefeld et al. (2007) if drone information is available
-    A <- as(getA(ped), "matrix")
-
-    # Adjustment for multiple mating
-    A_adjusted <- A * (1 + 1 / (4 * n_drones))
-
-    # Try to access data using S4 method first
-    tryCatch({
-      labels <- ped@label
-      dams <- ped@dam
-      queen_ids <- labels[!is.na(dams)]
-
-      # Adjust the kinship coefficients between sister queens
-      for (i in 1:(length(queen_ids) - 1)) {
-        for (j in (i + 1):length(queen_ids)) {
-          if (dams[labels == queen_ids[i]] == dams[labels == queen_ids[j]]) {
-            A_adjusted[queen_ids[i], queen_ids[j]] <- A_adjusted[queen_ids[j], queen_ids[i]] <- 0.25 + 0.5 / n_drones
-          }
-        }
-      }
-    }, error = function(e) {
-      # Fallback to data.frame method if S4 fails
-      queen_ids <- unique(ped$id[!is.na(ped$dam)])
-      for (i in 1:(length(queen_ids) - 1)) {
-        for (j in (i + 1):length(queen_ids)) {
-          if (ped$dam[ped$id == queen_ids[i]] == ped$dam[ped$id == queen_ids[j]]) {
-            A_adjusted[queen_ids[i], queen_ids[j]] <- A_adjusted[queen_ids[j], queen_ids[i]] <- 0.25 + 0.5 / n_drones
-          }
-        }
-      }
-    })
-
-    return(A_adjusted)
-
-  }, error = function(e) {
-    warning(paste("Error in kinship calculation:", e$message, "\nReturning standard kinship matrix."))
-    return(as(getA(ped), "matrix"))
-  })
 }
 
 # Function to load and prepare the data
@@ -301,52 +171,13 @@ load_beekube_data <- function(json_file) {
 }
 
 # Main function for BLUP calculation
-calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
+calculate_blup <- function(data, eval_data, criteres) {
   blups <- list()
   methods <- list()
   heritabilities <- list()
 
-  # Prepare pedigree data
-  ped_data <- data.frame(
-    id = as.character(data$queenbee),
-    sire = as.character(data$drone_parent),
-    dam = as.character(data$queenbee_parent)
-  )
-
-  # Clean the pedigree
-  ped_data$sire[ped_data$sire == "0" |
-                  ped_data$sire == "Unknown" |
-                  is.na(ped_data$sire)] <- NA
-  ped_data$dam[ped_data$dam == "0" |
-                 ped_data$dam == "Unknown" |
-                 is.na(ped_data$dam)] <- NA
-  ped_data <- ped_data[ped_data$id != "0" & ped_data$id != "Unknown",]
-
-  # Add missing parents
-  all_parents <- unique(c(ped_data$sire, ped_data$dam))
-  missing_parents <- setdiff(all_parents, ped_data$id)
-  missing_parents <- missing_parents[!is.na(missing_parents)]
-
-  if (length(missing_parents) > 0) {
-    ped_data <- rbind(ped_data,
-                      data.frame(id = missing_parents,
-                                 sire = NA,
-                                 dam = NA))
-  }
-
-  ped_data <- check_and_clean_pedigree(ped_data)
-  # Sort the pedigree
-  sorted_ped <- sort_pedigree(ped_data)
-
-  # Creation of the pedigree object
-  ped <- pedigree(sire = sorted_ped$sire, dam = sorted_ped$dam, label = sorted_ped$id)
-
-
   # Check if information about drones is available
   has_drone_info <- !all(is.na(data$drone_parent) | data$drone_parent == "0")
-
-  # Calculation of the kinship matrix adapted for bees
-  A <- calculate_bee_kinship(ped, n_drones, has_drone_info)
 
   for (critere in criteres) {
     tryCatch({
@@ -381,11 +212,8 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
       }
       formula_str <- paste(formula_parts, collapse = " + ")
 
-      # Adjust the matrix A to match the model data
-      A_subset <- A[as.character(model_data$queenbee), as.character(model_data$queenbee)]
-
-      # Method 1: BLUP with lmer
-      blup_model <- lme4::lmer(as.formula(formula_str), data = model_data, weights = diag(A_subset))
+      # Method 1: BLUP with lmer (sans poids : diag(A) donnait plus de poids aux reines consanguines)
+      blup_model <- lme4::lmer(as.formula(formula_str), data = model_data)
 
 
       if (!inherits(blup_model, "try-error")) {
@@ -440,7 +268,7 @@ calculate_blup <- function(data, eval_data, criteres, n_drones = 12) {
       }
 
       # Calculation of heritability
-      h2_result <- calculate_bee_heritability(model_data, "note", ped, n_drones, has_drone_info)
+      h2_result <- calculate_bee_heritability(model_data, "note", has_drone_info)
       heritabilities[[critere]] <- list(
         heritability = h2_result$heritability,
         se = h2_result$se,
