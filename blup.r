@@ -98,8 +98,9 @@ empty_eval_data <- function() {
              month = character(0), year = character(0), stringsAsFactors = FALSE)
 }
 
-# Notes des critères demandés, une ligne par note. Tolère les clés absentes
-# (Beekube n'envoie que les critères notés) et les listes vides.
+# Notes des critères demandés, une ligne par note. Beekube envoie une clé (éventuellement
+# vide) pour chaque critère non éliminatoire ; le code tolère aussi bien les clés absentes
+# que les listes vides.
 collect_evaluations <- function(df, criteres) {
   rows <- lapply(as.character(criteres), function(critere) {
     eval_list <- df$evaluate[[critere]]

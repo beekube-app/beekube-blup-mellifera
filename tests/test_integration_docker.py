@@ -2,7 +2,12 @@
 
 Lancement : .venv/bin/pytest -m docker -v
 Régénérer l'instantané (après un changement voulu de blup.r) : UPDATE_SNAPSHOT=1 .venv/bin/pytest -m docker -v
-Attention : la fixture lance `docker compose up -d --build api` puis `docker compose down`.
+
+Isolation : la fixture lance `docker compose -p <projet> up -d --build api` puis `... down` dans un
+projet Compose dédié (COMPOSE_PROJECT_NAME, `blup-test` par défaut), jamais dans le projet de
+l'utilisateur. Si un service répond déjà sur BLUP_API_URL (port 8081 par défaut), elle échoue avant
+toute commande Compose : définir BLUP_API_PORT et BLUP_API_URL vers un port libre, par exemple
+BLUP_API_PORT=8082 BLUP_API_URL=http://localhost:8082 .venv/bin/pytest -m docker -v
 """
 import json
 import math
@@ -17,7 +22,8 @@ import pytest
 pytestmark = pytest.mark.docker
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-API_URL = os.getenv("BLUP_API_URL", "http://localhost:8081")
+API_URL = os.getenv("BLUP_API_URL", "http://localhost:" + os.getenv("BLUP_API_PORT", "8081"))
+COMPOSE_PROJECT = os.getenv("COMPOSE_PROJECT_NAME", "blup-test")
 EXAMPLE = os.path.join(ROOT, "data", "input-example.json")
 SNAPSHOT = os.path.join(ROOT, "tests", "fixtures", "v1-example-output.json")
 CRITERIA = ["46", "139", "44", "47", "274", "228", "45"]
@@ -34,24 +40,38 @@ def post_json(url, payload, timeout=200):
         return e.code, json.load(e)
 
 
+def api_responds():
+    """Une seule tentative courte sur GET / : True si l'API répond 200."""
+    try:
+        with urllib.request.urlopen(API_URL + "/", timeout=5) as resp:
+            return resp.status == 200
+    except OSError:
+        return False
+
+
+def compose(*args, **kwargs):
+    return subprocess.run(["docker", "compose", "-p", COMPOSE_PROJECT, *args], cwd=ROOT, **kwargs)
+
+
 @pytest.fixture(scope="module")
 def api_url():
-    subprocess.run(["docker", "compose", "up", "-d", "--build", "api"], cwd=ROOT, check=True)
+    # Garde-fou avant tout appel Compose : un service déjà présent (par exemple l'API de
+    # production locale) ne doit ni être testé à la place de l'image construite ici, ni être
+    # reconstruit ou supprimé.
+    if api_responds():
+        pytest.fail(f"Un service écoute déjà sur {API_URL} : définir BLUP_API_PORT et "
+                    "BLUP_API_URL vers un port libre (par exemple BLUP_API_PORT=8082 "
+                    "BLUP_API_URL=http://localhost:8082).")
+    compose("up", "-d", "--build", "api", check=True)
     try:
         deadline = time.time() + 180
-        while True:
-            try:
-                with urllib.request.urlopen(API_URL + "/", timeout=5) as resp:
-                    if resp.status == 200:
-                        break
-            except OSError:
-                pass
+        while not api_responds():
             if time.time() > deadline:
                 pytest.fail("API non joignable après 180 s")
             time.sleep(2)
         yield API_URL
     finally:
-        subprocess.run(["docker", "compose", "down"], cwd=ROOT, check=False)
+        compose("down", check=False)
 
 
 @pytest.fixture(scope="module")

@@ -19,6 +19,9 @@ servers = [
     Server(url=API_BASE_URL),
 ]
 app = OpenAPI(__name__, info=info, servers=servers)
+# Une exploitation réelle pèse environ 1 Ko par reine : 50 Mo laissent une marge très large
+# tout en bornant ce qu'un corps de requête peut allouer en mémoire (413 au-delà).
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
 blup_tag = Tag(name="blup", description="BLUP operations")
 

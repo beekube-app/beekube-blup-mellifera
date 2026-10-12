@@ -164,3 +164,18 @@ def test_gunicorn_timeout_exceeds_rscript_timeout():
     assert int(cmd[cmd.index("--timeout") + 1]) == 180
     assert app_module.RSCRIPT_TIMEOUT < 180
     assert int(cmd[cmd.index("--workers") + 1]) >= 2
+
+
+def test_request_size_limit_is_configured():
+    assert app_module.app.config["MAX_CONTENT_LENGTH"] == 50 * 1024 * 1024
+
+
+def test_oversized_body_is_rejected_with_413(client, monkeypatch):
+    def must_not_run(cmd, **kwargs):
+        raise AssertionError("Rscript ne doit pas être lancé")
+    monkeypatch.setattr(app_module.subprocess, "run", must_not_run)
+    # limite abaissée pour ne pas allouer 50 Mo ; restaurée par monkeypatch
+    monkeypatch.setitem(app_module.app.config, "MAX_CONTENT_LENGTH", 1024)
+    body = json.dumps(minimal_input()) + " " * 2048
+    resp = client.post("/blup", data=body, content_type="application/json")
+    assert resp.status_code == 413

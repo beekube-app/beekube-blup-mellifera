@@ -13,7 +13,7 @@ Beekube BLUP Mellifera API est une application Flask qui fournit une interface A
 
 ## Prérequis
 - Docker
-- Docker Compose
+- Docker Compose ≥ 2.24 (la syntaxe `env_file` avec `required` n'est pas prise en charge par les versions antérieures)
 
 ## Installation et démarrage
 1. Clonez ce dépôt :
@@ -24,7 +24,7 @@ Beekube BLUP Mellifera API est une application Flask qui fournit une interface A
 
 2. Lancez l'application avec Docker Compose :
    ```
-   docker-compose up --build
+   docker compose up --build
    ```
 
 3. L'API sera accessible à l'adresse : `http://localhost:8081`
@@ -65,7 +65,7 @@ docker compose run --rm api Rscript tests/r/test_blup.R   # tests R
 .venv/bin/python scripts/export_openapi.py                # après un changement de modèle pydantic
 ```
 
-`pytest -m docker` démarre puis arrête le service `api` du projet Compose courant (`docker compose up -d --build api` puis `down`). Sur un poste où l'API tourne déjà sur le port 8081, isoler le test : `COMPOSE_PROJECT_NAME=blup-test BLUP_API_PORT=8082 BLUP_API_URL=http://localhost:8082 .venv/bin/pytest -m docker -v`.
+`pytest -m docker` construit et démarre le service `api` dans son propre projet Compose, `blup-test` par défaut (modifiable avec `COMPOSE_PROJECT_NAME`, sans le pointer vers votre projet habituel), puis le supprime, sans interférer avec votre projet Compose habituel. Le test échoue immédiatement, avant toute commande Compose, si un service écoute déjà sur le port de test (8081 par défaut). Sur un poste où l'API tourne déjà sur le port 8081, utilisez un port libre : `BLUP_API_PORT=8082 BLUP_API_URL=http://localhost:8082 .venv/bin/pytest -m docker -v`.
 
 ## Licence
 MIT Licence

@@ -59,6 +59,12 @@ def test_results_is_not_a_free_dict():
         "$ref": "#/components/schemas/BLUPResultOutput"}
 
 
+def test_blups_values_stay_untyped_for_sdk():
+    # additionalProperties: true (et non un schéma typé) évite le modèle `BlupsValue`
+    # dans le SDK PHP, retiré en 1.0.7 : les valeurs de `blups` restent un `mixed`.
+    assert schemas()["QueenBeeOutput"]["properties"]["blups"]["additionalProperties"] is True
+
+
 def test_operation_id_kept_for_sdk():
     spec = json.loads(committed_text())
     assert spec["paths"]["/blup"]["post"]["operationId"] == "calulate_blup_post"

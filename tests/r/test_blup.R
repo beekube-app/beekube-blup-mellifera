@@ -111,6 +111,21 @@ tests$cyclic_pedigree_does_not_abort <- function() {
   stopifnot(length(out$blup) == 2)
 }
 
+# Reine à la fois sa propre mère et sa propre productrice de mâles (cas réel fréquent) :
+# l'ancien v1 s'arrêtait sur « Cycle detected ». Test de verrouillage : le correctif
+# date d'une tâche précédente (suppression de pedigreemm / calculate_bee_kinship).
+tests$self_parent_and_self_drone_does_not_abort <- function() {
+  qs <- list(
+    make_queen(1L, parent = 1L, drone = 1L, evaluate = list(
+      "10" = list(rec(0.5, 1L, "03"), rec(0.75, 2L, "04")), "20" = list())),
+    make_queen(2L, parent = 1L, evaluate = list(
+      "10" = list(rec(1, 1L, "03"), rec(0.25, 2L, "04")), "20" = list()))
+  )
+  out <- run_on(qs, evaluate = 10L)
+  suggestions <- unlist(lapply(out$blup, function(q) q$mating_suggestions), recursive = FALSE)
+  stopifnot(length(out$blup) == 2, length(suggestions) > 0)
+}
+
 tests$model_data_keeps_record_apiary <- function() {
   qs <- lapply(standard_queens(), function(q) {
     q$apiary <- 999L  # ancien format : rucher au niveau de la reine
