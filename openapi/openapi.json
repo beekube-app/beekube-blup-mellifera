@@ -1,0 +1,605 @@
+{
+  "components": {
+    "schemas": {
+      "BLUPInput": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/QueenBeeInput"
+            },
+            "title": "Data",
+            "type": "array"
+          },
+          "evaluate": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Evaluate",
+            "type": "array"
+          },
+          "evaluate_elimination": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Evaluate Elimination",
+            "type": "array"
+          },
+          "exploitation": {
+            "title": "Exploitation",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "exploitation",
+          "evaluate",
+          "evaluate_elimination",
+          "data"
+        ],
+        "title": "BLUPInput",
+        "type": "object"
+      },
+      "BLUPOutput": {
+        "properties": {
+          "results": {
+            "$ref": "#/components/schemas/BLUPResultOutput"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "results"
+        ],
+        "title": "BLUPOutput",
+        "type": "object"
+      },
+      "BLUPResultOutput": {
+        "properties": {
+          "blup": {
+            "items": {
+              "$ref": "#/components/schemas/QueenBeeOutput"
+            },
+            "title": "Blup",
+            "type": "array"
+          },
+          "heritabilities": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/HeritabilityStats"
+            },
+            "title": "Heritabilities",
+            "type": "object"
+          }
+        },
+        "required": [
+          "blup",
+          "heritabilities"
+        ],
+        "title": "BLUPResultOutput",
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "title": "Error",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "output": {
+            "title": "Output",
+            "type": "string"
+          },
+          "results": {
+            "additionalProperties": true,
+            "title": "Results",
+            "type": "object"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "output",
+          "error",
+          "results"
+        ],
+        "title": "ErrorResponse",
+        "type": "object"
+      },
+      "Evaluation": {
+        "properties": {
+          "apiary": {
+            "title": "Apiary",
+            "type": "integer"
+          },
+          "beehiveType": {
+            "title": "Beehivetype",
+            "type": "string"
+          },
+          "month": {
+            "title": "Month",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "number"
+          },
+          "user": {
+            "title": "User",
+            "type": "integer"
+          },
+          "year": {
+            "title": "Year",
+            "type": "string"
+          }
+        },
+        "required": [
+          "note",
+          "user",
+          "apiary",
+          "beehiveType",
+          "month",
+          "year"
+        ],
+        "title": "Evaluation",
+        "type": "object"
+      },
+      "HeritabilityStats": {
+        "properties": {
+          "heritability": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Heritability"
+          },
+          "se": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Se"
+          },
+          "v_additive_drone": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "V Additive Drone"
+          },
+          "v_additive_queen": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "V Additive Queen"
+          },
+          "v_colony": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "V Colony"
+          },
+          "v_residual": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "V Residual"
+          }
+        },
+        "required": [
+          "heritability",
+          "se",
+          "v_additive_queen",
+          "v_additive_drone",
+          "v_colony",
+          "v_residual"
+        ],
+        "title": "HeritabilityStats",
+        "type": "object"
+      },
+      "MatingSuggestion": {
+        "properties": {
+          "blup_score": {
+            "title": "Blup Score",
+            "type": "number"
+          },
+          "diversity_score": {
+            "title": "Diversity Score",
+            "type": "number"
+          },
+          "mate_blup": {
+            "title": "Mate Blup",
+            "type": "number"
+          },
+          "queen": {
+            "title": "Queen",
+            "type": "string"
+          },
+          "queen_blup": {
+            "title": "Queen Blup",
+            "type": "number"
+          },
+          "total_score": {
+            "title": "Total Score",
+            "type": "number"
+          }
+        },
+        "required": [
+          "blup_score",
+          "diversity_score",
+          "mate_blup",
+          "queen",
+          "queen_blup",
+          "total_score"
+        ],
+        "title": "MatingSuggestion",
+        "type": "object"
+      },
+      "QueenBeeEvaluations": {
+        "additionalProperties": {
+          "items": {
+            "$ref": "#/components/schemas/Evaluation"
+          },
+          "type": "array"
+        },
+        "title": "QueenBeeEvaluations",
+        "type": "object"
+      },
+      "QueenBeeInput": {
+        "properties": {
+          "apiary_default": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apiary Default"
+          },
+          "born": {
+            "title": "Born",
+            "type": "string"
+          },
+          "died": {
+            "default": false,
+            "title": "Died",
+            "type": "boolean"
+          },
+          "drone_parent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Drone Parent"
+          },
+          "evaluate": {
+            "$ref": "#/components/schemas/QueenBeeEvaluations"
+          },
+          "queenbee": {
+            "title": "Queenbee",
+            "type": "integer"
+          },
+          "queenbee_parent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Queenbee Parent"
+          },
+          "variety": {
+            "title": "Variety",
+            "type": "string"
+          }
+        },
+        "required": [
+          "queenbee",
+          "born",
+          "variety"
+        ],
+        "title": "QueenBeeInput",
+        "type": "object"
+      },
+      "QueenBeeOutput": {
+        "properties": {
+          "apiary_default": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apiary Default"
+          },
+          "blups": {
+            "additionalProperties": true,
+            "description": "BLUP values for different criteria",
+            "title": "Blups",
+            "type": "object"
+          },
+          "born": {
+            "title": "Born",
+            "type": "string"
+          },
+          "died": {
+            "default": false,
+            "title": "Died",
+            "type": "boolean"
+          },
+          "drone_parent": {
+            "title": "Drone Parent",
+            "type": "string"
+          },
+          "mating_suggestions": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/MatingSuggestion"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mating Suggestions"
+          },
+          "methods": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "description": "Methods used for calculations",
+            "title": "Methods",
+            "type": "object"
+          },
+          "queenbee": {
+            "title": "Queenbee",
+            "type": "string"
+          },
+          "queenbee_parent": {
+            "title": "Queenbee Parent",
+            "type": "string"
+          },
+          "variety": {
+            "title": "Variety",
+            "type": "string"
+          }
+        },
+        "required": [
+          "queenbee",
+          "queenbee_parent",
+          "drone_parent",
+          "apiary_default",
+          "born",
+          "blups",
+          "methods",
+          "variety"
+        ],
+        "title": "QueenBeeOutput",
+        "type": "object"
+      },
+      "ValidationErrorModel": {
+        "properties": {
+          "ctx": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "an optional object which contains values required to render the error message.",
+            "title": "Error context"
+          },
+          "loc": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "the error's location as a list. ",
+            "title": "Location"
+          },
+          "msg": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "a computer-readable identifier of the error type.",
+            "title": "Message"
+          },
+          "type_": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "a human readable explanation of the error.",
+            "title": "Error Type"
+          }
+        },
+        "title": "ValidationErrorModel",
+        "type": "object"
+      },
+      "WelcomeResponse": {
+        "properties": {
+          "results": {
+            "title": "Results",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "results"
+        ],
+        "title": "WelcomeResponse",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "SDK PHP pour l'API BLUP de Beekube - Calcul génétique des abeilles mellifères",
+    "title": "Beekube BLUP Mellifera API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "welcome__get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WelcomeResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Welcome endpoint",
+        "tags": [
+          "blup"
+        ]
+      }
+    },
+    "/blup": {
+      "post": {
+        "operationId": "calulate_blup_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BLUPInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BLUPOutput"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ValidationErrorModel"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Perform BLUP calculation",
+        "tags": [
+          "blup"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://mellifera.beekube.com"
+    }
+  ],
+  "tags": [
+    {
+      "description": "BLUP operations",
+      "name": "blup"
+    }
+  ]
+}
