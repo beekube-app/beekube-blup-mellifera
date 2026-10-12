@@ -1,7 +1,9 @@
 """Profil breeder : modèle à deux effets corrélés (ouvrières sur W, reine sur Q) [BB éq. 1–5]."""
 import numpy as np
 import pytest
+import scipy.optimize
 
+from blup2 import model_breeder
 from blup2.kinship import inverse_relationship, relationship_matrix
 from blup2.model_breeder import fit_breeder, genetic_inverse
 from blup2.model_standard import FitParams, fit_standard
@@ -167,18 +169,39 @@ def test_defaults_and_clamped_correlation():
     assert p.repeatability == pytest.approx(0.2, abs=1e-4) and p.h2 <= p.repeatability
 
 
+def _known_matings(n_queens, n_known):
+    # n_queens reines notées (une note chacune), les n_known premières à accouplement connu (station),
+    # les autres en fécondation naturelle
+    qs = [queen(k, 2022, mating=_station(1 + k % 5) if k <= n_known else mating("natural"))
+          for k in range(1, n_queens + 1)]
+    return BlupV2Input(exploitation=1, criteria=[criterion(h2=0.3, repeatability=0.5)], queens=qs,
+                       records=[record(k, 0.5 * k / n_queens) for k in range(1, n_queens + 1)])
+
+
 def test_fallback_to_standard_below_half_known_matings():
-    def inp(n_known):
-        qs = [queen(k, 2022, mating=_station(k) if k <= n_known else mating("natural")) for k in range(1, 6)]
-        return BlupV2Input(exploitation=1, criteria=[criterion(h2=0.3, repeatability=0.5)], queens=qs,
-                           records=[record(k, 0.1 * k) for k in range(1, 6)])
-    fit, _, _ = _fit(inp(2))                                    # 2 / 5 = 40 % < 50 %
+    fit, _, _ = _fit(_known_matings(5, 2))                      # 2 / 5 = 40 % < 50 %
     assert fit.parameters.profile_used == "standard" and fit.ebv_worker is None
     assert fit.warnings[0].code == "breeder_fallback" and fit.warnings[0].criterion == 1
     assert "40 %" in fit.warnings[0].message
-    fit, _, _ = _fit(inp(3))                                    # 3 / 5 = 60 %
+    fit, _, _ = _fit(_known_matings(5, 3))                      # 3 / 5 = 60 %
     assert fit.parameters.profile_used == "breeder" and fit.ebv_worker is not None
     assert all(w.code != "breeder_fallback" for w in fit.warnings)
+    # seuil exact : « moins de 50 % » est strict, 2 reines sur 4 (50 %) gardent le profil breeder
+    fit, _, _ = _fit(_known_matings(4, 2))
+    assert fit.parameters.profile_used == "breeder" and fit.ebv_worker is not None
+    assert fit.parameters.known_mating_share == 0.5
+    assert all(w.code != "breeder_fallback" for w in fit.warnings)
+
+
+def test_fallback_never_displays_half():
+    # une part juste sous 50 % s'arrondit à 50 % (message) ou à 0,5 (valeur publiée) : le chiffre
+    # affiché contredirait le repli (« 50 % ... (< 50 %) »)
+    fit, _, _ = _fit(_known_matings(101, 50))                   # 50 / 101 = 0,49505 -> arrondi à 50 %
+    assert fit.parameters.profile_used == "standard" and fit.warnings[0].code == "breeder_fallback"
+    assert fit.warnings[0].message.startswith("49 % ") and fit.parameters.known_mating_share == 0.495
+    fit, _, _ = _fit(_known_matings(1001, 500))                 # 500 / 1001 = 0,49950 -> arrondi à 0,5
+    assert fit.parameters.profile_used == "standard" and fit.warnings[0].code == "breeder_fallback"
+    assert fit.warnings[0].message.startswith("49 % ") and fit.parameters.known_mating_share == 0.499
 
 
 def test_known_mating_share_is_published():
@@ -215,8 +238,11 @@ def test_approximate_reliabilities_track_exact_ones(seed):
     # prototype (graines 1 à 6) : corrélation 0,81-0,87, surestimation moyenne 0,04-0,05
     assert np.corrcoef(r_ex, r_ap)[0, 1] >= 0.75
     assert abs(float(np.mean(r_ap - r_ex))) <= 0.10
-    assert np.allclose([exact.ebv[k] for k in q], [approx.ebv[k] for k in q])
+    # seule la PEV change : les trois valeurs publiées sont identiques
+    for field in ("ebv", "ebv_worker", "ebv_queen"):
+        assert np.allclose([getattr(exact, field)[k] for k in q], [getattr(approx, field)[k] for k in q])
     assert any(w.code == "reliability_approx" for w in approx.warnings)
+    assert all(w.code != "reliability_approx" for w in exact.warnings)
 
 
 def test_auto_reml_keeps_the_queen_worker_partition():
@@ -238,6 +264,52 @@ def test_full_reml_when_always():
         assert any(w.code in ("reml_not_converged", "low_heritability") for w in fit.warnings)
     else:
         assert abs(p.rg) <= 0.95 and p.sigma2_aq > 0 and 0.0 < p.h2 < 1.0
+
+
+@pytest.mark.parametrize("mode, seed, n_params", [("auto", 1, 2), ("always", 4, 4)])
+def test_reml_estimates_the_partition_only_when_always(monkeypatch, mode, seed, n_params):
+    # espion sur l'optimiseur appelé par blup2.model_breeder : auto n'optimise que
+    # θ = (log σ²_AW/σ²_e, log σ²_pe/σ²_e), always y ajoute (log ρ, atanh rG/0,95)
+    real, sizes = scipy.optimize.minimize, []
+
+    def spy(fun, x0, *args, **kwargs):
+        sizes.append(len(x0))
+        return real(fun, x0, *args, **kwargs)
+
+    monkeypatch.setattr(model_breeder.scipy.optimize, "minimize", spy)
+    inp, _, recorded, _ = simulate_breeder_scenario(seed, true_parameters=False)
+    assert len(recorded) >= 100
+    fit, _, _ = _fit(inp, estimate_variances=mode)
+    assert sizes == [n_params]
+    p = fit.parameters
+    assert p.source == "reml"
+    partition_is_prior = p.sigma2_aq / p.sigma2_a == pytest.approx(0.5) and p.rg == pytest.approx(-0.5)
+    assert partition_is_prior == (mode == "auto")    # seed 4 en always : ρ ≈ 0,40, rG ≈ −0,90
+
+
+@pytest.mark.parametrize("mode, rg_theta, success", [("auto", None, False), ("always", 3.0, True)])
+def test_unusable_reml_falls_back_to_the_prior(monkeypatch, mode, rg_theta, success):
+    # optimiseur simulé : échec (success=False) ou |rG| = 0,95 tanh(3) = 0,945 ≥ 0,94 -> a priori
+    # et un seul reml_not_converged (ni low_heritability, ni paramètres estimés)
+    def fake(fun, x0, *args, **kwargs):
+        x = np.array(x0, dtype=float)
+        if rg_theta is not None:
+            x[3] = rg_theta
+        return scipy.optimize.OptimizeResult(x=x, success=success, nfev=7, fun=0.0)
+
+    inp, _, _, _ = simulate_breeder_scenario(1, true_parameters=False)
+    prior, _, _ = _fit(inp, estimate_variances="never")
+    monkeypatch.setattr(model_breeder.scipy.optimize, "minimize", fake)
+    fit, _, _ = _fit(inp, estimate_variances=mode)
+    p = fit.parameters
+    assert p.source == "prior" and p.profile_used == "breeder"
+    assert p.h2 == pytest.approx(0.25) and p.repeatability == pytest.approx(0.30)
+    assert p.sigma2_aq / p.sigma2_a == pytest.approx(0.5) and p.rg == pytest.approx(-0.5)
+    assert p.sigma2_a == pytest.approx(prior.parameters.sigma2_a)
+    assert p.sigma2_pe == pytest.approx(prior.parameters.sigma2_pe)
+    assert [(w.code, w.criterion) for w in fit.warnings] == [("reml_not_converged", 1)]
+    assert "7 évaluations" in fit.warnings[0].message
+    assert all(fit.ebv[k] == pytest.approx(prior.ebv[k]) for k in prior.ebv)
 
 
 def test_spd_factorisation_gives_the_reference_likelihood():

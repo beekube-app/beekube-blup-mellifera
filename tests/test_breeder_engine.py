@@ -61,6 +61,7 @@ def test_breeder_request_on_current_beekube_data_falls_back_to_standard():
     for q in inp["queens"]:
         if q["id"] % 3:
             q["mating"] = None
+    inp["records"][0]["scale_max"] = 40.0        # deuxième échelle : le critère émet aussi scale_mixed
     b = run_blup(BlupV2Input.model_validate(inp))
     inp["profile"] = "standard"
     s = run_blup(BlupV2Input.model_validate(inp))
@@ -68,9 +69,12 @@ def test_breeder_request_on_current_beekube_data_falls_back_to_standard():
     assert b.profile == "breeder" and p.profile_used == "standard" and p.sigma2_aq is None
     assert 0.0 < p.known_mating_share < 0.5 and s.parameters["1"].known_mating_share is None
     w = [w for w in b.warnings if w.code == "breeder_fallback"]
-    assert len(w) == 1 and w[0].criterion == 1 and f"{round(100 * p.known_mating_share)} %" in w[0].message
+    assert len(w) == 1 and w[0].criterion == 1 and w[0].message.startswith(f"{round(100 * p.known_mating_share)} %")
+    assert [w.code for w in b.warnings if w.criterion == 1] == ["breeder_fallback", "scale_mixed"]   # en tête
     assert [w.code for w in b.warnings if w.code != "breeder_fallback"] == [w.code for w in s.warnings]
-    for qb, qs in zip(b.queens, s.queens):
+    assert [w.code for w in s.warnings] == ["scale_mixed"]
+    assert len(b.queens) == len(s.queens) > 0
+    for qb, qs in zip(b.queens, s.queens, strict=True):
         assert qb.indexes["1"] == qs.indexes["1"] and qb.indexes["1"].index_worker is None
         assert qb.total_index == qs.total_index
     assert b.matings == s.matings

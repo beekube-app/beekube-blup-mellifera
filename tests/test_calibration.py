@@ -85,6 +85,7 @@ def _breeder_replicate(seed):
     cdata = prepare_criterion(v, 1, f_workers={q: float(F[ped.w_node(q)]) for q in ped.queen_ids})
     fit = fit_breeder(cdata, ped, inverse_relationship(ped), FitParams())
     assert fit.parameters.profile_used == "breeder" and fit.parameters.reliability_method == "exact"
+    assert fit.parameters.source == "input"                      # paramètres vrais fournis, pas de REML
     ids = list(truth["total"])
 
     def arr(d):
@@ -141,3 +142,5 @@ def test_breeder_performance_3000_queens_30000_records():
     assert elapsed < 60.0                                        # prototype : 30 s (REML auto, 15 380 éq.)
     p = out.parameters["1"]
     assert p.profile_used == "breeder" and p.reliability_method == "approx"
+    assert p.source == "reml"                                    # sinon un REML sauté passerait le seuil de 60 s
+    assert len(out.queens) == 3000

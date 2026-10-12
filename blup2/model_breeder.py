@@ -187,16 +187,16 @@ def reml_breeder(X, Zw, Zq, Zpe, Ainv, y: np.ndarray, start: BreederComponents, 
     theta0 = np.clip(np.array(theta0, dtype=float), lo + 1.0, hi - 1.0)
     res = scipy.optimize.minimize(f, theta0, method="Nelder-Mead",
                                   options={"xatol": 1e-2, "fatol": 1e-2, "maxfev": max_evals})
-    g_w, g_pe, rho, rg, Gi, logdet = system(res.x)
+    theta = np.clip(res.x, lo, hi)      # un seul θ borné (comme variance.reml), testé partout ci-dessous
+    g_w, g_pe, rho, rg, Gi, logdet = system(theta)
     _, s2e = neg2_reml_spd(X, [Zw, Zq, Zpe], Gi, logdet, y)
     # Même règle que le profil standard : σ²_pe nulle est une estimation valide (répétabilité = h²).
     # Non validé sur données réelles (aucun jeu n'atteint le seuil du profil breeder) : appliqué par
     # cohérence avec le profil standard.
-    genetic = [res.x[0]] + ([res.x[2]] if estimate_partition else [])     # log σ²_AW/σ²_e, log ρ
-    unusable = (any(t <= lo + 0.05 or t >= hi - 0.05 for t in genetic) or res.x[1] >= hi - 0.05
+    genetic = [theta[0]] + ([theta[2]] if estimate_partition else [])     # log σ²_AW/σ²_e, log ρ
+    unusable = (any(t <= lo + 0.05 or t >= hi - 0.05 for t in genetic) or theta[1] >= hi - 0.05
                 or abs(rg) >= 0.94)
-    log_aw = float(np.log(g_w))
-    genetic_at_bound = bool(log_aw <= lo + 0.05 and log_aw + float(np.log(rho)) <= lo + 0.05)
+    genetic_at_bound = bool(theta[0] <= lo + 0.05 and theta[0] + float(np.log(rho)) <= lo + 0.05)
     return BreederReml(sigma2_AW=float(g_w * s2e), sigma2_AQ=float(rho * g_w * s2e), rg=float(rg),
                        sigma2_pe=float(g_pe * s2e), sigma2_e=float(s2e),
                        converged=bool(res.success) and not unusable, n_iter=int(res.nfev),
@@ -209,6 +209,13 @@ def known_mating_share(cdata: CriterionData, ped: BeePedigree) -> float:
         return 0.0
     known = sum(1 for q in cdata.recorded_queens if ped.sire_of_mating(q) is not None)
     return known / len(cdata.recorded_queens)
+
+
+def _published_share(share: float) -> float:
+    """Part publiée (3 décimales). En repli (< 50 %), jamais 0,5 : l'arrondi d'une part de 0,4995 à
+    0,5 contredirait le seuil."""
+    rounded = round(share, 3)
+    return min(rounded, 0.499) if share < MIN_KNOWN_MATING_SHARE else rounded
 
 
 def _breeder_source(cdata: CriterionData) -> tuple[str, float, float, float, float]:
@@ -249,19 +256,25 @@ def _approx_pev_total(cdata: CriterionData, ped: BeePedigree, comp: BreederCompo
 
 
 def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, params: FitParams) -> CriterionFit:
+    """Évalue un critère en profil breeder ; point d'entrée du module (même signature que fit_standard).
+    Critère sans note : sortie vide (empty_fit), profile_used « breeder », known_mating_share 0. Moins de
+    50 % des reines notées à accouplement connu : fit_standard, breeder_fallback en tête des avertissements
+    et known_mating_share publiée. Sinon : ebv = T̂ du nœud W (Â_W + Â_Q), ebv_worker = Â_W du nœud W,
+    ebv_queen = T̂ du nœud Q (valeur reproductrice totale de la reine, utilisée aux accouplements)."""
     cid = cdata.criterion.id
     share = known_mating_share(cdata, ped)
     if cdata.n_obs == 0:
         fit = empty_fit(cdata, ped)
         fit.parameters = fit.parameters.model_copy(
-            update={"profile_used": "breeder", "known_mating_share": round(share, 3)})
+            update={"profile_used": "breeder", "known_mating_share": _published_share(share)})
         return fit
     if share < MIN_KNOWN_MATING_SHARE:
         fit = fit_standard(cdata, ped, Ainv, params)
-        fit.parameters = fit.parameters.model_copy(update={"known_mating_share": round(share, 3)})
+        fit.parameters = fit.parameters.model_copy(update={"known_mating_share": _published_share(share)})
+        pct = min(round(100 * share), 49)      # jamais « 50 % » à côté de « (< 50 %) »
         fit.warnings.insert(0, WarningOut(
             code="breeder_fallback", criterion=cid,
-            message=f"{round(100 * share)} % des reines notées ont un accouplement connu (< 50 %) : "
+            message=f"{pct} % des reines notées ont un accouplement connu (< 50 %) : "
                     f"profil standard utilisé pour ce critère"))
         return fit
     warnings: list[WarningOut] = []
@@ -342,7 +355,7 @@ def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, par
     parameters = CriterionParameters(
         source=source, h2=comp.h2, repeatability=comp.repeatability, sigma2_a=comp.sigma2_AW,
         sigma2_pe=comp.sigma2_pe, sigma2_e=comp.sigma2_e, sigma2_aq=comp.sigma2_AQ, rg=comp.rg,
-        profile_used="breeder", known_mating_share=round(share, 3), n_records=cdata.n_raw_records,
+        profile_used="breeder", known_mating_share=_published_share(share), n_records=cdata.n_raw_records,
         n_queens=n_q, n_contemporary_groups=cdata.n_contemporary_groups, reliability_method=method,
     )
     return CriterionFit(
