@@ -50,6 +50,8 @@ def connectivity(inp: BlupV2Input, ped: BeePedigree, threshold: float = RELATED_
     rows, cols = np.nonzero(np.triu(A) >= threshold)
     for i, j in zip(rows, cols):
         uf.union(groups_of[queens[i]][0], groups_of[queens[j]][0])
+    # Les nœuds du graphe sont des groupes (rucher, année) ; la sortie ne liste que les identifiants de
+    # ruchers : un rucher peut donc figurer dans plusieurs composantes quand ses années ne sont pas reliées.
     comps: dict = {}
     n_queens: dict = {}
     for q in queens:

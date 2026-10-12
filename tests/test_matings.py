@@ -114,3 +114,18 @@ def test_suggestion_count_when_the_mother_is_also_a_drone_source():
     assert len(out) == 4 * 3
     inp, ped, t = _setup(n_suggestions=3)
     assert len(suggest_matings(inp, ped, t)) == 4 * 3
+
+
+def test_connectivity_same_apiary_two_years():
+    # les nœuds sont des groupes (rucher, année) : deux années d'un même rucher sans reine commune
+    # ni apparentée ne sont pas comparables -> deux composantes, le rucher figure dans les deux
+    qs = [queen(1, 2020), queen(2, 2020)]
+    recs = [record(1, 0.5, apiary=1, date="2023-06-01"), record(2, 0.5, apiary=1, date="2024-06-01")]
+    inp = BlupV2Input(exploitation=1, criteria=[criterion()], queens=qs, records=recs)
+    c = connectivity(inp, build_pedigree(inp.queens, 12)[0])
+    assert c.n_components == 2 and c.minor_share == 0.5 and c.components == [[1], [1]]
+    # une reine notée les deux années relie les groupes
+    inp = BlupV2Input(exploitation=1, criteria=[criterion()], queens=qs,
+                      records=recs + [record(1, 0.5, apiary=1, date="2024-07-01")])
+    c = connectivity(inp, build_pedigree(inp.queens, 12)[0])
+    assert c.n_components == 1 and c.components == [[1]]
