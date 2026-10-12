@@ -59,8 +59,8 @@ Pour contribuer au projet :
 ## Tests
 
 ```bash
-# Python 3.11 ou plus requis (moteur v2)
-python3.12 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+python3 --version                        # doit être ≥ 3.11 ; sinon appeler explicitement, par ex., python3.12
+python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 .venv/bin/pytest -v                      # API Flask (Rscript simulé)
 docker compose build api                 # obligatoire après toute modification de blup.r ou de tests/
 docker compose run --rm api Rscript tests/r/test_blup.R   # tests R

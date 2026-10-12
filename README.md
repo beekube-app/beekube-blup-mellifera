@@ -60,8 +60,8 @@ To contribute to the project:
 ## Tests
 
 ```bash
-# Python 3.11 or later required (v2 engine)
-python3.12 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+python3 --version                        # must be >= 3.11; otherwise call e.g. python3.12 explicitly
+python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 .venv/bin/pytest -v                      # Flask API (Rscript mocked)
 docker compose build api                 # required after any change to blup.r or tests/
 docker compose run --rm api Rscript tests/r/test_blup.R   # R tests

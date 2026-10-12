@@ -27,7 +27,8 @@ an) [BER08 p. 3].
 - **Notes** : reine, critère, valeur et échelle (`scale_min`, `scale_max`), date, évaluateur,
   rucher, classe de ruche (`hive`, `nuc`, `split`), visite.
 - **Critères** : sens (+1 si « plus = mieux », −1 sinon), type (`note`, `percentage`, `harvest`),
-  poids dans l'index total, caractère éliminatoire, h² et répétabilité facultatives.
+  poids dans l'index total, caractère éliminatoire, h² et répétabilité facultatives (si une seule
+  des deux est fournie, l'autre prend sa valeur par défaut, avec répétabilité ≥ h²).
 
 Préparation des notes, critère par critère :
 - une note est ramenée sur [0, 1] : (valeur − `scale_min`) / (`scale_max` − `scale_min`) ; les
@@ -50,7 +51,8 @@ Règles :
   ouvrières d'une reine ont le même père). Le moteur v1 décalait le pedigree d'une génération en
   prenant l'accouplement de la reine pour son propre père ;
 - fécondation naturelle ou inconnue : **pas de nœud sire** (père inconnu, aucun père fictif
-  commun) ;
+  commun) ; il en va de même d'un accouplement par station ou insémination sans aucune information
+  (ni RPM, ni mère des RPM, ni station, ni référence externe) ;
 - un parent cité mais absent des données est ajouté comme reine de base (`unknown_parent_added`) ;
 - une reine citée comme sa propre mère, sa propre RPM ou la mère de ses RPM (erreur de saisie) :
   ce lien est retiré et l'avertissement `self_reference_removed` liste les reines concernées ;
@@ -61,10 +63,9 @@ Règles :
 
 La matrice de parenté A entre tous les nœuds suit [BB] : chaque nœud reçoit la moitié de la valeur
 de chacun de ses parents plus un aléa de ségrégation dont la variance dépend de la consanguinité
-des parents, de S (nombre de RPM) et de D (nombre de mâles, 12 par défaut). La covariance
+des parents, de S (nombre de RPM) et de D (nombre de mâles, option `default_n_drones`, 12 par défaut). La covariance
 particulière entre pleines sœurs (mêmes mère et sire) est prise en compte [BB éq. 21–24].
-L'inverse A⁻¹ est construit directement, sans inverser A, ce qui rend le calcul linéaire en
-nombre de nœuds.
+A⁻¹ est creuse et construite directement à partir des parents de chaque nœud, sans inverser A.
 
 Propriétés vérifiées par les tests (`tests/test_kinship.py`) :
 - identité avec l'implémentation de référence `docs/analyses/bee_kinship.py` (écart < 1e-12) ;
@@ -103,18 +104,20 @@ Résolution : équations du modèle mixte de Henderson, creuses, factorisées pa
 ## 6. Paramètres de variance
 
 Par critère, dans cet ordre :
-1. h² et répétabilité fournies par Beekube (`source = "input"`) ;
-2. estimation **REML** (`source = "reml"`) si `estimate_variances = "always"`, ou `"auto"` avec au
+1. h² et répétabilité fournies par Beekube (`source = "input"` ; si une seule est fournie, l'autre
+   prend sa valeur par défaut, la répétabilité étant au moins égale à h²) ;
+2. estimation **REML** (`source = "reml"`) si l'option `estimate_variances` vaut `"always"`, ou `"auto"`
+   (défaut) avec au
    moins 100 reines notées, 300 notes et 2 groupes de contemporaines. L'algorithme est un REML sans
    dérivées (DF-REML : vraisemblance restreinte calculée sur la factorisation creuse, maximisée par
-   Nelder-Mead [Graser et al. 1987 ; Meyer 1989]). Une variance d'environnement permanent nulle
+   Nelder-Mead [Graser et al. 1987 ; Meyer 1989]). `"never"` désactive le REML. Une variance d'environnement permanent nulle
    (répétabilité = h²) est une estimation valide. Si l'optimiseur échoue ou si une variance devient
    infinie, les valeurs a priori sont gardées (`reml_not_converged`) ; si la variance génétique
    estimée est nulle (héritabilité nulle sur ces données), aussi, avec l'avertissement
    `low_heritability` ;
 3. valeurs a priori (`source = "prior"`) : h² = 0,25, répétabilité = 0,30. Sur les données réelles
    de Beekube, la vraisemblance de l'exploitation la plus riche rejette une répétabilité de 0,40
-   (intervalle de confiance de 0,1 à 0,4) ; le passage à 0,30 ne change pas les classements.
+   (intervalle de confiance à 95 % d'environ 0,1 à moins de 0,4) ; le passage à 0,30 ne change pas les classements.
 
 Conversion : σ²_P = variance des notes après effets fixes ; σ²_a = h² σ²_P (variance génétique de
 la colonie) ; σ²_pe = (répétabilité − h²) σ²_P ; σ²_e = (1 − répétabilité) σ²_P ;
@@ -139,7 +142,8 @@ suit le classement exact (corrélation 0,92 à 0,99) mais **surestime la fiabili
   apparentée notée : fiabilité ≥ 0,001), `none` (aucune information : pas d'index), `failed`
   (calcul du critère en échec, avertissement `criterion_failed`).
 - **Index base 100** : `index = 100 + 10 × sens × (EBV − m) / σ`, m = moyenne des EBV des reines
-  de la **base** (reines informées nées dans les 5 dernières années de naissance présentes, base
+  de la **base** (reines informées nées dans les `base_years` (5 par défaut) dernières années de
+  naissance présentes, base
   mobile [BER08 p. 2]), σ = écart-type génétique du nœud publié (√σ²_a pour la colonie,
   √σ²_A pour `index_queen`). **10 points = 1 écart-type génétique.** Comme en Allemagne, les
   anciens index « baissent » quand la population progresse.
@@ -159,9 +163,10 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
 - index attendu des filles par critère = 100 + ½ (index_Q(M) − 100) + ½ (index_Q(P) − 100), à
   partir de l'index de la **reine** (nœud Q) ; une reine sans index compte pour 100 ;
 - consanguinité attendue des filles F = ½ a(M, P) ;
-- score = index total attendu − 100 × F (1 % de consanguinité coûte 1 point) ; avertissement
-  `high_inbreeding` si F ≥ 0,0625 ;
-- les 10 meilleures sources de mâles par mère sont proposées ; `POST /v2/mating` évalue des couples
+- score = index total attendu − `inbreeding_penalty` × F (100 par défaut : 1 % de consanguinité
+  coûte 1 point) ; avertissement
+  `high_inbreeding` si F ≥ `max_inbreeding` (0,0625 par défaut) ;
+- les `n_suggestions` (10 par défaut) meilleures sources de mâles par mère sont proposées ; `POST /v2/mating` évalue des couples
   choisis.
 
 ## 10. Validation
@@ -170,11 +175,13 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
   préparation des notes, solveur comparé aux formules de Henderson denses, REML comparé à la
   vraisemblance dense, index, accouplements, API.
 - Calibration par simulation (`pytest -m slow`, 20 populations simulées de 4 générations, sires
-  de 8 RPM, D = 12). Valeurs mesurées avec ce moteur : corrélation index / vraie valeur 0,571
+  de 8 RPM, D = 12). Valeurs mesurées avec ce moteur : corrélation index / vraie valeur 0,571 (corrélation index / vraie valeur des reines sans note :
+  0,440)
   (seuil ≥ 0,55), pente de la vraie valeur sur l'index 1,009 (attendu 1 [BB p. 9–10], seuil
   0,8–1,2), fiabilité moyenne annoncée 0,308 pour une corrélation au carré de 0,333 (écart toléré
-  0,08), reines sans note 0,440. Le REML retrouve l'héritabilité simulée : h² moyen 0,144 pour une
-  vraie valeur d'environ 0,17, convergence 10 fois sur 10. La corrélation est inférieure à celle
+  0,08). Le REML sous-estime légèrement l'héritabilité simulée : h² moyen 0,144 pour une vraie valeur
+  d'environ 0,17 (soit environ 15 % de moins), avec une forte dispersion selon les tirages
+  (estimations de 0,05 à 0,33) ; il converge 10 fois sur 10. La corrélation est inférieure à celle
   du prototype d'analyse (environ 0,61) parce que le groupe de contemporaines du moteur (rucher ×
   année) est, dans cette simulation, confondu avec la génération ; un solveur de référence des
   équations du modèle mixte avec le même modèle donne 0,572.
@@ -194,13 +201,19 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
 - **Père inconnu** : pas de covariance « super-sœurs » entre filles d'une même mère fécondée
   naturellement (hypothèse prudente : moins d'information transmise).
 - **h² et répétabilité a priori** (0,25 et 0,30) tant que les effectifs sont faibles ; ce sont
-  des valeurs de travail, à affiner par critère [Bienefeld & Pirchner 1990 ; Bernstein et al.
-  2023].
+  des valeurs de travail, à affiner par critère [Bienefeld & Pirchner 1990].
 - **D et S** : 12 mâles par défaut ; la simulation montre qu'ils changent peu le classement.
 - **Fiabilité approchée** au-delà de 6 000 équations : surestimée d'environ 0,1.
 - **Profil `breeder`** (effets reine et ouvrières séparés, corrélation génétique négative
   [BER08 p. 2 ; BB p. 10]) : décrit dans un document séparé ; tant qu'il n'est pas disponible, le
   moteur applique le profil `standard` et renvoie `breeder_fallback`.
+- **Évaluation univariée** : chaque critère est ajusté séparément ; l'index total est une moyenne
+  pondérée des index par critère, pas un index de sélection économique. Aucune corrélation
+  génétique entre critères, ni covariance reine / ouvrières (profil `breeder`, plan ultérieur).
+- **Groupe de contemporaines fixe** (rucher × année) : il peut absorber des différences
+  génétiques quand un rucher-année ne contient qu'une famille ou qu'une génération ; c'est ce qui
+  abaisse la corrélation mesurée en simulation (§10). Les avertissements de connexion aident à
+  repérer ce cas.
 - La classe de ruche est la seule information de ruche utilisée (`hive_type` est reçu mais non
   modélisé).
 
