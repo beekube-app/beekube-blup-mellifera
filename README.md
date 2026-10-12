@@ -55,6 +55,17 @@ To contribute to the project:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+## Tests
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+.venv/bin/pytest -v                      # Flask API (Rscript mocked)
+docker compose build api                 # required after any change to blup.r or tests/
+docker compose run --rm api Rscript tests/r/test_blup.R   # R tests
+.venv/bin/pytest -m docker -v            # end-to-end on data/input-example.json
+.venv/bin/python scripts/export_openapi.py                # after any pydantic model change
+```
+
 ## Licence
 MIT Licence
 
