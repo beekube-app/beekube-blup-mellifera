@@ -1,0 +1,23 @@
+id,name,label,kind,scale_min,scale_max,direction
+1,swarming,Essaimage,note,0,6,1
+2,mildness,Douceur,note,0,6,1
+3,framHold,Tenue au cadre,note,0,6,1
+4,winter,Hivernage,note,0,6,1
+5,broVital,Vitalité du couvain,note,0,6,1
+6,beeVital,Vitalité des abeilles,note,0,6,1
+7,fertil,Fécondité,note,0,6,1
+8,sprCrop,Récolte de printemps (note),note,0,6,1
+9,midCrop,Récolte de mi-saison (note),note,0,6,1
+10,sumCrop,Récolte d'été (note),note,0,6,1
+11,falCrop,Récolte d'automne (note),note,0,6,1
+12,polCrop,Récolte de pollen (note),note,0,6,1
+13,bldCombs,Bâtisse,note,0,6,1
+14,propolis,Propolis,note,0,6,1
+15,honeyIdx,Indice miel,note,0,6,1
+16,aveCropIdx,Indice de récolte moyen,note,0,6,1
+17,hygBehaIdx,Indice de comportement hygiénique,note,0,6,1
+18,varIdx,Indice varroa,note,0,6,1
+19,hyg24h,Couvain tué nettoyé en 24 h (%),percentage,,,1
+20,hyg48h,Couvain tué nettoyé en 48 h (%),percentage,,,1
+21,honeyAmt,Quantité de miel (kg),harvest,,,1
+22,aveHonAmt,Quantité de miel moyenne (kg),harvest,,,1
