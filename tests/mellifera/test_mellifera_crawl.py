@@ -143,3 +143,25 @@ def test_nonconforming_codes_are_kept_and_counted(tmp_path):
     report = crawler.full()
     assert report.stats["nonconforming_codes"] == 1
     assert conn.execute("SELECT code_valid FROM queen WHERE code = ?", (odd.code,)).fetchone()[0] == 0
+
+
+def test_incremental_resumes_an_interrupted_full_crawl(tmp_path):
+    """Un crawl complet interrompu n'est pas masqué par l'incrémental : celui-ci reprend le complet."""
+    site = demo_site()
+    site.failures[queen_path(B.code)] = [503] * 5
+    crawler, conn = make_crawler(tmp_path, site)
+    first = crawler.full()
+    assert first.stopped
+    conn.close()
+    crawler, conn = make_crawler(tmp_path, site)
+    report = crawler.incremental()
+    assert (report.mode, report.run_id, report.stopped) == ("full", first.run_id, False)
+    assert parsed_codes(conn) == {q.code for q in QUEENS}
+    assert conn.execute("SELECT COUNT(*) FROM crawl_run").fetchone()[0] == 1
+
+
+def test_incremental_on_an_empty_database_runs_a_full_crawl(tmp_path):
+    crawler, conn = make_crawler(tmp_path, demo_site())
+    report = crawler.incremental()
+    assert report.mode == "full" and not report.stopped
+    assert parsed_codes(conn) == {q.code for q in QUEENS}

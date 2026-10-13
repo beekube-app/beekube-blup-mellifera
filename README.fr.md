@@ -65,7 +65,7 @@ docker compose run --rm mellifera python -m mellifera status
 
 Commandes (`python -m mellifera …`, ou `.venv/bin/python -m mellifera …` hors Docker) :
 
-- `crawl --full` / `crawl --incremental` : parcourt le site ; un passage interrompu est repris par le passage suivant de même mode ;
+- `crawl --full` / `crawl --incremental` : parcourt le site ; un passage interrompu est repris par le passage suivant de même mode ; tant qu'aucun crawl complet n'a abouti, `--incremental` reprend le complet ; si la liste des pays (`/all/`) est illisible, le passage sort en erreur (code 1) ;
 - `reparse [--kind countries|country|queens_list|season|queen]` : reconstruit la base depuis le cache brut, sans réseau ;
 - `status` : dernier passage, volumes, pages par type et statut, critères non mappés ;
 - `export-blup --breeder CBP --breeder 200 [--from 2018] [--sources season_table,radar] [--profile breeder] -o data/mellifera/export.json` : exporte les reines de ces éleveurs et leur ascendance. `--breeder` accepte un trigramme (casse indifférente) ou un id Index Mellifera ; un trigramme porté par plusieurs éleveurs est refusé. Seuls les tableaux d'évaluations sont exportés par défaut ; `radar` ajoute les valeurs annuelles du graphique des fiches ;

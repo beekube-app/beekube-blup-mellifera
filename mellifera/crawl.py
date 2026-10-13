@@ -91,7 +91,8 @@ class Crawler:
         kind = kind_of(path)
         row = self.conn.execute("SELECT status, cache_path, fetched_at, run_id FROM page WHERE url = ?",
                                 (path,)).fetchone()
-        if row is not None and row["run_id"] == self.run_id and row["status"] != "error":
+        if (row is not None and row["run_id"] == self.run_id and row["status"] != "error"
+                and (row["status"] == "ok" or kind != "countries")):    # /all/ illisible : redemandée
             self.counters["resumed_pages"] += 1
             self.pages[kind][row["status"]] += 1
             body = self.cache.get(row["cache_path"]) if row["status"] == "ok" else None
@@ -205,7 +206,10 @@ class Crawler:
                 self._visit_queen(code)
 
     def _countries(self, new_breeder: Callable[[BreederEntry], bool], min_year: Optional[int]) -> None:
-        for c in self._visit(countries_path()) or ():
+        countries = self._visit(countries_path())
+        if countries is None:       # liste des pays refusée, absente ou illisible : rien ne peut être parcouru
+            raise TooManyErrors(f"{countries_path()} illisible : aucun pays à parcourir")
+        for c in countries:
             for b in self._visit(country_path(c.id)) or ():
                 self._breeder(b, None if new_breeder(b) else min_year)
 
@@ -226,6 +230,14 @@ class Crawler:
         return self._run("full", body)
 
     def incremental(self) -> RunReport:
+        """Sans crawl complet abouti, ou avec un complet interrompu, reprend le complet : sinon l'incrémental
+        (années récentes seulement) masquerait les pages jamais lues."""
+        pending = self.conn.execute("SELECT 1 FROM crawl_run WHERE mode = 'full' AND finished_at IS NULL").fetchone()
+        done = self.conn.execute("SELECT 1 FROM crawl_run WHERE mode = 'full' AND finished_at IS NOT NULL").fetchone()
+        if pending is not None or done is None:
+            log.warning("aucun crawl complet abouti : le passage incrémental est remplacé par le crawl complet")
+            return self.full()
+
         def is_new(b: BreederEntry) -> bool:
             row = self.conn.execute("SELECT first_seen FROM breeder WHERE id = ?", (b.id,)).fetchone()
             return row is None or row["first_seen"] >= self.started_at

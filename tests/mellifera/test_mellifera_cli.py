@@ -97,3 +97,22 @@ def test_cli_does_not_import_numpy():
             "heavy = sorted(m for m in sys.modules if m.split('.')[0] in ('numpy', 'scipy')); "
             "assert not heavy, heavy")
     subprocess.run([sys.executable, "-c", code], cwd=ROOT, check=True)
+
+
+@pytest.mark.parametrize("status", [403, 404])
+def test_unreadable_country_list_is_not_a_finished_run(settings, status):
+    """/all/ refusée ou absente : rien n'a été parcouru, le passage n'est pas « terminé » et sort en erreur."""
+    site = demo_site()
+    site.failures["/all/"] = [status]
+    assert crawl(settings, site) == EXIT_NETWORK
+    assert "inachevé" in status_lines(settings)[0]
+    site.requests.clear()
+    assert crawl(settings, site) == EXIT_OK                 # la reprise redemande /all/
+    assert site.paths[0] == "/all/"
+
+
+def test_status_lists_unfinished_runs(settings):
+    site = demo_site()
+    site.failures[f"/queen/{DEMO['B'].code}/"] = [503] * 5
+    assert crawl(settings, site) == EXIT_NETWORK
+    assert "passages inachevés : n° 1 full" in status_lines(settings)

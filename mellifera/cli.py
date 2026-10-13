@@ -91,6 +91,10 @@ def status_lines(settings: Settings) -> list[str]:
         else:
             state = f"terminé le {run['finished_at']}" if run["finished_at"] else "inachevé (reprise au prochain passage)"
             out.append(f"dernier passage : n° {run['id']} {run['mode']}, commencé le {run['started_at']}, {state}")
+        unfinished = [f"n° {r['id']} {r['mode']}" for r in conn.execute(
+            "SELECT id, mode FROM crawl_run WHERE finished_at IS NULL ORDER BY id")]
+        if unfinished:
+            out.append("passages inachevés : " + ", ".join(unfinished))
         for table in ("country", "breeder", "queen", "evaluation", "mating_code", "criterion", "page"):
             out.append(f"{table} : {conn.execute(f'SELECT COUNT(*) FROM {table}').fetchone()[0]}")
         for r in conn.execute("SELECT kind, status, COUNT(*) AS n, SUM(parse_error IS NOT NULL) AS errors "
