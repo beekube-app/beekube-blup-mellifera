@@ -61,8 +61,7 @@ class PoliteClient:
         self._last: Optional[float] = None
         self._http = httpx.Client(
             base_url=self.base_url, transport=transport, timeout=timeout, follow_redirects=False,
-            headers={"User-Agent": self.user_agent, "Accept-Language": "en"},
-            cookies={"django_language": "en"},
+            headers={"User-Agent": self.user_agent, "Accept-Language": "en", "Cookie": "django_language=en"},
         )
 
     def close(self) -> None:
@@ -79,7 +78,6 @@ class PoliteClient:
             remaining = self._current_delay - (self._clock() - self._last)
             if remaining > 0:
                 self._sleep(remaining)
-        self._last = self._clock()
 
     def _ok(self) -> None:
         self._errors = 0
@@ -102,6 +100,9 @@ class PoliteClient:
             except httpx.TransportError as exc:          # délai dépassé, connexion refusée…
                 self._failure(current, type(exc).__name__)
                 continue
+            finally:
+                self._last = self._clock()               # le délai court depuis la fin de la réponse
+                self._http.cookies.clear()               # jamais de cookie posé par le site (session, csrf)
             code = r.status_code
             if code == 200:
                 self._ok()

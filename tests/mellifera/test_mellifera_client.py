@@ -138,3 +138,43 @@ def test_redirect_chain_is_cut_after_three_hops():
     resp = make_client(site, FakeClock()).get("/queen/A/")
     assert (resp.status, resp.http_status) == ("forbidden", 302)
     assert site.paths == ["/queen/A/", "/queen/B/", "/queen/C/", "/queen/D/"]
+
+
+def test_delay_counts_from_the_end_of_the_previous_response():
+    """Une réponse lente (1,9 s) ne mange pas le délai : la pause suit la fin de la réponse."""
+    clock = FakeClock()
+
+    def slow(request):
+        clock.now += 1.9
+        return httpx.Response(200, content=b"x")
+    client = PoliteClient(BASE, "c", 2.0, 5, transport=httpx.MockTransport(slow), sleep=clock.sleep, clock=clock.clock)
+    client.get("/all/")
+    client.get("/countrybyyear/8/")
+    assert clock.sleeps == [2.0]
+
+
+def test_backoff_is_not_eaten_by_timeouts():
+    clock = FakeClock()
+
+    def timeout(request):
+        clock.now += 30.0
+        raise httpx.ReadTimeout("lent", request=request)
+    client = PoliteClient(BASE, "c", 2.0, 3, transport=httpx.MockTransport(timeout), sleep=clock.sleep, clock=clock.clock)
+    with pytest.raises(TooManyErrors):
+        client.get("/all/")
+    assert clock.sleeps == [4.0, 8.0]
+
+
+def test_cookies_set_by_the_site_are_never_sent_back():
+    """Jamais de cookie de session : seul django_language part, même si le site pose sessionid ou csrftoken."""
+    sent = []
+
+    def handler(request):
+        sent.append(request.headers.get("cookie", ""))
+        return httpx.Response(200, content=b"x", headers=[("Set-Cookie", "sessionid=abc; Path=/"),
+                                                          ("Set-Cookie", "csrftoken=def; Path=/")])
+    clock = FakeClock()
+    client = PoliteClient(BASE, "c", 2.0, 5, transport=httpx.MockTransport(handler), sleep=clock.sleep, clock=clock.clock)
+    client.get("/all/")
+    client.get("/countrybyyear/8/")
+    assert sent == ["django_language=en", "django_language=en"]
