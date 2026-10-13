@@ -8,3 +8,5 @@ __pycache__/
 .pytest_cache/
 # Pages brutes Index Mellifera / Van Dyck (données personnelles) : jamais commitées
 /tests/mellifera/fixtures/raw/
+# Base et cache du crawler Index Mellifera (le cache contient des noms) : jamais commités
+/data/mellifera/

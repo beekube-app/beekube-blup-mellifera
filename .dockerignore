@@ -4,3 +4,5 @@
 .pytest_cache/
 **/__pycache__/
 .env.*
+data/mellifera/
+tests/mellifera/fixtures/raw/
