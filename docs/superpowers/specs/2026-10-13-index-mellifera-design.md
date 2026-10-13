@@ -1,6 +1,6 @@
 # Index Mellifera — spécification (crawler, base, export BLUP, résolution des lignées)
 
-Date : 13/10/2026. Statut : à valider.
+Date : 13/10/2026. Statut : validée (13/10/2026).
 Entrées : [`docs/superpowers/specs/2026-10-12-blup-v2-design.md`](2026-10-12-blup-v2-design.md)
 (contrat v2, sémantique du pedigree §1) ; code du moteur v2 sur `main` (5f2170a).
 
@@ -53,9 +53,9 @@ Critères de réussite :
 Non publiques (redirection vers `/accounts/login/`) : `/rating/<id>` (détail d'une cotation),
 `/exportYearQueens/<éleveur>/<année>/` (export CSV).
 
-Volume observé le 13/10/2026 : 26 pays, 748 éleveurs ; France = 85 éleveurs, 412 pages de
-saison ; ~56 reines par page. Estimation : ~3 700 listes, ~3 500 pages de saison, quelques
-dizaines de milliers de fiches.
+Volume observé le 13/10/2026 : 32 pays (dont « Unknown », sans code ISO), 754 éleveurs ;
+France = 85 éleveurs, 412 pages de saison ; ~56 reines par page. Estimation : ~3 700 listes,
+~3 500 pages de saison, quelques dizaines de milliers de fiches.
 
 ### 2.2 Sémantique des champs
 
@@ -195,7 +195,7 @@ Chaque champ normalisé est stocké à côté de sa valeur brute (`*_raw`).
 - Un parseur par type de page, fonction pure : octets → structures, sans réseau ni base.
   `PARSER_VERSION` est enregistrée sur chaque ligne ; `mellifera reparse [--kind <type>]`
   reconstruit la base depuis le cache.
-- HTML approximatif (attributs mal formés comme `itle=`, `<p>` non fermés) : parseur tolérant
+- HTML approximatif (`<p>` non fermés) : parseur tolérant
   (BeautifulSoup) ; repérage par **libellés** (« International Code », « Mother », « Drones »,
   « Number »…), jamais par position.
 - Tableaux d'évaluations : colonnes lues d'après l'en-tête de chaque tableau ; `-` → absent ;
