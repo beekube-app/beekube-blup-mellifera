@@ -61,3 +61,32 @@ class FakeClock:
     def sleep(self, seconds: float) -> None:
         self.sleeps.append(round(seconds, 6))
         self.now += seconds
+
+
+# ------------------------------------------------------------------ pages synthétiques (balisage du site)
+def _page(body: str) -> bytes:
+    return f"<!DOCTYPE html><html><head><title>Index Mellifera</title></head><body>{body}</body></html>".encode()
+
+
+def countries_page(countries: list[tuple[int, str, Optional[str], int]]) -> bytes:
+    """[(id, nom, ISO ou None, nombre d'éleveurs)]"""
+    blocks = "".join(
+        f'<div class="col-lg-2"><a href="/countrybyyear/{cid}/">'
+        f'<img src="/media/flags/{iso or "XX_abc"}.png" alt="flag"></a><h3>{name}</h3><h3>{n} Breeders</h3></div>'
+        for cid, name, iso, n in countries)
+    return _page(f'<div class="row">{blocks}</div>')
+
+
+def _season_links(breeder_id: int, years: list[int]) -> str:
+    return "".join(f'<a href="/breeder_Year/{breeder_id}/{y}/">{y},</a>' for y in years)
+
+
+def country_page(breeders: list[tuple[int, str, list[int]]]) -> bytes:
+    """[(id éleveur, trigramme, années de saison)]"""
+    rows = "".join(
+        f'<li class="list-group-item"><div class="row"><div class="col-3"><a href="/breeder/{bid}/">{tri}</a></div>'
+        f'<div class="col-7">{_season_links(bid, years)}</div>'
+        f'<div class="col-1"><a href="/profile/{bid}/">Profil</a></div></div></li>'
+        for bid, tri, years in breeders)
+    head = '<li class="list-group-item bg-light"><div class="row"><div class="col-3"><span>Breeder</span></div></div></li>'
+    return _page(f'<ul class="list-group">{head}{rows}</ul>')
