@@ -179,7 +179,7 @@ Chaque champ normalisé est stocké à côté de sa valeur brute (`*_raw`).
 | `queen` | `id` (entier interne, autoincrément), `code` (unique), `name` (`B4536(NG)`), `birth_year`, `breeder_id`, `mother_code`, `drone_mother_code`, `n_drone_queens`, `mating_code`, `mating_type`, `single_drone`, `insemination_date`, `race_code`, `race_description`, `lineage`, `generation_raw`, `coi`, `coi_reliability`, `not_found_raw`, `cotation_count`, `serial_raw`, `origin_raw`, `data_origin_raw`, `mother_comment_raw`, `drone_comment_raw`, `parse_version`, `fetched_at`, `parsed_at` |
 | `mating_code` | `code`, `description`, `mating_type` (déduit), `mating_type_override` (manuel) |
 | `criterion` | `id` (entier), `code` (`mildness`, `honeyAmt`, `hyg24h`…), `label`, `kind` (`note`, `percentage`, `harvest`, `unknown`), `scale_min`, `scale_max`, `direction` |
-| `evaluation` | `id`, `queen_code`, `tester` (trigramme), `tester_breeder_id`, `eval_date`, `eval_year`, `criterion_code`, `value`, `value_raw`, `source` (`season_table`, `radar`), `url` ; unique (`queen_code`, `tester`, `eval_date`, `criterion_code`, `source`) |
+| `evaluation` | `id`, `queen_name_raw`, `queen_birth_year_raw` (toujours remplis), `queen_code` (nullable : résolution §6), `queen_key` (non nul : `queen_code` si résolu, sinon `name:<nom>\|<année>`), `tester` (trigramme), `tester_breeder_id`, `eval_date`, `eval_year`, `criterion_code`, `value`, `value_raw`, `source` (`season_table`, `radar`), `url` ; unique (`queen_key`, `tester`, `eval_date`, `criterion_code`, `source`) — `queen_key` est non nul parce que SQLite laisse passer les doublons d'une contrainte d'unicité contenant NULL |
 | `page` | `url` (clé), `kind`, `status` (`ok`, `missing`, `forbidden`, `error`), `http_status`, `fetched_at`, `sha256`, `cache_path`, `parse_error`, `run_id` |
 | `crawl_run` | `id`, `mode` (`full`, `incremental`, `reparse`), `started_at`, `finished_at`, `stats` (JSON) |
 
@@ -200,6 +200,21 @@ Chaque champ normalisé est stocké à côté de sa valeur brute (`*_raw`).
   « Number »…), jamais par position.
 - Tableaux d'évaluations : colonnes lues d'après l'en-tête de chaque tableau ; `-` → absent ;
   dates Django (`Sept. 7, 2020`) → ISO.
+- **Identification de la reine d'une ligne d'évaluation.** La cellule « Queen » est du texte
+  sans lien : tantôt un code (`FR-CBP-A-0203-2020`), tantôt un nom affiché (`B943(CBP)`,
+  `A087`). Résolution, dans cet ordre :
+  1. la cellule correspond à l'expression régulière du code → ce code ;
+  2. un lien `/queen/<code>/` **de la même page** a ce texte exact et un seul `href` → ce code
+     (vérifié sur `breeder_Year/145/2021` et `2022` : toutes les lignes se résolvent ainsi) ;
+  3. recherche dans `queen` par (`name`, `birth_year`, éleveur) — éleveur = trigramme entre
+     parenthèses s'il y en a (`B131(SPD)` → SPD), sinon éleveur de la page ;
+  4. recherche par (`name`, `birth_year`) si le résultat est unique en base ;
+  5. sinon non résolue : `queen_code` nul, comptée dans le rapport, écartée de l'export.
+
+  Les étapes 3 et 4 sont refaites à chaque `reparse` et en fin de crawl, car la fermeture peut
+  faire entrer la reine en base plus tard ; une ligne qui se résout prend alors pour
+  `queen_key` son code, et fusionne avec une éventuelle ligne identique déjà enregistrée sous ce
+  code.
 - Graphique des cotations : extrait du JavaScript intégré (`labels`, un jeu de valeurs par
   année) → `evaluation` avec `source = radar`, `eval_date` = 1er janvier de l'année du jeu
   (seule l'année est connue).
@@ -348,6 +363,10 @@ Volet 1 (`tests/mellifera/`) :
   fermeture sur les parents absents ; verrou.
 - **Base** : écritures idempotentes ; dédoublonnage des évaluations entre pages de saison ;
   `reparse` donne la même base.
+- **Identification des reines évaluées** (§6) : ligne par code ; ligne par nom résolue par un
+  lien de la page ; ligne par nom avec trigramme résolue en base ; ligne par nom nu ambigu →
+  non résolue ; une reine non résolue au premier passage est résolue après la fermeture ; la
+  même évaluation vue sous son nom puis sous son code donne une seule ligne.
 - **Export** : la sortie passe `BlupV2Input` et `run_blup` sur une mini-base issue des
   fixtures ; échelles (notes, pourcentages / 100, récoltes exclues) ; ascendance incluse ;
   mère absente → `mother_ref_ext` ; côté mâle connu et type inconnu → `insemination` ; cycle
