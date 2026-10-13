@@ -90,3 +90,67 @@ def country_page(breeders: list[tuple[int, str, list[int]]]) -> bytes:
         for bid, tri, years in breeders)
     head = '<li class="list-group-item bg-light"><div class="row"><div class="col-3"><span>Breeder</span></div></div></li>'
     return _page(f'<ul class="list-group">{head}{rows}</ul>')
+
+
+@dataclass
+class Q:
+    """Reine synthétique : sert à la fois aux listes et aux fiches."""
+    code: str
+    year: int
+    breeder_id: int
+    name: Optional[str] = None
+    mother: Optional[str] = None
+    drones: Optional[str] = None
+    number: Optional[int] = None
+    cotations: int = 0
+    mating: tuple[str, str, str] = ("ins", "Instrumental insemination", "Instrumental insemination (ins)")
+    radar: dict[int, list[float]] = field(default_factory=dict)   # année → 5 valeurs
+
+    @property
+    def label(self) -> str:
+        return self.name or self.code
+
+
+def _link(code: Optional[str], empty: str) -> str:
+    return f'<a href="/queen/{code}/">{code}</a>' if code else empty
+
+
+def queens_list_page(breeder_id: int, trigram: str, country_id: int, years: list[int], queens: list[Q]) -> bytes:
+    nav = "".join(f'<a href="/breederbyyear/{breeder_id}/{y}/">{y}</a> ' for y in years)
+    head = ('<li class="list-group-item bg-light"><div class="row">' + "".join(
+        f'<div class="col">{h}</div>' for h in ("Name", "Birth", "Mother", "Drones", "Cotation", "Serial", "Queen"))
+        + "</div></li>")
+    rows = "".join(
+        '<li class="list-group-item"><div class="row">'
+        f'<div class="col"><a href="/queen/{q.code}/">{q.label}</a></div><div class="col">{q.year}</div>'
+        f'<div class="col">{_link(q.mother, "Unknowne")}</div><div class="col">{_link(q.drones, "Unknown")}</div>'
+        f'<div class="col">{q.cotations}</div><div class="col">None</div>'
+        f'<div class="col"><a href="/queen/{q.code}/">{q.code}</a></div></div></li>'
+        for q in queens)
+    crumbs = f'<a href="/countrybyyear/{country_id}/">FR</a> / <a href="/breeder/{breeder_id}/">{trigram}</a>'
+    return _page(f"{crumbs}<div>{nav}</div><ul>{head}{rows}</ul>")
+
+
+def queen_page(q: Q) -> bytes:
+    radar = ""
+    if q.radar:
+        sets = "".join(f"{{ label: '{y}', data: [{', '.join(f'{v:g}' for v in vals)}] }}," for y, vals in q.radar.items())
+        radar = ("<script>var marksData = { labels: ['swarming', 'mildness', 'frameHolding', 'wintering', "
+                 f"'broodVitality'], datasets: [{sets}] }};</script>")
+    code, desc, title = q.mating
+    ratings = "".join(f'<a href="/rating/{i + 1}" class="list-group-item">{q.code} - 01/07/2023 - Testeur anonyme</a>'
+                      for i in range(q.cotations))
+    return _page(
+        f'<div class="cadree"><h1>{q.label}</h1>'
+        f"<p><strong>International Code : </strong>{q.code}</p>"
+        f"<p><strong>Birth Year : </strong>{q.year}</p>"
+        f"<p><strong>Mother : </strong>{_link(q.mother, 'Unknown')}</p>"
+        f"<p><strong>Drones : </strong>{_link(q.drones, 'Unknown')}"
+        f"<strong> -- Number : </strong>{q.number if q.number is not None else 'None'}</p>"
+        f'<p><strong>Breeder : </strong><a href="/breederbyyear/{q.breeder_id}/{q.year}/">Queens list {q.year}.</a></p>'
+        f"<h1>Details</h1>"
+        f'<p title="{title}"><strong>Insemination Code : </strong>{code}<strong> -- Description </strong>{desc}</p>'
+        f"<p><strong>Declared Race : </strong>No<strong> -- Race Code : </strong>B"
+        f"<strong> -- Lineage : </strong>Unknown<strong> -- Description </strong>buckfast</p>"
+        f"<p><strong>Import : </strong>no<strong> -- Comment : </strong>No</p>{radar}</div>"
+        f'<div class="list-group">{ratings}</div>')
