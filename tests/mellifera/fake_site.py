@@ -206,3 +206,35 @@ def db_snapshot(conn) -> dict[str, list[tuple]]:
         drop = {"parsed_at", "id"} if name in ("queen", "evaluation") else set()
         out[name] = [tuple(v for k, v in zip(r.keys(), r) if k not in drop) for r in rows]
     return out
+
+
+# ------------------------------------------------------------------ site de démonstration (crawl, CLI)
+DEMO = {
+    "A": Q("FR-CBP-B-0001-2022", 2022, 145, name="B001(CBP)", mother="FR-CBP-B-0100-2020",
+           drones="FR-OLD-B-0001-2019", number=8, cotations=1),
+    "B": Q("FR-CBP-B-0002-2022", 2022, 145, mother="FR-CBP-B-0100-2020", cotations=1),
+    "C": Q("FR-CBP-B-0003-2021", 2021, 145, name="C003"),
+    "D": Q("FR-NG-B-0001-2024", 2024, 200, mother="FR-CBP-B-0001-2022", drones="FR-CBP-B-0003-2021", number=3),
+    "M": Q("FR-CBP-B-0100-2020", 2020, 145, name="M100", mother="FR-CBP-B-0050-2018"),
+    "G": Q("FR-CBP-B-0050-2018", 2018, 145, name="G050"),
+}
+
+
+def demo_site() -> FakeSite:
+    """Deux éleveurs français (CBP 145, NG 200). M et G ne sont dans aucune liste : seule la fermeture les lit.
+    FR-OLD-B-0001-2019 (côté mâle de A) n'existe pas sur le site."""
+    a, b, c, d = DEMO["A"], DEMO["B"], DEMO["C"], DEMO["D"]
+    return FakeSite({
+        "/all/": countries_page([(8, "France", "FR", 2), (0, "Unknown", None, 0)]),
+        "/countrybyyear/8/": country_page([(145, "CBP", [2022]), (200, "NG", [2024])]),
+        "/countrybyyear/0/": country_page([]),
+        "/breederbyyear/145/2022/": queens_list_page(145, "CBP", 8, [2022, 2021], [a, b]),
+        "/breederbyyear/145/2021/": queens_list_page(145, "CBP", 8, [2022, 2021], [c]),
+        "/breederbyyear/200/2024/": queens_list_page(200, "NG", 8, [2024], [d]),
+        **{f"/queen/{q.code}/": queen_page(q) for q in DEMO.values()},
+        "/breeder_Year/145/2022/": season_page(
+            [E("B001(CBP)", 2022, {"mildness": "5"}), E("FR-CBP-B-0002-2022", 2022, {"mildness": "4"}),
+             E("C003", 2021, {"mildness": "3"}), E("M100", 2020, {"mildness": "6"})],
+            links=[(a.code, "B001(CBP)")]),
+        "/breeder_Year/200/2024/": season_page([E("FR-CBP-B-0001-2022", 2022, {"mildness": "5"})]),
+    })
