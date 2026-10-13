@@ -163,3 +163,43 @@ def test_export_does_not_import_numpy():
             "heavy = sorted(m for m in sys.modules if m.split('.')[0] in ('numpy', 'scipy')); "
             "assert not heavy, heavy")
     subprocess.run([sys.executable, "-c", code], cwd=ROOT, check=True)
+
+
+class _CountingConn:
+    """Connexion qui note les lignes lues de la table evaluation."""
+
+    def __init__(self, conn):
+        self._conn, self.evaluation_rows = conn, []
+
+    def __getattr__(self, name):
+        return getattr(self._conn, name)
+
+    def execute(self, sql, *args):
+        rows = self._conn.execute(sql, *args).fetchall()
+        if "FROM evaluation" in sql:
+            self.evaluation_rows += rows
+        return iter_cursor(rows)
+
+
+class iter_cursor(list):
+    def fetchall(self):
+        return list(self)
+
+    def fetchone(self):
+        return self[0] if self else None
+
+
+def test_export_reads_only_the_evaluations_of_exported_queens(conn):
+    """Sur la base complète (des centaines de milliers d'évaluations), l'export ne lit que celles des reines
+    exportées."""
+    for i in range(50):
+        conn.execute("INSERT INTO evaluation (queen_name_raw, queen_code, queen_key, tester, eval_date, eval_year, "
+                     "mode, criterion_code, value, value_raw, source, url) VALUES (?, ?, ?, '', ?, 2024, 'breeder', "
+                     "'mildness', 3, '3', 'season_table', '/breeder_Year/200/2024/')",
+                     (D.code, D.code, D.code, f"2024-01-{i % 28 + 1:02d}T{i:02d}"))
+    conn.commit()
+    counting = _CountingConn(conn)
+    inp, _ = export_blup(counting, ["CBP"])
+    assert inp.records
+    assert counting.evaluation_rows
+    assert D.code not in {r["queen_code"] for r in counting.evaluation_rows}

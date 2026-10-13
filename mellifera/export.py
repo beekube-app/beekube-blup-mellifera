@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import json
 import sqlite3
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
@@ -172,8 +173,9 @@ def _records(conn: sqlite3.Connection, codes: dict[int, str], breeders: dict[int
     rows = conn.execute(
         "SELECT e.*, t.id AS trait_id, t.name AS trait, t.kind, t.scale_min, t.scale_max, t.direction "
         "FROM evaluation e LEFT JOIN criterion c ON c.mode = e.mode AND c.code = e.criterion_code "
-        f"LEFT JOIN trait t ON t.id = c.trait_id WHERE e.queen_code IS NOT NULL AND e.source IN ({marks}) ORDER BY e.id",
-        list(sources)).fetchall()
+        f"LEFT JOIN trait t ON t.id = c.trait_id WHERE e.source IN ({marks}) "
+        "AND e.queen_code IN (SELECT value FROM json_each(?)) ORDER BY e.id",    # seules les reines exportées
+        [*sources, json.dumps(sorted(codes.values()))]).fetchall()
     id_of = {code: qid for qid, code in codes.items()}
     cells: dict[tuple, list[float]] = defaultdict(list)
     traits: dict[int, sqlite3.Row] = {}
