@@ -1,0 +1,421 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="/static/img/favicon.ico"/>
+    
+    <link rel="stylesheet" href="/static/js/treant-js-master/Treant.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery-ui.structure.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery-ui.theme.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/bootstrap-datepicker.standalone.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/pedigree.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery.rateyo.min.css" type="text/css" media="all">
+    
+    <script src="/static/js/popper.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-ui.js" type="text/javascript"></script>
+    <script src="/static/js/jquery.form.js" type="text/javascript"></script>
+    <script src="/static/js/treant-js-master/Treant.js" type="text/javascript"></script>
+    <script src="/static/js/treant-js-master/vendor/raphael.js" type="text/javascript"></script>
+    <script src="/static/js/bootstrap.js" type="text/javascript"></script>
+    <script src="/static/js/moment.js" type="text/javascript"></script>
+    <script src="/static/js/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script src="/static/js/pedigree.js" type="text/javascript"></script>
+    <script src="/static/js/jquery.rateyo.js" type="text/javascript"></script>
+    
+
+    <title>
+      
+        Index Mellifera
+      
+    </title>
+  </head>
+
+  <body>
+    <header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/welcome/">Index Mellifera</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/all/">Country index</a>
+          </li>
+	  
+          <li class="nav-item">
+            <a class="nav-link" href="/multiCriteresSearch/">Multicriteria search</a>
+          </li>
+	  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              New record
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/queen/add/">New queen</a>
+              <a class="dropdown-item" href="/importFile/">Queens import from file</a>
+              <a class="dropdown-item" href="/rating/add/">New cotation</a>
+              <a class="dropdown-item" href="/importRatings/">Cotations import from file</a>
+            </div>
+          </li>
+	  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Breeder space
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/profile/0/">Profil</a>
+              <a class="dropdown-item" href="/my_queens/">All queens</a>
+              <a class="dropdown-item" href="/registerProfile/">Register new profile</a>
+            </div>
+          </li>
+	  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Administration
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/admin/">Admin Panel</a>
+              <a class="dropdown-item" href="/validate/queens/">Queens to validate</a>
+              <a class="dropdown-item" href="/validate/ratings/">Cotations to validate</a>
+            </div>
+          </li>
+        </ul>
+
+	
+
+        <ul class="navbar-nav navbar-right">
+          <li class="nav-item dropdown">
+            
+            
+            
+            
+              <a class="nav-link dropdown-toggle" href="#" 
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                English
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                
+                  <a class="dropdown-item" href="/change_language/de/">Deutsch</a>
+                
+                  <a class="dropdown-item" href="/change_language/en/">English</a>
+                
+                  <a class="dropdown-item" href="/change_language/fr/">français</a>
+                
+                  <a class="dropdown-item" href="/change_language/ka/">ქართული</a>
+                
+              </div>
+          </li>
+          
+          <li><a class="btn btn-success" href="/accounts/login/?next=/breeder_Year/984/2026/">
+          Login</a></li>
+          
+        </ul>
+      </div>
+    </nav>
+  </header>
+    
+
+    
+<div class="container-fluid fondBeige">
+    <div class="row, cadree"><h2><a href="/all/">Index</a> ><a href="/countrybyyear/8/">
+                    FR</a> ><a href="/profile/984/">NG</a></h2><h3><a href="/breeder_Year/984/2026/">2026</a>,
+            
+                <a href="/breeder_Year/984/2025/">2025</a>,
+            
+                <a href="/breeder_Year/984/2024/">2024</a>,
+            
+                <a href="/breeder_Year/984/2023/">2023</a>,
+            
+                <a href="/breeder_Year/984/2022/">2022</a>,
+            
+                <a href="/breeder_Year/984/2021/">2021</a>,
+            
+                <a href="/breeder_Year/984/2020/">2020</a>,
+            
+                <a href="/breeder_Year/984/2019/">2019</a>,
+            
+                <a href="/breeder_Year/984/2018/">2018</a>,
+            
+                <a href="/breeder_Year/984/2017/">2017</a>,
+            
+                <a href="/breeder_Year/984/2016/">2016</a>,
+            
+                <a href="/breeder_Year/984/2012/">2012</a>,
+            
+        </h3></div><p class="text-center"><h1>
+            - Pedigree season 2026 -
+            
+        </h1></p><div class="row, cadree"><ul class="list-group"><h3 class="col-md-6">buckfast Breeder...</h3><li class="list-group-item"><div class="row"><div class="col-md-2 NT"><h5><a href='/queen/FR-NG-B-4536-2024/'
+                                        title="2024,PrimGreen00">B4536(NG)</a>
+                                        =<br /><small>
+                                        
+                                            
+                                                (1 q.)
+                                            
+                                        
+                                        </small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2024 – 
+                                        <a href="/queen/FR-NG-B-0098-2022/" 
+                                            title="2022,PrimGreen00">
+                                            B298(NG)</a><font color="red">-inng-</font><a href="/queen/FR-CBP-B-0104-2021/" 
+                                                    title="2021,">
+                                                    FR-CBP-B-0104-2021</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2022 – 
+                                        <a href="/queen/FR-NG-B-0052-2020/" 
+                                            title="2020,PrimGreen00">
+                                            B052(NG)</a><font color="red">-inng-</font><a href="/queen/FR-NG-B-0033-2020/" 
+                                                    title="2020,Cauca02R">
+                                                    B033(NG)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2020 – 
+                                        <a href="/queen/FR-NG-V-0046-2018/" 
+                                            title="2018,PrimGreen00">
+                                            B846(NG)</a><font color="red">-insng-</font><a href="/queen/FR-NG-B-0078-2019/" 
+                                                    title="2019,Cauca02R">
+                                                    B978(NG)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2018 – 
+                                        <a href="/queen/FR-FL-V-0099-2017/" 
+                                            title="2017,PrimGreen00">
+                                            V99(FL)</a><font color="red">-ins-</font><a href="/queen/FR-FL-B-0348-2016/" 
+                                                    title="2016,AthosSt80R">
+                                                    B348(FL)1dr</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                        G11 of PrimGreen00
+                                    
+                                
+                            
+                        </div></div></li></ul><ul class="list-group"></ul></div><div class="row, cadree"><ul class="list-group"><h3 class="col-md-6">buckfast Just Inseminated Breeder...</h3><li class="list-group-item"><div class="row"><div class="col-md-2 BN"><h5><a href='/queen/FR-NG-B-0372-2026/'
+                                        title="2026,PrimGreen00">B6372(NG)</a>
+                                        =<br /><small></small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2026 – 
+                                        <a href="/queen/FR-NG-B-4536-2024/" 
+                                            title="2024,PrimGreen00">
+                                            B4536(NG)</a><font color="red">-inng-</font><a href="/queen/FR-CBP-B-0104-2021/" 
+                                                    title="2021,">
+                                                    FR-CBP-B-0104-2021</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2024 – 
+                                        <a href="/queen/FR-NG-B-0098-2022/" 
+                                            title="2022,PrimGreen00">
+                                            B298(NG)</a><font color="red">-inng-</font><a href="/queen/FR-CBP-B-0104-2021/" 
+                                                    title="2021,">
+                                                    FR-CBP-B-0104-2021</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2022 – 
+                                        <a href="/queen/FR-NG-B-0052-2020/" 
+                                            title="2020,PrimGreen00">
+                                            B052(NG)</a><font color="red">-inng-</font><a href="/queen/FR-NG-B-0033-2020/" 
+                                                    title="2020,Cauca02R">
+                                                    B033(NG)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2020 – 
+                                        <a href="/queen/FR-NG-V-0046-2018/" 
+                                            title="2018,PrimGreen00">
+                                            B846(NG)</a><font color="red">-insng-</font><a href="/queen/FR-NG-B-0078-2019/" 
+                                                    title="2019,Cauca02R">
+                                                    B978(NG)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                        G12 of PrimGreen00
+                                    
+                                
+                            
+                        </div></div></li></ul></div><div class="row, cadree"><ul class="list-group"><h3 class="col-md-6">buckfast Drones, supplied by daughters of...</h3><li class="list-group-item"><div class="row"><div class="col-md-2 NJ"><h5><a href='/queen/FR-CBP-B-0104-2021/'
+                                        title="2021,">FR-CBP-B-0104-2021</a>
+                                        =<br /><small>
+                                        
+                                            
+                                                (1 q.)
+                                            
+                                        
+                                        </small></h5></div><div class="col-md-10">
+                            
+                                G0 of 
+                            
+                        </div></div></li></ul></div><div class="row, cadree"><h3>Used as below</h3><ul class="list-group"></ul><h4> for multi drone insemination </h4><ul class="list-group"><li class="list-group-item"><div class="row"><div class="col-2 NJ"><h5><a href='/queen/FR-CBP-B-0104-2021/'
+                            title="2021,">FR-CBP-B-0104-2021</a> : 
+                    </h5></div><div class="col-10"><div class="row"><div class="row"><div  class="NT" width="75%"><a href='/queen/FR-NG-B-4536-2024/'
+                        title="2024,PrimGreen00"> B4536(NG) </a></div><div class=""> (x1)</div></div></div></div></div></li></ul></div><div class="row, cadree"><h3>Evaluations</h3><ul class="list-group"><li class="list-group-item"><h5>mode : evjp</h5><table><tr><td class="tdh01">Queen</td><td class="tdh01">BirthYear</td><td class="tdh01">Tester</td><td class="tdh01">YearEva</td><td class="tdh01">
+                            tester
+                        </td><td class="tdh01">
+                            year
+                        </td><td class="tdh01">
+                            beeVital
+                        </td><td class="tdh01">
+                            broVital
+                        </td><td class="tdh01">
+                            mildness
+                        </td><td class="tdh01">
+                            framHold
+                        </td><td class="tdh01">
+                            swarming
+                        </td><td class="tdh01">
+                            fertil
+                        </td><td class="tdh01">
+                            sprCrop
+                        </td><td class="tdh01">
+                            sumCrop
+                        </td><td class="tdh01">
+                            falCrop
+                        </td><td class="tdh01">
+                            polCrop
+                        </td><td class="tdh01">
+                            winter
+                        </td><td class="tdh01">
+                            bldCombs
+                        </td><td class="tdh01">
+                            propolis
+                        </td><td class="tdh01">
+                            varNbr
+                        </td><td class="tdh01">
+                            vshPlus
+                        </td><td class="tdh01">
+                            nosemIdx
+                        </td><td class="tdh01">
+                            hyg24h
+                        </td><td class="tdh01">
+                            Comment
+                        </td></tr><tr><td class="td01">
+                        FR-CBP-B-0104-2021</td><td class="td01">2021</td><td class="td01">CBP</td><td class="td01">2023</td><td class="td01">
+                        
+                        145
+                        
+                        </td><td class="td01">
+                        
+                        July 6, 2023
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        6
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        4
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        50
+                        
+                        </td><td class="td01"></td></tr></table></li></ul></div><div class="cadree"><h3>Legends</h3><div class="row"><div id="colorLegend" class="col-4"><div class="cadree"><h4>Colors legend</h4><div class="row" ><div class="NT col-1" title="Queens (rn,NT)"></div><div class="col">Queens with no special characteristic</div></div><div class="row" ><div class="F1 col-1" title="Queens (rnx,F1)"></div><div class="col-11">Queens from one strain, but mated by drones from another strain. Their population and daughters (and drones of them) are F1 crossed.</div></div><div class="row" ><div class="BK col-1" title="Queens (mk,BK)"></div><div class="col-11">Queen and Drones result of a cross between two different lines : interesting to increase their resistance and qualities.</div></div><div class="row" ><div class="BF col-1" title="Queens (mf,BF)"></div><div class="col-11">Queen and Drones are Aunt-Nephews : that would correspond by us to a Sister-Brothers crossing.</div></div><div class="row" ><div class="BN col-1" title="Queens (mn,BN)"></div><div class="col-11">Queen and Drones have the same ancestors: combination to increase or stabilize some characteristics.</div></div><div class="row" ><div class="col-1 NJ" title="Queens (mj,NJ)"></div><div class="col-11">Queen and/or Drones have unknown exact origin : that makes unable to find their real status.</div></div><div class="row" ><div class="col-1 FF" title="Queens (ml,FF)"></div><div class="col-11">Queen and Drones, Aunt-Nephews, are F1  this is a real Mendelian F1 cross.</div></div><!---/ul---></div></div><div id="insemCodeLegend" class="col-4"><div class="cadree"><h4>Fecondation codes legend</h4><div class="row" ><div class="col-2 font-weight-bold" title="Instrumental insemination (ins)">ins</div><div class="col-10">Instrumental insemination</div></div><div class="row" ><div class="col-2 font-weight-bold" title="Instrumental insemination (FR)">inng</div><div class="col-10">Thorigné (FR) instrumental insemination</div></div></div></div><div id="RacesLegend" class="col-4"><div class="cadree"><h4>Races legend</h4><div class="row" ><div class="col-2 font-weight-bold" title="">B</div><div class="col-10">buckfast</div></div></div></div></div></div>
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,815 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="/static/img/favicon.ico"/>
+    
+    <link rel="stylesheet" href="/static/js/treant-js-master/Treant.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery-ui.structure.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery-ui.theme.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/bootstrap-datepicker.standalone.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/pedigree.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery.rateyo.min.css" type="text/css" media="all">
+    
+    <script src="/static/js/popper.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-ui.js" type="text/javascript"></script>
+    <script src="/static/js/jquery.form.js" type="text/javascript"></script>
+    <script src="/static/js/treant-js-master/Treant.js" type="text/javascript"></script>
+    <script src="/static/js/treant-js-master/vendor/raphael.js" type="text/javascript"></script>
+    <script src="/static/js/bootstrap.js" type="text/javascript"></script>
+    <script src="/static/js/moment.js" type="text/javascript"></script>
+    <script src="/static/js/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script src="/static/js/pedigree.js" type="text/javascript"></script>
+    <script src="/static/js/jquery.rateyo.js" type="text/javascript"></script>
+    
+
+    <title>
+      
+        Index Mellifera
+      
+    </title>
+  </head>
+
+  <body>
+    <header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/welcome/">Index Mellifera</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/all/">Country index</a>
+          </li>
+	  
+          <li class="nav-item">
+            <a class="nav-link" href="/multiCriteresSearch/">Multicriteria search</a>
+          </li>
+	  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              New record
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/queen/add/">New queen</a>
+              <a class="dropdown-item" href="/importFile/">Queens import from file</a>
+              <a class="dropdown-item" href="/rating/add/">New cotation</a>
+              <a class="dropdown-item" href="/importRatings/">Cotations import from file</a>
+            </div>
+          </li>
+	  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Breeder space
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/profile/0/">Profil</a>
+              <a class="dropdown-item" href="/my_queens/">All queens</a>
+              <a class="dropdown-item" href="/registerProfile/">Register new profile</a>
+            </div>
+          </li>
+	  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Administration
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/admin/">Admin Panel</a>
+              <a class="dropdown-item" href="/validate/queens/">Queens to validate</a>
+              <a class="dropdown-item" href="/validate/ratings/">Cotations to validate</a>
+            </div>
+          </li>
+        </ul>
+
+	
+
+        <ul class="navbar-nav navbar-right">
+          <li class="nav-item dropdown">
+            
+            
+            
+            
+              <a class="nav-link dropdown-toggle" href="#" 
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                English
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                
+                  <a class="dropdown-item" href="/change_language/de/">Deutsch</a>
+                
+                  <a class="dropdown-item" href="/change_language/en/">English</a>
+                
+                  <a class="dropdown-item" href="/change_language/fr/">français</a>
+                
+                  <a class="dropdown-item" href="/change_language/ka/">ქართული</a>
+                
+              </div>
+          </li>
+          
+          <li><a class="btn btn-success" href="/accounts/login/?next=/all/">
+          Login</a></li>
+          
+        </ul>
+      </div>
+    </nav>
+  </header>
+    
+
+    
+
+<div class="container-fluide">
+    <h2 class="display-4 my-3">Country index</h2>
+    <div class="row">    
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/26/">
+	            <img src="/media/flags/DE.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Germany
+            
+          </h3>
+	        <h3>
+            215
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/8/">
+	            <img src="/media/flags/FR.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              France
+            
+          </h3>
+	        <h3>
+            85
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/30/">
+	            <img src="/media/flags/BE.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Belgium
+            
+          </h3>
+	        <h3>
+            74
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/33/">
+	            <img src="/media/flags/DK.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Denmark
+            
+          </h3>
+	        <h3>
+            74
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/21/">
+	            <img src="/media/flags/SE.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Sweden
+            
+          </h3>
+	        <h3>
+            61
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/11/">
+	            <img src="/media/flags/NL.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Netherlands
+            
+          </h3>
+	        <h3>
+            62
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/4/">
+	            <img src="/media/flags/NO.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Norway
+            
+          </h3>
+	        <h3>
+            39
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/1/">
+	            <img src="/media/flags/LU.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Luxembourg
+            
+          </h3>
+	        <h3>
+            19
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/9/">
+	            <img src="/media/flags/AT.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Austria
+            
+          </h3>
+	        <h3>
+            12
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/5/">
+	            <img src="/media/flags/CH.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Switzerland
+            
+          </h3>
+	        <h3>
+            14
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/34/">
+	            <img src="/media/flags/RU.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Russia
+            
+          </h3>
+	        <h3>
+            11
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/12/">
+	            <img src="/media/flags/IT.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Italy
+            
+          </h3>
+	        <h3>
+            4
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/6/">
+	            <img src="/media/flags/TR.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Turkey
+            
+          </h3>
+	        <h3>
+            7
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/14/">
+	            <img src="/media/flags/FI.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Finland
+            
+          </h3>
+	        <h3>
+            7
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/13/">
+	            <img src="/media/flags/UA.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Ukraine
+            
+          </h3>
+	        <h3>
+            6
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/31/">
+	            <img src="/media/flags/PL.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Poland
+            
+          </h3>
+	        <h3>
+            3
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/17/">
+	            <img src="/media/flags/BY.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Belarus
+            
+          </h3>
+	        <h3>
+            6
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/19/">
+	            <img src="/media/flags/PT.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Portugal
+            
+          </h3>
+	        <h3>
+            7
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/22/">
+	            <img src="/media/flags/EE.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Estonia
+            
+          </h3>
+	        <h3>
+            4
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/20/">
+	            <img src="/media/flags/RO.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Romania
+            
+          </h3>
+	        <h3>
+            4
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/10/">
+	            <img src="/media/flags/ES.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Spain
+            
+          </h3>
+	        <h3>
+            2
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/7/">
+	            <img src="/media/flags/AU.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Australia
+            
+          </h3>
+	        <h3>
+            3
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/35/">
+	            <img src="/media/flags/RE_HNhsPa6.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Réunion
+            
+          </h3>
+	        <h3>
+            1
+            
+              Breeder
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/24/">
+	            <img src="/media/flags/LT.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Lithuania
+            
+          </h3>
+	        <h3>
+            3
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/2/">
+	            <img src="/media/flags/US.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              United States
+            
+          </h3>
+	        <h3>
+            1
+            
+              Breeder
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/32/">
+	            <img src="/media/flags/LV.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Latvia
+            
+          </h3>
+	        <h3>
+            2
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/28/">
+	            <img src="/media/flags/CY.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Cyprus
+            
+          </h3>
+	        <h3>
+            2
+            
+              Breeders
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/18/">
+	            <img src="/media/flags/GB.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              United Kingdom
+            
+          </h3>
+	        <h3>
+            1
+            
+              Breeder
+            
+          </h3>
+        </div>
+      
+      
+        
+      
+        
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/23/">
+	            <img src="/media/flags/IE.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Ireland
+            
+          </h3>
+	        <h3>
+            1
+            
+              Breeder
+            
+          </h3>
+        </div>
+      
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/16/">
+	            <img src="/media/flags/BG.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              Bulgaria
+            
+          </h3>
+	        <h3>
+            1
+            
+              Breeder
+            
+          </h3>
+        </div>
+      
+      
+        
+      
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+	        
+	          <a href="/countrybyyear/3/">
+	            <img src="/media/flags/MK.png" class="img-fluid rounded" alt="flag" width="15%">
+            </a>
+	        
+	        <h3>
+            
+              North Macedonia
+            
+          </h3>
+	        <h3>
+            1
+            
+              Breeder
+            
+          </h3>
+        </div>
+      
+      
+        
+      
+        
+      
+      
+      
+      <div class="col-3">
+	<a href="/countrybyyear/0/">
+	  <img src="/static/res/unknown.png" class="img-fluid rounded" alt="flag" width="15%"></a>
+	<h3>Unknown</h3>
+	<h3>
+    22 
+    
+      Breeders
+    
+  </h3>
+      </div>
+      
+    </div>
+</div>
+
+
+  </body>
+</html>

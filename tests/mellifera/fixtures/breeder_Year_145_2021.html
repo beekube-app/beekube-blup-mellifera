@@ -1,0 +1,889 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="/static/img/favicon.ico"/>
+    
+    <link rel="stylesheet" href="/static/js/treant-js-master/Treant.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery-ui.structure.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery-ui.theme.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/bootstrap-datepicker.standalone.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/pedigree.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/jquery.rateyo.min.css" type="text/css" media="all">
+    
+    <script src="/static/js/popper.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-ui.js" type="text/javascript"></script>
+    <script src="/static/js/jquery.form.js" type="text/javascript"></script>
+    <script src="/static/js/treant-js-master/Treant.js" type="text/javascript"></script>
+    <script src="/static/js/treant-js-master/vendor/raphael.js" type="text/javascript"></script>
+    <script src="/static/js/bootstrap.js" type="text/javascript"></script>
+    <script src="/static/js/moment.js" type="text/javascript"></script>
+    <script src="/static/js/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script src="/static/js/pedigree.js" type="text/javascript"></script>
+    <script src="/static/js/jquery.rateyo.js" type="text/javascript"></script>
+    
+
+    <title>
+      
+        Index Mellifera
+      
+    </title>
+  </head>
+
+  <body>
+    <header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/welcome/">Index Mellifera</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/all/">Country index</a>
+          </li>
+	  
+          <li class="nav-item">
+            <a class="nav-link" href="/multiCriteresSearch/">Multicriteria search</a>
+          </li>
+	  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              New record
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/queen/add/">New queen</a>
+              <a class="dropdown-item" href="/importFile/">Queens import from file</a>
+              <a class="dropdown-item" href="/rating/add/">New cotation</a>
+              <a class="dropdown-item" href="/importRatings/">Cotations import from file</a>
+            </div>
+          </li>
+	  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Breeder space
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/profile/0/">Profil</a>
+              <a class="dropdown-item" href="/my_queens/">All queens</a>
+              <a class="dropdown-item" href="/registerProfile/">Register new profile</a>
+            </div>
+          </li>
+	  
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Administration
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/admin/">Admin Panel</a>
+              <a class="dropdown-item" href="/validate/queens/">Queens to validate</a>
+              <a class="dropdown-item" href="/validate/ratings/">Cotations to validate</a>
+            </div>
+          </li>
+        </ul>
+
+	
+
+        <ul class="navbar-nav navbar-right">
+          <li class="nav-item dropdown">
+            
+            
+            
+            
+              <a class="nav-link dropdown-toggle" href="#" 
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                English
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                
+                  <a class="dropdown-item" href="/change_language/de/">Deutsch</a>
+                
+                  <a class="dropdown-item" href="/change_language/en/">English</a>
+                
+                  <a class="dropdown-item" href="/change_language/fr/">français</a>
+                
+                  <a class="dropdown-item" href="/change_language/ka/">ქართული</a>
+                
+              </div>
+          </li>
+          
+          <li><a class="btn btn-success" href="/accounts/login/?next=/breeder_Year/145/2021/">
+          Login</a></li>
+          
+        </ul>
+      </div>
+    </nav>
+  </header>
+    
+
+    
+<div class="container-fluid fondBeige">
+    <div class="row, cadree"><h2><a href="/all/">Index</a> ><a href="/countrybyyear/8/">
+                    FR</a> ><a href="/profile/145/">CBP</a></h2><h3><a href="/breeder_Year/145/2024/">2024</a>,
+            
+                <a href="/breeder_Year/145/2023/">2023</a>,
+            
+                <a href="/breeder_Year/145/2022/">2022</a>,
+            
+                <a href="/breeder_Year/145/2021/">2021</a>,
+            
+                <a href="/breeder_Year/145/2020/">2020</a>,
+            
+                <a href="/breeder_Year/145/2019/">2019</a>,
+            
+                <a href="/breeder_Year/145/2018/">2018</a>,
+            
+                <a href="/breeder_Year/145/2017/">2017</a>,
+            
+                <a href="/breeder_Year/145/2016/">2016</a>,
+            
+                <a href="/breeder_Year/145/2015/">2015</a>,
+            
+                <a href="/breeder_Year/145/2014/">2014</a>,
+            
+                <a href="/breeder_Year/145/2013/">2013</a>,
+            
+        </h3></div><p class="text-center"><h1>
+            - Pedigree season 2021 -
+            
+        </h1></p><div class="row, cadree"><ul class="list-group"><h3 class="col-md-6">buckfast Breeder...</h3><li class="list-group-item"><div class="row"><div class="col-md-2 NJ"><h5><a href='/queen/FR-CBP-B-0930-2019/'
+                                        title="2019,">B930(CBP)</a>
+                                        =<br /><small>
+                                        
+                                            
+                                                (1 q.)
+                                            
+                                        
+                                        </small></h5></div><div class="col-md-10">
+                            
+                                G0 of 
+                            
+                        </div></div></li><li class="list-group-item"><div class="row"><div class="col-md-2 NT"><h5><a href='/queen/LU-PJ-B-0063-2020/'
+                                        title="2020,PrimGreen00">B63(PJ)1dr</a>
+                                        =<br /><small>
+                                        
+                                            
+                                                (1 q.)
+                                            
+                                        
+                                        </small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2020 – 
+                                        <a href="/queen/LU-PJ-B-0483-2019/" 
+                                            title="2019,PrimGreen00">
+                                            B483(PJ)1dr</a><font color="red">-ins-</font><a href="/queen/BE-JML-B-0038-2016/" 
+                                                    title="2016,NO6294R">
+                                                    B38(JML)1dr</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2019 – 
+                                        <a href="/queen/LU-PJ-B-0332-2018/" 
+                                            title="2018,PrimGreen00">
+                                            B332(PJ)1dr</a><font color="red">-ins-</font><a href="/queen/LU-PJ-V-0002-2017/" 
+                                                    title="2017,PrimGreen00">
+                                                    V2(PJ)1dr</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2018 – 
+                                        <a href="/queen/LU-PJ-B-0853-2017/" 
+                                            title="2017,">
+                                            B853(PJ)1dr</a><font color="red">-ins-</font><a href="/queen/LU-PJ-B-0011-2016/" 
+                                                    title="2016,PrimGreen00">
+                                                    B11(PJ)1dr</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2017 – 
+                                        <a href="/queen/LU-PJ-B-0197-2015/" 
+                                            title="2015,">
+                                            B197(PJ)</a><font color="red">-ins-</font><a href="/queen/LU-PJ-V-005H-2015/" 
+                                                    title="2015,PrimGreen00">
+                                                    V5H(PJ)1dr</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                        G9 of PrimGreen00
+                                    
+                                
+                            
+                        </div></div></li><h3 class="col-md-6">cecropia macedonica Breeder...</h3><li class="list-group-item"><div class="row"><div class="col-md-2 F1"><h5><a href='/queen/FR-CBP-D-0992-2019/'
+                                        title="2019,">D992(CBP)</a>
+                                        =<br /><small>
+                                        
+                                            
+                                                (1 q.)
+                                            
+                                        
+                                        </small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2019 – 
+                                        <a href="/queen/FR-CBP-D-0059-2017/" 
+                                            title="2017,Maced06Q">
+                                            D759(CBP)</a><font color="red">-mdm-</font><a href="/queen/FR-JPN-B-0047-2018/" 
+                                                    title="2018,NO6294R">
+                                                    B847(JPN)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2017 – 
+                                        <a href="/queen/FR-TEF-D-0122-2015/" 
+                                            title="2015,Maced06Q">
+                                            D122(TEF)</a><font color="red">-ins-</font><a href="/queen/FR-TEF-B-0274-2015/" 
+                                                    title="2015,Sinop62R">
+                                                    B274(TEF)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2015 – 
+                                        <a href="/queen/FR-TEF-D-0050-2013/" 
+                                            title="2013,Maced06Q">
+                                            D50(TEF)</a><font color="red">-mdm-</font><a href="/queen/FR-SPD-B-0502-2013/" 
+                                                    title="2013,Sinop62R">
+                                                    B502(SPD)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2013 – 
+                                        <a href="/queen/FR-TEF-D-0272-2012/" 
+                                            title="2012,Maced06Q">
+                                            D272(TEF)</a><font color="red">-ins-</font><a href="/queen/FR-TEF-B-0211-2012/" 
+                                                    title="2012,Sardasht93R">
+                                                    B211(TEF)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                        G6 of Maced06Q
+                                    
+                                
+                            
+                        </div></div></li></ul><ul class="list-group"></ul></div><div class="row, cadree"><ul class="list-group"><h3 class="col-md-6">buckfast Just Inseminated Breeder...</h3><li class="list-group-item"><div class="row"><div class="col-md-2 NJ"><h5><a href='/queen/FR-CBP-B-0131-2021/'
+                                        title="2021,">B131</a>
+                                        =<br /><small></small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2021 – 
+                                        <a href="/queen/FR-CBP-B-0930-2019/" 
+                                            title="2019,">
+                                            B930(CBP)</a><font color="red">-mdm-</font><a href="/queen/FR-SPD-B-0102-2017/" 
+                                                    title="2017,Sinop62R">
+                                                    B102(SPD)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                    
+                                        G0 of 
+                                    
+                                
+                            
+                        </div></div></li><li class="list-group-item"><div class="row"><div class="col-md-2 NT"><h5><a href='/queen/FR-CBP-B-0132-2021/'
+                                        title="2021,">FR-CBP-B-0132-2021</a>
+                                        =<br /><small></small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2021 – 
+                                        <a href="/queen/LU-PJ-B-0063-2020/" 
+                                            title="2020,PrimGreen00">
+                                            B63(PJ)1dr</a><font color="red">-ins-</font><a href="/queen/LU-PJ-B-0234-2018/" 
+                                                    title="2018,PrimGreen00">
+                                                    B234(PJ)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2020 – 
+                                        <a href="/queen/LU-PJ-B-0483-2019/" 
+                                            title="2019,PrimGreen00">
+                                            B483(PJ)1dr</a><font color="red">-ins-</font><a href="/queen/BE-JML-B-0038-2016/" 
+                                                    title="2016,NO6294R">
+                                                    B38(JML)1dr</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2019 – 
+                                        <a href="/queen/LU-PJ-B-0332-2018/" 
+                                            title="2018,PrimGreen00">
+                                            B332(PJ)1dr</a><font color="red">-ins-</font><a href="/queen/LU-PJ-V-0002-2017/" 
+                                                    title="2017,PrimGreen00">
+                                                    V2(PJ)1dr</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2018 – 
+                                        <a href="/queen/LU-PJ-B-0853-2017/" 
+                                            title="2017,">
+                                            B853(PJ)1dr</a><font color="red">-ins-</font><a href="/queen/LU-PJ-B-0011-2016/" 
+                                                    title="2016,PrimGreen00">
+                                                    B11(PJ)1dr</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                        G10 of PrimGreen00
+                                    
+                                
+                            
+                        </div></div></li><h3 class="col-md-6">cecropia macedonica Just Inseminated Breeder...</h3><li class="list-group-item"><div class="row"><div class="col-md-2 NT"><h5><a href='/queen/FR-CBP-D-0180-2021/'
+                                        title="2021,">FR-CBP-D-0180-2021</a>
+                                        =<br /><small></small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2021 – 
+                                        <a href="/queen/FR-CBP-D-0992-2019/" 
+                                            title="2019,">
+                                            D992(CBP)</a><font color="red">-mdm-</font><a href="/queen/FR-CBP-A-0079-2018/" 
+                                                    title="2018,Konya04-2">
+                                                    A879(CBP)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2019 – 
+                                        <a href="/queen/FR-CBP-D-0059-2017/" 
+                                            title="2017,Maced06Q">
+                                            D759(CBP)</a><font color="red">-mdm-</font><a href="/queen/FR-JPN-B-0047-2018/" 
+                                                    title="2018,NO6294R">
+                                                    B847(JPN)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2017 – 
+                                        <a href="/queen/FR-TEF-D-0122-2015/" 
+                                            title="2015,Maced06Q">
+                                            D122(TEF)</a><font color="red">-ins-</font><a href="/queen/FR-TEF-B-0274-2015/" 
+                                                    title="2015,Sinop62R">
+                                                    B274(TEF)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2015 – 
+                                        <a href="/queen/FR-TEF-D-0050-2013/" 
+                                            title="2013,Maced06Q">
+                                            D50(TEF)</a><font color="red">-mdm-</font><a href="/queen/FR-SPD-B-0502-2013/" 
+                                                    title="2013,Sinop62R">
+                                                    B502(SPD)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                        G7 of Maced06Q
+                                    
+                                
+                            
+                        </div></div></li></ul></div><div class="row, cadree"><ul class="list-group"><h3 class="col-md-6">anatolica Drones, supplied by daughters of...</h3><li class="list-group-item"><div class="row"><div class="col-md-2 F1"><h5><a href='/queen/FR-CBP-A-0079-2018/'
+                                        title="2018,Konya04-2">A879(CBP)</a>
+                                        =<br /><small>
+                                        
+                                            
+                                                (1 q.)
+                                            
+                                        
+                                        </small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2018 – 
+                                        <a href="/queen/FR-CBP-A-0099-2016/" 
+                                            title="2016,Konya04-2">
+                                            A699(CBP)</a><font color="red">-IA-</font><a href="/queen/FR-SPD-B-0114-2015/" 
+                                                    title="2015,Sinop62R">
+                                                    B114(SPD)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2016 – 
+                                        <a href="/queen/FR-CBP-A-0049-2015/" 
+                                            title="2015,Konya04-2">
+                                            A49(CBP)</a><font color="red">-ispd-</font><a href="/queen/FR-HEB-B-0050-2012/" 
+                                                    title="2012,Athos00R">
+                                                    B50(HEB)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2015 – 
+                                        <a href="/queen/LU-PJ-A-0138-2013/" 
+                                            title="2013,Konya04-2">
+                                            A138(PJ)</a><font color="red">-ilux-</font><a href="/queen/LU-PJ-B-0294-2011/" 
+                                                    title="2011,PrimGreen00">
+                                                    B294(PJ)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2013 – 
+                                        <a href="/queen/LU-PJ-A-0155-2010/" 
+                                            title="2010,Konya04-2">
+                                            A155(PJ)</a><font color="red">-ibra-</font><a href="/queen/LU-PJ-A-0199-2010/" 
+                                                    title="2010,Cankiri97Q">
+                                                    A199(PJ)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                        G5 of Konya04-2
+                                    
+                                
+                            
+                        </div></div></li><h3 class="col-md-6">buckfast Drones, supplied by daughters of...</h3><li class="list-group-item"><div class="row"><div class="col-md-2 F1"><h5><a href='/queen/LU-PJ-B-0234-2018/'
+                                        title="2018,PrimGreen00">B234(PJ)</a>
+                                        =<br /><small>
+                                        
+                                            
+                                                (1 q.)
+                                            
+                                        
+                                        </small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2018 – 
+                                        <a href="/queen/LU-PJ-B-0703-2016/" 
+                                            title="2016,AthosSt80R">
+                                            B703(PJ)</a><font color="red">-ins-</font><a href="/queen/LU-PJ-B-0011-2016/" 
+                                                    title="2016,PrimGreen00">
+                                                    B11(PJ)1dr</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2016 – 
+                                        <a href="/queen/LU-PJ-B-0240-1991/" 
+                                            title="1991,AthosSt80R">
+                                            B240(PJ)</a><font color="red">-ins-</font><a href="/queen/LU-PJ-B-0180-2012/" 
+                                                    title="2012,Takab93R">
+                                                    B180(PJ)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .1991 – 
+                                        <a href="/queen/LU-PJ-B-0279-1989/" 
+                                            title="1989,AthosSt80R">
+                                            B279(PJ)</a><font color="red">-inpj-</font><a href="/queen/DE-OH-B-0288-1987/" 
+                                                    title="1987,Sinop62R">
+                                                    BO288(OH)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .1989 – 
+                                        <a href="/queen/LU-PJ-B-0135-1987/" 
+                                            title="1987,AthosSt80R">
+                                            B135(PJ)</a><font color="red">-inpj-</font><a href="/queen/LU-PJ-B-0233-1986/" 
+                                                    title="1986,B14D">
+                                                    B233(PJ)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                        G5 of AthosSt80R
+                                    
+                                
+                            
+                        </div></div></li><li class="list-group-item"><div class="row"><div class="col-md-2 NT"><h5><a href='/queen/FR-SPD-B-0102-2017/'
+                                        title="2017,Sinop62R">B102(SPD)</a>
+                                        =<br /><small>
+                                        
+                                            
+                                                (1 q.)
+                                            
+                                        
+                                        </small></h5></div><div class="col-md-10">
+                            
+                                
+                                    
+                                        .2017 – 
+                                        <a href="/queen/FR-SPD-B-0114-2015/" 
+                                            title="2015,Sinop62R">
+                                            B114(SPD)</a><font color="red">-ispd-</font><a href="/queen/FR-SPD-B-0468-2015/" 
+                                                    title="2015,Sinop72R">
+                                                    B468(SPD)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2015 – 
+                                        <a href="/queen/FR-SPD-B-0484-2014/" 
+                                            title="2014,Sinop62R">
+                                            B484(SPD)</a><font color="red">-ispd-</font><a href="/queen/FR-TEF-B-0247-2011/" 
+                                                    title="2011,AthosSt80R">
+                                                    B247(TEF)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2014 – 
+                                        <a href="/queen/FR-SPD-B-0502-2013/" 
+                                            title="2013,Sinop62R">
+                                            B502(SPD)</a><font color="red">-mdm-</font><a href="/queen/FR-SPD-A-0312-2012/" 
+                                                    title="2012,Cankiri97Q">
+                                                    A312(SPD)</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                
+                                    
+                                        .2013 – 
+                                        <a href="/queen/DK-CD-B-0050-2010/" 
+                                            title="2010,Sinop62R">
+                                            CD050</a><font color="red">-lang-</font><a href="/queen/DK-CD-B-0217-2010/" 
+                                                    title="2010,Longos77R">
+                                                    CD217</a>
+                                            
+                                        
+                                        _|_
+                                    
+                                    
+                                        G24 of Sinop62R
+                                    
+                                
+                            
+                        </div></div></li></ul></div><div class="row, cadree"><h3>Used as below</h3><ul class="list-group"></ul><h4> for multi drone insemination </h4><ul class="list-group"><li class="list-group-item"><div class="row"><div class="col-2 NT"><h5><a href='/queen/FR-SPD-B-0102-2017/'
+                            title="2017,Sinop62R">B102(SPD)</a> : 
+                    </h5></div><div class="col-10"><div class="row"><div class="row"><div  class="NJ" width="75%"><a href='/queen/FR-CBP-B-0930-2019/'
+                        title="2019,"> B930(CBP) </a></div><div class=""> (x1)</div></div></div></div></div></li><li class="list-group-item"><div class="row"><div class="col-2 F1"><h5><a href='/queen/LU-PJ-B-0234-2018/'
+                            title="2018,PrimGreen00">B234(PJ)</a> : 
+                    </h5></div><div class="col-10"><div class="row"><div class="row"><div  class="NT" width="75%"><a href='/queen/LU-PJ-B-0063-2020/'
+                        title="2020,PrimGreen00"> B63(PJ)1dr </a></div><div class=""> (x1)</div></div></div></div></div></li><li class="list-group-item"><div class="row"><div class="col-2 F1"><h5><a href='/queen/FR-CBP-A-0079-2018/'
+                            title="2018,Konya04-2">A879(CBP)</a> : 
+                    </h5></div><div class="col-10"><div class="row"><div class="row"><div  class="F1" width="75%"><a href='/queen/FR-CBP-D-0992-2019/'
+                        title="2019,"> D992(CBP) </a></div><div class=""> (x1)</div></div></div></div></div></li></ul></div><div class="row, cadree"><h3>Evaluations</h3><ul class="list-group"><li class="list-group-item"><h5>mode : evjp</h5><table><tr><td class="tdh01">Queen</td><td class="tdh01">BirthYear</td><td class="tdh01">Tester</td><td class="tdh01">YearEva</td><td class="tdh01">
+                            tester
+                        </td><td class="tdh01">
+                            year
+                        </td><td class="tdh01">
+                            beeVital
+                        </td><td class="tdh01">
+                            broVital
+                        </td><td class="tdh01">
+                            mildness
+                        </td><td class="tdh01">
+                            framHold
+                        </td><td class="tdh01">
+                            swarming
+                        </td><td class="tdh01">
+                            fertil
+                        </td><td class="tdh01">
+                            sprCrop
+                        </td><td class="tdh01">
+                            sumCrop
+                        </td><td class="tdh01">
+                            falCrop
+                        </td><td class="tdh01">
+                            polCrop
+                        </td><td class="tdh01">
+                            winter
+                        </td><td class="tdh01">
+                            bldCombs
+                        </td><td class="tdh01">
+                            propolis
+                        </td><td class="tdh01">
+                            varNbr
+                        </td><td class="tdh01">
+                            vshPlus
+                        </td><td class="tdh01">
+                            nosemIdx
+                        </td><td class="tdh01">
+                            hyg24h
+                        </td><td class="tdh01">
+                            Comment
+                        </td></tr><tr><td class="td01">
+                        D992(CBP)</td><td class="td01">2019</td><td class="td01">CBP</td><td class="td01">2020</td><td class="td01">
+                        
+                        145
+                        
+                        </td><td class="td01">
+                        
+                        Sept. 7, 2020
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        4
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        3
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        5
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        -
+                        
+                        </td><td class="td01">
+                        
+                        60
+                        
+                        </td><td class="td01"></td></tr></table></li><li class="list-group-item"><h5>mode : evdk</h5><table><tr><td class="tdh01">Queen</td><td class="tdh01">BirthYear</td><td class="tdh01">Tester</td><td class="tdh01">YearEva</td><td class="tdh01">
+                            tester
+                        </td><td class="tdh01">
+                            year
+                        </td><td class="tdh01">
+                            swarming
+                        </td><td class="tdh01">
+                            mildness
+                        </td><td class="tdh01">
+                            framHold
+                        </td><td class="tdh01">
+                            honeyIdx
+                        </td><td class="tdh01">
+                            honeyAmt
+                        </td><td class="tdh01">
+                            nosemIdx
+                        </td><td class="tdh01">
+                            nosemMspBee
+                        </td><td class="tdh01">
+                            hygBehaIdx
+                        </td><td class="tdh01">
+                            hyg24h
+                        </td><td class="tdh01">
+                            Comment
+                        </td></tr><tr><td class="td04">
+                        D992(CBP)</td><td class="td04">2019</td><td class="td04">CBP</td><td class="td04">2020</td><td class="td04">
+                        
+                        145
+                        
+                        </td><td class="td04">
+                        
+                        Sept. 7, 2020
+                        
+                        </td><td class="td04">
+                        
+                        5
+                        
+                        </td><td class="td04">
+                        
+                        5
+                        
+                        </td><td class="td04">
+                        
+                        5
+                        
+                        </td><td class="td04">
+                        
+                        5
+                        
+                        </td><td class="td04">
+                        
+                        49
+                        
+                        </td><td class="td04">
+                        
+                        -
+                        
+                        </td><td class="td04">
+                        
+                        -
+                        
+                        </td><td class="td04">
+                        
+                        3
+                        
+                        </td><td class="td04">
+                        
+                        60
+                        
+                        </td><td class="td04"></td></tr><tr><td class="td02">
+                        D992(CBP)</td><td class="td02">2019</td><td class="td02">CBP</td><td class="td02">2020</td><td class="td02">
+                        
+                        145
+                        
+                        </td><td class="td02">
+                        
+                        Sept. 7, 2020
+                        
+                        </td><td class="td02">
+                        
+                        -
+                        
+                        </td><td class="td02">
+                        
+                        -
+                        
+                        </td><td class="td02">
+                        
+                        -
+                        
+                        </td><td class="td02">
+                        
+                        5
+                        
+                        </td><td class="td02">
+                        
+                        -
+                        
+                        </td><td class="td02">
+                        
+                        -
+                        
+                        </td><td class="td02">
+                        
+                        -
+                        
+                        </td><td class="td02">
+                        
+                        3
+                        
+                        </td><td class="td02">
+                        
+                        -
+                        
+                        </td><td class="td02"></td></tr></table></li></ul></div><div class="cadree"><h3>Legends</h3><div class="row"><div id="colorLegend" class="col-4"><div class="cadree"><h4>Colors legend</h4><div class="row" ><div class="NT col-1" title="Queens (rn,NT)"></div><div class="col">Queens with no special characteristic</div></div><div class="row" ><div class="F1 col-1" title="Queens (rnx,F1)"></div><div class="col-11">Queens from one strain, but mated by drones from another strain. Their population and daughters (and drones of them) are F1 crossed.</div></div><div class="row" ><div class="BK col-1" title="Queens (mk,BK)"></div><div class="col-11">Queen and Drones result of a cross between two different lines : interesting to increase their resistance and qualities.</div></div><div class="row" ><div class="BF col-1" title="Queens (mf,BF)"></div><div class="col-11">Queen and Drones are Aunt-Nephews : that would correspond by us to a Sister-Brothers crossing.</div></div><div class="row" ><div class="BN col-1" title="Queens (mn,BN)"></div><div class="col-11">Queen and Drones have the same ancestors: combination to increase or stabilize some characteristics.</div></div><div class="row" ><div class="col-1 NJ" title="Queens (mj,NJ)"></div><div class="col-11">Queen and/or Drones have unknown exact origin : that makes unable to find their real status.</div></div><div class="row" ><div class="col-1 FF" title="Queens (ml,FF)"></div><div class="col-11">Queen and Drones, Aunt-Nephews, are F1  this is a real Mendelian F1 cross.</div></div><!---/ul---></div></div><div id="insemCodeLegend" class="col-4"><div class="cadree"><h4>Fecondation codes legend</h4><div class="row" ><div class="col-2 font-weight-bold" title="Instrumental insemination (ins)">ins</div><div class="col-10">Instrumental insemination</div></div><div class="row" ><div class="col-2 font-weight-bold" title="Mating station (FR)">mdm</div><div class="col-10">Madame island (FR) mating station</div></div><div class="row" ><div class="col-2 font-weight-bold" title="Instrumental insemination (FR)">ispd</div><div class="col-10">La Frogerie (FR), instrumental insemination</div></div></div></div><div id="RacesLegend" class="col-4"><div class="cadree"><h4>Races legend</h4><div class="row" ><div class="col-2 font-weight-bold" title="">A</div><div class="col-10">anatolica</div></div><div class="row" ><div class="col-2 font-weight-bold" title="">B</div><div class="col-10">buckfast</div></div><div class="row" ><div class="col-2 font-weight-bold" title="">D</div><div class="col-10">cecropia macedonica</div></div></div></div></div></div>
+</div>
+
+  </body>
+</html>
