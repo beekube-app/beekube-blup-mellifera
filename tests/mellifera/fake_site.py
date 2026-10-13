@@ -154,3 +154,36 @@ def queen_page(q: Q) -> bytes:
         f"<strong> -- Lineage : </strong>Unknown<strong> -- Description </strong>buckfast</p>"
         f"<p><strong>Import : </strong>no<strong> -- Comment : </strong>No</p>{radar}</div>"
         f'<div class="list-group">{ratings}</div>')
+
+
+@dataclass
+class E:
+    """Ligne d'un tableau d'évaluations."""
+    queen: str                          # texte de la cellule Queen
+    year: int
+    values: dict[str, str]
+    mode: str = "evjp"
+    tester: str = "CBP"
+    tester_id: int = 145
+    date: str = "July 6, 2023"
+
+
+def season_page(evaluations: list[E], links: list[tuple[str, str]] = (),
+                legend: list[tuple[str, str, str]] = ()) -> bytes:
+    """links : [(code, texte du lien)] présents sur la page ; legend : [(code, description, title)]."""
+    anchors = "".join(f'<a href="/queen/{c}/">{t}</a> ' for c, t in links)
+    tables = ""
+    for mode in dict.fromkeys(e.mode for e in evaluations):
+        rows = [e for e in evaluations if e.mode == mode]
+        crit = list(dict.fromkeys(k for e in rows for k in e.values))
+        head = "".join(f'<td class="tdh01">{h}</td>' for h in
+                       ["Queen", "BirthYear", "Tester", "YearEva", "tester", "year", *crit, "Comment"])
+        body = "".join(
+            "<tr>" + "".join(f'<td class="td01">{v}</td>' for v in
+                             [e.queen, e.year, e.tester, e.date[-4:], e.tester_id, e.date,
+                              *(e.values.get(c, "-") for c in crit), ""]) + "</tr>"
+            for e in rows)
+        tables += f"<h5>mode : {mode}</h5><table><tr>{head}</tr>{body}</table>"
+    leg = "".join(f'<div class="row"><div class="col-2" title="{t}">{c}</div><div class="col-10">{d}</div></div>'
+                  for c, d, t in legend)
+    return _page(f'{anchors}<h3>Evaluations</h3>{tables}<div id="insemCodeLegend">{leg}</div>')
