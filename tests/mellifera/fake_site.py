@@ -187,3 +187,22 @@ def season_page(evaluations: list[E], links: list[tuple[str, str]] = (),
     leg = "".join(f'<div class="row"><div class="col-2" title="{t}">{c}</div><div class="col-10">{d}</div></div>'
                   for c, d, t in legend)
     return _page(f'{anchors}<h3>Evaluations</h3>{tables}<div id="insemCodeLegend">{leg}</div>')
+
+
+# ------------------------------------------------------------------ base
+def db_snapshot(conn) -> dict[str, list[tuple]]:
+    """Contenu comparable de la base : sans id d'évaluation ni dates de parsing."""
+    tables = {
+        "country": "SELECT * FROM country ORDER BY id",
+        "breeder": "SELECT * FROM breeder ORDER BY id",
+        "queen": "SELECT * FROM queen ORDER BY code",
+        "mating_code": "SELECT * FROM mating_code ORDER BY code",
+        "criterion": "SELECT mode, code, trait_id FROM criterion ORDER BY mode, code",
+        "evaluation": "SELECT * FROM evaluation ORDER BY queen_key, source, mode, tester, eval_date, criterion_code",
+    }
+    out = {}
+    for name, sql in tables.items():
+        rows = conn.execute(sql).fetchall()
+        drop = {"parsed_at", "id"} if name in ("queen", "evaluation") else set()
+        out[name] = [tuple(v for k, v in zip(r.keys(), r) if k not in drop) for r in rows]
+    return out
