@@ -1,0 +1,20 @@
+# Crawler Index Mellifera : image Python légère, sans R ni numpy (le moteur n'y tourne pas).
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV TZ=Europe/Paris \
+    PYTHONUNBUFFERED=1 \
+    MELLIFERA_DATA=/app/data/mellifera
+
+WORKDIR /app
+
+COPY requirements-mellifera.txt .
+RUN pip install --no-cache-dir -r requirements-mellifera.txt
+
+# blup2 : seuls schemas.py et pedigree.py sont importés (validation de l'export BlupV2Input)
+COPY blup2 ./blup2
+COPY mellifera ./mellifera
+
+CMD ["python", "-m", "mellifera", "schedule"]

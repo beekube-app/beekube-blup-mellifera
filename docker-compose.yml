@@ -12,3 +12,17 @@ services:
     env_file:
       - path: .env.production
         required: false
+
+  # Crawler Index Mellifera : démarré seulement sur demande (profil), MELLIFERA_CONTACT requis.
+  mellifera:
+    profiles: ["mellifera"]
+    build:
+      context: .
+      dockerfile: Dockerfile-Mellifera
+    init: true
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - path: .env.production
+        required: false

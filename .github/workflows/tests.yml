@@ -42,6 +42,9 @@ jobs:
       - run: touch .env.production
       - run: docker compose version
       - run: docker compose build api
+      - run: docker compose build mellifera
+      - name: Image du crawler sans numpy
+        run: docker compose run --rm --no-deps mellifera python -c "import sys, mellifera.cli, mellifera.export; assert not {'numpy', 'scipy'} & set(sys.modules)"
       - name: Tests R
         run: docker compose run --rm api Rscript tests/r/test_blup.R
       - name: Test d'intégration (vrai Rscript)

@@ -41,11 +41,46 @@ The API exposes the following endpoints:
 For more details on the use of the API, refer to the OpenAPI documentation available at the API address once it is launched:
 `http://localhost:8081/openapi`
 
+## Index Mellifera crawler
+
+The `mellifera/` package reads the public pages of [Index Mellifera](https://index-mellifera.org) (countries, breeders, queen lists, queen pages, yearly evaluation tables) with a polite crawl, stores them in a SQLite database (`data/mellifera/mellifera.sqlite`) and exports the queens of chosen breeders, with their whole ancestry, as a `BlupV2Input` file for the v2 engine. Design (in French): [docs/superpowers/specs/2026-10-13-index-mellifera-design.md](docs/superpowers/specs/2026-10-13-index-mellifera-design.md).
+
+The crawler only sends GET requests to an allow-list of public paths, waits at least 1 s between two requests (2 s by default), slows down on errors and identifies itself with a contact address. The database keeps only the Index Mellifera id, trigram and country of each breeder. The raw page cache (`data/mellifera/cache/`) contains names: never commit or publish it.
+
+| Variable | Default | Role |
+|---|---|---|
+| `MELLIFERA_CONTACT` | (empty) | e-mail or URL in the `User-Agent`; **required**: the crawl refuses to start without it |
+| `MELLIFERA_DATA` | `data/mellifera` (`/app/data/mellifera` in the image) | database, raw cache and lock file |
+| `MELLIFERA_DELAY` | `2.0` | seconds between two requests (at least 1) |
+| `MELLIFERA_MAX_ERRORS` | `5` | consecutive network errors before a clean stop |
+| `MELLIFERA_SCHEDULE` | `sun 02:00` | day and time of the weekly incremental crawl |
+| `MELLIFERA_TZ` | `Europe/Paris` | time zone of the schedule |
+
+With Docker, the `mellifera` service belongs to the `mellifera` profile: `docker compose up` does not start it. Put `MELLIFERA_CONTACT` in `.env.production`, then:
+
+```bash
+docker compose run --rm mellifera python -m mellifera crawl --full   # initial crawl: more than a day, resumed if interrupted
+docker compose up -d mellifera                                       # weekly incremental crawl
+docker compose run --rm mellifera python -m mellifera status
+```
+
+Commands (`python -m mellifera …`, or `.venv/bin/python -m mellifera …` outside Docker):
+
+- `crawl --full` / `crawl --incremental`: crawl the site; an interrupted run is resumed by the next run of the same mode;
+- `reparse [--kind countries|country|queens_list|season|queen]`: rebuild the database from the raw cache, without network;
+- `status`: last run, row counts, pages by type and status, unmapped criteria;
+- `export-blup --breeder CBP --breeder 200 [--from 2018] [--sources season_table,radar] [--profile breeder] -o data/mellifera/export.json`: export the queens of these breeders and their ancestry. `--breeder` takes a trigram (any case) or an Index Mellifera id; a trigram shared by several breeders is refused. Only the evaluation tables are exported by default; `radar` adds the yearly values of the queen page chart;
+- `schedule`: weekly incremental crawl (`MELLIFERA_SCHEDULE`).
+
+Exit codes: `0` success, `1` stopped after consecutive network errors, `2` more than 5 % of the pages of one type failed to parse (site structure changed?), `3` another crawl holds the lock, `4` configuration error (empty contact, invalid variable, missing database, unknown or ambiguous breeder).
+
 ## Project Structure
 - `app.py` : Entry point of the Flask application
 - `blup.r` : R script for BLUP calculations
 - `Dockerfile-Python` Dockerfile to build the Python image
 - `docker-compose.yml` : Configuration Docker Compose
+- `Dockerfile-Mellifera` : Dockerfile of the Index Mellifera crawler image (no R, no numpy)
+- `mellifera/` : Index Mellifera crawler (SQLite database, `BlupV2Input` export)
 - `data/` : Directory for temporary data files
 
 ## Development
@@ -71,6 +106,8 @@ docker compose run --rm api Rscript tests/r/test_blup.R   # R tests
 ```
 
 `pytest -m docker` builds and starts the `api` service in its own Compose project, `blup-test` by default (override with `COMPOSE_PROJECT_NAME`, but do not point it at your usual project), then removes it, so it does not interfere with your usual Compose project. It fails right away, before running any Compose command, if a service already listens on the test port (8081 by default). On a machine where the API already runs on 8081, point the test to a free port: `BLUP_API_PORT=8082 BLUP_API_URL=http://localhost:8082 .venv/bin/pytest -m docker -v`.
+
+The crawler tests (`tests/mellifera/`) never contact Index Mellifera: they use a fake site (`httpx.MockTransport`) and anonymized real pages (`tests/mellifera/fixtures/`). The raw pages these fixtures come from (`tests/mellifera/fixtures/raw/`, ignored by git) contain names and stay on the machine that downloaded them; `scripts/make_mellifera_fixtures.py` regenerates the fixtures from them.
 
 ## Licence
 MIT Licence
