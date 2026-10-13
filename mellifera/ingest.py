@@ -1,6 +1,7 @@
 """Écriture des pages parsées dans la base (idempotente) et identification des reines évaluées (spec §6)."""
 from __future__ import annotations
 
+import logging
 import re
 import sqlite3
 from typing import Optional
@@ -13,6 +14,8 @@ from .parse.queen import QueenPage, parse_queen
 from .parse.queens_list import QueensListPage, parse_queens_list
 from .parse.season import SeasonPage, parse_season
 from .urls import kind_of, path_ids
+
+log = logging.getLogger("mellifera")
 
 _TRIGRAM = re.compile(r"\(([A-Z0-9]{2,6})\)")
 
@@ -77,8 +80,11 @@ def store_queens_list(conn: sqlite3.Connection, page: QueensListPage, seen_at: s
 
 def store_queen(conn: sqlite3.Connection, q: QueenPage, path: str, seen_at: str) -> None:
     _upsert_mating_code(conn, q.mating_code, q.mating_description, q.mating_category_raw)
+    code = path_ids(path)[0]    # le code de l'URL fait foi : l'affiché peut différer (casse, saisie)
+    if code != q.code:
+        log.warning("%s affiche le code %r : fiche enregistrée sous %r", path, q.code, code)
     values = dict(
-        code=q.code, code_valid=int(is_code(q.code)), name=q.name, birth_year=q.birth_year, breeder_id=q.breeder_id,
+        code=code, code_valid=int(is_code(code)), name=q.name, birth_year=q.birth_year, breeder_id=q.breeder_id,
         mother_code=q.mother_code, drone_mother_code=q.drone_mother_code, n_drone_queens=q.n_drone_queens,
         mating_code=q.mating_code, single_drone=int(q.single_drone),
         insemination_date=q.insemination_date.isoformat() if q.insemination_date else None,
@@ -97,7 +103,7 @@ def store_queen(conn: sqlite3.Connection, q: QueenPage, path: str, seen_at: str)
         for label, value in series.values.items():
             _ensure_criterion(conn, "radar", label)
             _upsert_evaluation(conn, dict(
-                queen_name_raw=q.name, queen_birth_year_raw=q.birth_year, queen_code=q.code, queen_key=q.code,
+                queen_name_raw=q.name, queen_birth_year_raw=q.birth_year, queen_code=code, queen_key=code,
                 page_breeder_id=q.breeder_id, tester="", tester_breeder_id=None,
                 eval_date=f"{series.year}-01-01", eval_year=series.year, mode="radar", criterion_code=label,
                 value=value, value_raw=f"{value:g}", source="radar", url=path))

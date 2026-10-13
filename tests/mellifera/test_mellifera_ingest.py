@@ -138,3 +138,15 @@ def test_unresolved_row_resolved_after_queen_arrives_and_merged(conn):
     assert resolve_pending(conn) == 1
     rows = conn.execute("SELECT queen_code, queen_key FROM evaluation").fetchall()
     assert [tuple(r) for r in rows] == [("FR-CBP-A-0087-2020", "FR-CBP-A-0087-2020")]
+
+
+def test_queen_page_is_stored_under_the_code_of_its_url(conn):
+    """Le code affiché peut différer de celui de l'URL (casse, saisie) : la fiche complète l'ébauche de la liste
+    au lieu d'en créer une seconde, que chaque incrémental relirait."""
+    listed = Q("FR-CBP-B-0002-2022", 2022, 145, radar={2023: [1, 2, 3, 4, 5]})
+    shown = Q("fr-cbp-b-0002-2022", 2022, 145, radar={2023: [1, 2, 3, 4, 5]})
+    load(conn, {"/breederbyyear/145/2022/": queens_list_page(145, "CBP", 8, [2022], [listed]),
+                "/queen/FR-CBP-B-0002-2022/": queen_page(shown)})
+    rows = conn.execute("SELECT code, parsed_at IS NOT NULL FROM queen").fetchall()
+    assert [tuple(r) for r in rows] == [("FR-CBP-B-0002-2022", 1)]
+    assert {r[0] for r in conn.execute("SELECT queen_code FROM evaluation")} == {"FR-CBP-B-0002-2022"}
