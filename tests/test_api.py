@@ -18,7 +18,7 @@ def test_v2_blup_returns_engine_output(client):
     r = client.post("/v2/blup", json=VALID)
     assert r.status_code == 200
     body = r.get_json()
-    assert body["status"] == "success" and body["engine_version"] == "2.0.0"
+    assert body["status"] == "success" and body["engine_version"] == "2.1.0"
     assert [q["id"] for q in body["queens"]] == [4074]
     assert set(body) == {"status", "engine_version", "profile", "parameters", "base", "queens", "matings",
                          "trend", "connectivity", "warnings"}
@@ -64,7 +64,7 @@ def test_openapi_documents_v1_and_v2_routes():
         responses = paths[route]["post"]["responses"]
         assert responses["422"]["content"]["application/json"]["schema"] == {"$ref": "#/components/schemas/ErrorV2Out"}
         assert "500" in responses
-    assert doc["info"]["version"] == "2.0.0"
+    assert doc["info"]["version"] == "2.1.0"
     assert paths["/blup"]["post"]["operationId"] == "calulate_blup_post"     # SDK v1 inchangé
     # Contrat avec le SDK PHP (plan 04, tâche A1) : une seule classe BlupApi, méthodes nommées
     assert paths["/v2/blup"]["post"]["operationId"] == "blup_v2_post"

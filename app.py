@@ -15,7 +15,7 @@ BLUP_SCRIPT = os.path.join(APP_DIR, 'blup.r')
 # Doit rester strictement inférieur au --timeout de gunicorn (180 s, Dockerfile-Python)
 RSCRIPT_TIMEOUT = int(os.getenv('RSCRIPT_TIMEOUT', '170'))
 
-info = Info(title="Beekube BLUP Mellifera API", version="2.0.0", description="SDK PHP pour l'API BLUP de Beekube - Calcul génétique des abeilles mellifères")
+info = Info(title="Beekube BLUP Mellifera API", version="2.1.0", description="SDK PHP pour l'API BLUP de Beekube - Calcul génétique des abeilles mellifères")
 servers = [
     Server(url=API_BASE_URL),
 ]

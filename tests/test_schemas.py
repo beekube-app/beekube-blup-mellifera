@@ -169,3 +169,20 @@ def test_json_infinity_and_overflow_are_422_on_the_api():
             body = json.dumps(VALID).replace('"weight": 3', f'"weight": {raw}')
             r = c.post("/v2/blup", data=body, content_type="application/json")
             assert r.status_code == 422, raw
+
+
+def test_external_pedigree_depth_option():
+    d = copy.deepcopy(VALID)
+    del d["options"]
+    assert BlupV2Input.model_validate(d).options.external_pedigree_depth == 7
+    off = BlupV2Input.model_validate(mutate(("options", "external_pedigree_depth"), 0))
+    assert off.options.external_pedigree_depth == 0
+    for bad in (-1, 31, 2.5):
+        assert_invalid(mutate(("options", "external_pedigree_depth"), bad), "external_pedigree_depth")
+
+
+def test_external_warning_codes_are_part_of_the_contract():
+    from blup2.schemas import WarningOut
+
+    for code in ("external_ref_resolved", "external_ref_unknown", "external_pedigree_unavailable"):
+        assert WarningOut(code=code, message="m").code == code

@@ -22,6 +22,7 @@ class OptionsIn(_In):
     inbreeding_penalty: float = Field(100.0, ge=0, le=1e6)
     max_inbreeding: float = Field(0.0625, ge=0, le=1)
     n_suggestions: int = Field(10, ge=0, le=1000)
+    external_pedigree_depth: int = Field(7, ge=0, le=30)   # générations d'ancêtres Index Mellifera ; 0 = désactivé
 
 
 class CriterionIn(_In):
@@ -249,6 +250,9 @@ class WarningOut(BaseModel):
         "no_variation",
         "reliability_approx",
         "criterion_failed",
+        "external_ref_resolved",
+        "external_ref_unknown",
+        "external_pedigree_unavailable",
     ]
     message: str
     criterion: Optional[int] = None

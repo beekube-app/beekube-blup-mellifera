@@ -19,7 +19,7 @@ def _inp(**kw):
 
 def test_run_blup_output_shape():
     out = run_blup(_inp())
-    assert out.status == "success" and out.engine_version == ENGINE_VERSION == "2.0.0"
+    assert out.status == "success" and out.engine_version == ENGINE_VERSION == "2.1.0"
     assert set(out.parameters) == {"1", "2"} and [q.id for q in out.queens] == [1, 6, 7, 2, 3, 4, 5]
     assert set(out.queens[0].indexes) == {"1", "2"}
     assert len(out.matings) == 7 * 2 and set(out.trend) == {"1", "2"}
