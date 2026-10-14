@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Iterable, Optional
 
 if TYPE_CHECKING:  # pragma: no cover
     from .schemas import MatingIn, QueenIn, WarningOut
@@ -216,11 +216,15 @@ class BeePedigree:
         return lab[1] if lab[0] in ("Q", "W") else None
 
 
-def build_pedigree(queens: list["QueenIn"], default_n_drones: int) -> tuple[BeePedigree, list["WarningOut"]]:
+def build_pedigree(queens: list["QueenIn"], default_n_drones: int,
+                   extra_queens: Iterable["QueenIn"] = ()) -> tuple[BeePedigree, list["WarningOut"]]:
+    """extra_queens : ancêtres venus d'une base externe (id négatifs). Ils entrent dans le graphe comme les
+    reines de base (added_queen_ids), jamais dans queen_ids ni dans l'avertissement unknown_parent_added."""
     from .schemas import WarningOut
 
     queens, self_refs = remove_self_references(queens)
-    by_id, added, specs, deps, s_info = _graph(queens)
+    extra = list(extra_queens)
+    by_id, added, specs, deps, s_info = _graph(queens + extra)
     order, cyc = _toposort(deps)
     if cyc:
         qs = sorted({q for q in (_queen_of_key(k, s_info) for k in cyc) if q is not None})
@@ -268,7 +272,7 @@ def build_pedigree(queens: list["QueenIn"], default_n_drones: int) -> tuple[BeeP
         sk = _sire_node_key(specs[qid])
         ped._sire[qid] = index[sk] if sk is not None else None
     ped.queen_ids = [q.id for q in queens]
-    ped.added_queen_ids = list(added)
+    ped.added_queen_ids = list(added) + [q.id for q in extra]
     warnings: list[WarningOut] = []
     if self_refs:
         warnings.append(

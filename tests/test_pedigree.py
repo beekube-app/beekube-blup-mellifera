@@ -150,3 +150,20 @@ def test_unknown_parent_and_cycle_messages_are_capped():
     assert "… et 5 autres" in str(exc.value)
     with pytest.raises(ValueError, match="… et 5 autres"):
         build_pedigree(cyc, 12)
+
+
+def test_extra_queens_enter_the_graph_but_not_queen_ids():
+    """Ancêtres externes (id négatifs) : nœuds du pedigree comme des reines de base, hors de queen_ids et de
+    l'avertissement unknown_parent_added."""
+    anc = [queen(-1, 2015, mother=-2, mating=mating("insemination", mother=-3, ext="FR-X-B-0003-2013")),
+           queen(-2, 2013), queen(-3, 2013)]
+    qs = [queen(10, 2020, mother=-1), queen(11, 2020, mother=3257)]
+    ped, warnings = build_pedigree(qs, 12, extra_queens=anc)
+    assert ped.queen_ids == [10, 11]
+    assert sorted(ped.added_queen_ids) == [-3, -2, -1, 3257]
+    assert [w.message for w in warnings if w.code == "unknown_parent_added"] == [
+        "1 reine(s) citée(s) comme parent mais absente(s) de queens, ajoutée(s) comme reines de base : (3257)"]
+    q10 = ped.q_node(10)
+    assert ped.dam[q10] == ped.q_node(-1)
+    s = ped.sire[q10]                                   # père de 10 = sire de l'accouplement de -1
+    assert ped.kind[s] == "S" and ped.dam[s] == ped.q_node(-3)
