@@ -60,11 +60,15 @@ Règles :
 - une lignée Index Mellifera citée par son code (`mother_ref_ext` pour la mère, `mating.external_ref`
   pour la mère des RPM, convention d'Index Mellifera) est cherchée dans la base du crawler quand
   `MELLIFERA_DB` est configurée : son ascendance (au plus `options.external_pedigree_depth`
-  générations, 7 par défaut, 0 = désactivé) entre dans le pedigree comme reines de base, sans notes ;
+  générations, 7 par défaut, 0 = désactivé ; au plus 1 000 ancêtres au total) entre dans le pedigree
+  comme reines de base, sans notes ;
   elle rapproche les reines de l'exploitation issues de lignées apparentées mais n'apparaît dans
   aucune sortie (reines, base 100, accouplements, tendance). Un accouplement `unknown` dont le côté mâle
-  est résolu devient une insémination. Les erreurs de la base (auto-références, cycles) sont coupées
-  sans faire échouer le calcul (`external_ref_resolved`) ; les codes introuvables sont ignorés jusqu'au
+  est résolu devient une insémination. Le nœud sire d'une lignée externe n'est jamais partagé avec un
+  accouplement de l'exploitation qui cite le même code avec sa propre mère des RPM. Les erreurs de la base
+  (auto-références, cycles, valeurs inattendues) sont coupées ou nettoyées sans faire échouer le calcul
+  (`external_ref_resolved`) ; si le pedigree avec ancêtres est malgré tout invalide, le calcul se fait sans eux
+  (`external_pedigree_unavailable`) ; les codes introuvables sont ignorés jusqu'au
   crawl suivant (`external_ref_unknown`) ; base configurée mais absente ou illisible :
   `external_pedigree_unavailable` ;
 - une reine citée comme sa propre mère, sa propre RPM ou la mère de ses RPM (erreur de saisie) :

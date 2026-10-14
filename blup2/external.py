@@ -3,7 +3,8 @@ résolus dans la base du crawler (lecture seule), ascendance ajoutée au pedigre
 
 L'entrée n'est jamais modifiée : expand_external renvoie des copies des reines dont les liens sont
 complétés et, à part, les ancêtres (id négatifs) que seul build_pedigree reçoit. Aucune donnée de la base
-ne fait échouer le calcul : liens erronés coupés, base illisible = calcul sans résolution.
+ne fait échouer le calcul : liens erronés coupés, valeurs inattendues nettoyées, base illisible ou
+erreur imprévue = calcul sans résolution ; le nombre d'ancêtres est plafonné (MAX_ANCESTORS).
 """
 from __future__ import annotations
 
@@ -21,6 +22,8 @@ from .schemas import BORN_MIN, BlupV2Input, MatingIn, QueenIn, WarningOut
 logger = logging.getLogger(__name__)
 
 ENV_DB = "MELLIFERA_DB"
+MAX_ANCESTORS = 1000    # plafond du nombre d'ancêtres ajoutés : borne le coût de la parenté (relecture I2)
+_MATING_TYPES = ("natural", "station", "insemination", "unknown")
 _COLUMNS = ("code, name, birth_year, mother_code, drone_mother_code, n_drone_queens, single_drone, "
             "race_description, mating_type")
 
@@ -86,37 +89,30 @@ class _Base:
         return rows[0] if len(rows) == 1 else None
 
 
-def _ancestry(base: _Base, roots: list[str], depth: int) -> tuple[dict[str, sqlite3.Row], int]:
+def _ancestry(base: _Base, roots: list[str], depth: int) -> tuple[dict[str, sqlite3.Row], int, bool]:
     """Ancêtres atteints en au plus `depth` générations (racines = génération 1), en largeur : une reine
-    atteinte par plusieurs chemins n'est ajoutée qu'une fois. Retourne (code → ligne, nombre sans année)."""
+    atteinte par plusieurs chemins n'est ajoutée qu'une fois ; la remontée s'arrête à MAX_ANCESTORS.
+    Retourne (code → ligne, nombre sans année, plafond atteint)."""
     rows: dict[str, sqlite3.Row] = {}
     no_year: set[str] = set()
-    frontier = []
-    for code in roots:
-        r = base.row(code)
-        if code in rows or code in no_year or r is None:
-            continue
-        if _valid_year(r["birth_year"]):
-            rows[code] = r
-            frontier.append(code)
-        else:
-            no_year.add(code)
-    for _ in range(depth - 1):
+    frontier = list(roots)
+    for _ in range(depth):
         nxt = []
         for code in frontier:
-            for parent in (rows[code]["mother_code"], rows[code]["drone_mother_code"]):
-                if not parent or parent in rows or parent in no_year:
-                    continue
-                r = base.row(parent)
-                if r is None:
-                    continue
-                if _valid_year(r["birth_year"]):
-                    rows[parent] = r
-                    nxt.append(parent)
-                else:
-                    no_year.add(parent)
+            if code in rows or code in no_year:
+                continue
+            if len(rows) >= MAX_ANCESTORS:
+                return rows, len(no_year), True
+            r = base.row(code)
+            if r is None:
+                continue
+            if _valid_year(r["birth_year"]):
+                rows[code] = r
+                nxt += [p for p in (r["mother_code"], r["drone_mother_code"]) if p]
+            else:
+                no_year.add(code)
         frontier = nxt
-    return rows, len(no_year)
+    return rows, len(no_year), False
 
 
 def _ancestor(r: sqlite3.Row, ids: dict[str, int]) -> tuple[QueenIn, int]:
@@ -129,7 +125,7 @@ def _ancestor(r: sqlite3.Row, ids: dict[str, int]) -> tuple[QueenIn, int]:
         mother, cut = None, cut + 1
     if drone == code:
         drone, cut = None, cut + 1
-    mtype = r["mating_type"] or "unknown"
+    mtype = r["mating_type"] if r["mating_type"] in _MATING_TYPES else "unknown"
     if drone and mtype == "unknown":
         mtype = "insemination"          # côté mâle connu : sinon le pedigree ignorerait l'accouplement
     mating: dict = {"type": mtype, "year": born}
@@ -137,12 +133,14 @@ def _ancestor(r: sqlite3.Row, ids: dict[str, int]) -> tuple[QueenIn, int]:
         mating["external_ref"] = drone  # même nœud sire pour toutes les reines accouplées avec cette lignée
         if drone in ids:
             mating["drone_queens_mother"] = ids[drone]
-    if r["n_drone_queens"]:
-        mating["n_drone_queens"] = r["n_drone_queens"]
+    n_rpm = r["n_drone_queens"]
+    if isinstance(n_rpm, int) and not isinstance(n_rpm, bool) and n_rpm >= 1:
+        mating["n_drone_queens"] = n_rpm
     if r["single_drone"]:
         mating["n_drones"] = 1
+    variety = r["race_description"] if isinstance(r["race_description"], str) else None
     q = QueenIn(id=ids[code], born=born, mother=ids.get(mother) if mother else None, mating=MatingIn(**mating),
-                variety=r["race_description"], available_as_mother=False, available_as_drone_source=False)
+                variety=variety, available_as_mother=False, available_as_drone_source=False)
     return q, cut
 
 
@@ -187,8 +185,11 @@ def expand_external(inp: BlupV2Input, db_path: Optional[str] = None) -> Expansio
             return _expand(inp, refs, depth, _Base(conn))
         finally:
             conn.close()
-    except sqlite3.Error as exc:
-        logger.warning("base Index Mellifera illisible (%s) : %s", path, exc)
+    except Exception as exc:     # sqlite3.Error attendu ; toute autre erreur est un bogue, mais jamais un 500
+        if isinstance(exc, sqlite3.Error):
+            logger.warning("base Index Mellifera illisible (%s) : %s", path, exc)
+        else:
+            logger.exception("résolution Index Mellifera en échec (%s)", path)
         out.warnings.append(WarningOut(code="external_pedigree_unavailable", message=(
             f"base Index Mellifera illisible : {n_refs} référence(s) externe(s) non résolue(s)")))
         return out
@@ -202,7 +203,7 @@ def _expand(inp: BlupV2Input, refs: list, depth: int, base: _Base) -> Expansion:
                 r = base.find(ref)
                 found[ref] = r["code"] if r is not None else None
     roots = sorted({c for c in found.values() if c is not None})
-    rows, no_year = _ancestry(base, roots, depth)
+    rows, no_year, capped = _ancestry(base, roots, depth)
 
     used = {i for q in inp.queens for i in (q.id, q.mother) if i is not None}
     used |= {i for q in inp.queens if q.mating is not None
@@ -237,6 +238,8 @@ def _expand(inp: BlupV2Input, refs: list, depth: int, base: _Base) -> Expansion:
             msg += f", {cut} lien(s) erroné(s) de la base coupé(s)"
         if no_year:
             msg += f", {no_year} reine(s) sans année de naissance valide écartée(s)"
+        if capped:
+            msg += f", remontée arrêtée au plafond de {MAX_ANCESTORS} ancêtres"
         out.warnings.append(WarningOut(code="external_ref_resolved", message=msg))
     unknown = sorted(ref for ref, code in found.items() if code is None)
     if unknown:

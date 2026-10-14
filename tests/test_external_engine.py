@@ -95,3 +95,23 @@ def test_errors_in_the_base_never_fail_the_computation(tmp_path, monkeypatch):
     out = run_blup(inp(qs))
     assert {q.id for q in out.queens} == {1, 2}
     assert warning(out, "external_ref_resolved")[0].endswith("3 lien(s) erroné(s) de la base coupé(s)")
+
+
+# ------------------------------------------------------------------ relecture finale
+def test_cycle_between_farm_and_ancestors_falls_back_to_a_computation_without_them(db, monkeypatch):
+    """C1 (filet de sécurité) : si le pedigree avec ancêtres est cyclique, le calcul se fait sans eux."""
+    import blup2.engine as engine
+    real = engine.build_pedigree
+
+    def flaky(queens, n, extra_queens=()):
+        if list(extra_queens):
+            raise ValueError("pedigree cyclique : reines concernées -1, 5")
+        return real(queens, n, extra_queens)
+    monkeypatch.setattr(engine, "build_pedigree", flaky)
+    monkeypatch.setenv("MELLIFERA_DB", db)
+    qs, recs = family()
+    out = run_blup(inp(qs, records=recs))
+    assert [q.id for q in out.queens] == [1, 2, 3, 4, 5]
+    assert warning(out, "external_pedigree_unavailable") == [
+        "ascendance Index Mellifera incompatible avec le pedigree de l'exploitation : calcul sans les ancêtres"]
+    assert warning(out, "external_ref_resolved") == []

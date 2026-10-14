@@ -64,8 +64,12 @@ class _BaseQueen:
     mating: None = None
 
 
-def _sire_spec(mating: Optional["MatingIn"], queens: dict[int, Any]) -> Optional[tuple]:
-    """('Q', id_rpm) | ('S', clé, mère_des_rpm, S) | None (sire inconnu)."""
+def _sire_spec(mating: Optional["MatingIn"], queens: dict[int, Any], external: bool = False) -> Optional[tuple]:
+    """('Q', id_rpm) | ('S', clé, mère_des_rpm, S) | None (sire inconnu).
+
+    external : l'accouplement appartient à une reine d'une base externe, ou sa mère des RPM en vient. Sa clé
+    `external_ref` est alors dans un espace de noms à part : une reine de l'exploitation qui saisit le même
+    code avec sa propre mère des RPM ne partage jamais le nœud sire des ancêtres."""
     if mating is None or mating.type in ("natural", "unknown"):
         return None
     dq = list(dict.fromkeys(mating.drone_queens))
@@ -80,7 +84,7 @@ def _sire_spec(mating: Optional["MatingIn"], queens: dict[int, Any]) -> Optional
         return None
     n_rpm = len(dq) if dq else (mating.n_drone_queens or 1)
     if mating.external_ref is not None:
-        key = ("ext", mating.external_ref)
+        key = ("xext" if external else "ext", mating.external_ref)
     else:
         key = ("grp", mating.station, mating.year, dam, tuple(sorted(dq)), n_rpm)
     return ("S", key, dam, n_rpm)
@@ -103,8 +107,11 @@ def _referenced_ids(q) -> list[int]:
     return ids
 
 
-def _graph(queens: list) -> tuple[dict[int, Any], list[int], dict, dict, dict]:
-    """Construit le graphe des nœuds. Retourne (reines, ids ajoutés, specs, dépendances, infos S)."""
+def _graph(queens: list, extra: list = ()) -> tuple[dict[int, Any], list[int], dict, dict, dict]:
+    """Construit le graphe des nœuds. Retourne (reines, ids ajoutés, specs, dépendances, infos S).
+    extra : reines d'une base externe (voir _sire_spec), ajoutées après celles de l'exploitation."""
+    extra_ids = {q.id for q in extra}
+    queens = list(queens) + list(extra)
     by_id: dict[int, Any] = {q.id: q for q in queens}
     added: list[int] = []
     for q in queens:
@@ -112,7 +119,8 @@ def _graph(queens: list) -> tuple[dict[int, Any], list[int], dict, dict, dict]:
             if pid not in by_id:
                 by_id[pid] = _BaseQueen(pid)
                 added.append(pid)
-    specs = {qid: _sire_spec(q.mating, by_id) for qid, q in by_id.items()}
+    specs = {qid: _sire_spec(q.mating, by_id, qid in extra_ids or (
+        q.mating is not None and q.mating.drone_queens_mother in extra_ids)) for qid, q in by_id.items()}
     deps: dict[tuple, list[tuple]] = {}
     s_info: dict[tuple, tuple] = {}
 
@@ -224,7 +232,7 @@ def build_pedigree(queens: list["QueenIn"], default_n_drones: int,
 
     queens, self_refs = remove_self_references(queens)
     extra = list(extra_queens)
-    by_id, added, specs, deps, s_info = _graph(queens + extra)
+    by_id, added, specs, deps, s_info = _graph(queens, extra)
     order, cyc = _toposort(deps)
     if cyc:
         qs = sorted({q for q in (_queen_of_key(k, s_info) for k in cyc) if q is not None})

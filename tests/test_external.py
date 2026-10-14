@@ -1,4 +1,6 @@
 """Volet 2 Index Mellifera : résolution des références externes (spec IM §8.1, §8.2, §8.4)."""
+import sqlite3
+
 import pytest
 
 from blup2.external import expand_external, normalize_code
@@ -164,3 +166,69 @@ def test_cycles_and_self_references_in_the_base_are_cut(tmp_path):
         "2 référence(s) Index Mellifera rattachée(s), 4 ancêtre(s) ajouté(s) au pedigree, "
         "3 lien(s) erroné(s) de la base coupé(s)"]
     build_pedigree(exp.queens, 12, extra_queens=exp.ancestors)       # ne lève pas « pedigree cyclique »
+
+
+# ------------------------------------------------------------------ relecture finale
+def test_farm_queen_with_own_drone_queens_mother_never_shares_an_ancestor_sire_node(db):
+    """C1 : la reine 7 n'est pas résolue (écart 5) et cite, tel quel, le code du père de 0276 : son nœud sire
+    reste distinct de celui des ancêtres, et chacun garde sa propre mère des RPM."""
+    qs = [queen(5, 2024, mother_ref_ext="FR-CBP-B-0276-2022"), queen(6, 2020),
+          queen(7, 2024, mating=mating("insemination", mother=6, ext="FR-NG-B-0009-2018"))]
+    exp = expand_external(inp(qs), db)
+    ped, _ = build_pedigree(exp.queens, 12, extra_queens=exp.ancestors)
+    a276 = next(a for a in exp.ancestors if a.id == exp.queens[0].mother)
+    s_anc, s7 = ped.sire_of_mating(a276.id), ped.sire_of_mating(7)
+    assert s_anc != s7
+    assert ped.dam[s_anc] == ped.q_node(a276.mating.drone_queens_mother)
+    assert ped.dam[s7] == ped.q_node(6)
+
+
+def test_farm_queen_descending_from_the_lineage_as_drone_queens_mother_is_not_a_cycle(db):
+    """C1 : la reine 7 a pour mère des RPM la reine 5, fille de 0276, et cite le code du père de 0276."""
+    qs = [queen(5, 2024, mother_ref_ext="FR-CBP-B-0276-2022"),
+          queen(7, 2025, mating=mating("insemination", mother=5, ext="FR-NG-B-0009-2018"))]
+    exp = expand_external(inp(qs), db)
+    build_pedigree(exp.queens, 12, extra_queens=exp.ancestors)      # ne lève pas « pedigree cyclique »
+
+
+def test_unexpected_value_types_in_the_base_are_cleaned_not_fatal(db):
+    """I1 : n_drone_queens hors domaine, mating_type hors enum, race_description non texte."""
+    conn = sqlite3.connect(db)
+    conn.executescript("""
+        INSERT INTO mating_code VALUES ('bad', 'foo', NULL);
+        UPDATE queen SET n_drone_queens = -1, race_description = X'00FF' WHERE code = 'FR-CBP-B-0276-2022';
+        UPDATE queen SET mating_code = 'bad', n_drone_queens = 'abc' WHERE code = 'FR-CBP-B-0100-2020';
+        """)
+    conn.commit()
+    conn.close()
+    exp = expand_external(inp([queen(1, 2024, mother_ref_ext="FR-CBP-B-0276-2022")]), db)
+    by_born = {a.born: a for a in exp.ancestors}
+    assert by_born[2022].mating.n_drone_queens is None and by_born[2022].variety is None
+    assert by_born[2020].mating.type == "unknown" and by_born[2020].mating.n_drone_queens is None
+    assert warning(exp, "external_ref_resolved")[0].startswith("1 référence(s)")
+
+
+def test_any_failure_of_the_resolution_leaves_the_computation_without_ancestors(db, monkeypatch):
+    """I1 : la garantie « aucune donnée de la base ne fait échouer le calcul » tient sans condition."""
+    def boom(*a, **k):
+        raise RuntimeError("inattendu")
+    monkeypatch.setattr("blup2.external._expand", boom)
+    src = inp([queen(1, 2024, mother_ref_ext="FR-CBP-B-0276-2022")])
+    exp = expand_external(src, db)
+    assert exp.queens == src.queens and exp.ancestors == []
+    assert warning(exp, "external_pedigree_unavailable") == [
+        "base Index Mellifera illisible : 1 référence(s) externe(s) non résolue(s)"]
+
+
+def test_climb_stops_at_the_ancestor_cap(tmp_path, monkeypatch):
+    """I2 : le nombre total d'ancêtres est plafonné, la remontée s'arrête et le signale."""
+    rows = [(f"FR-L-B-{k:04d}-{1960 + k}", 1960 + k, f"FR-L-B-{k - 1:04d}-{1959 + k}" if k else None, None, None, None)
+            for k in range(60)]
+    db = make_db(tmp_path / "m.sqlite", rows)
+    monkeypatch.setattr("blup2.external.MAX_ANCESTORS", 10)
+    exp = expand_external(inp([queen(1, 2024, mother_ref_ext=rows[-1][0])], depth=30), db)
+    assert len(exp.ancestors) == 10 and min(a.born for a in exp.ancestors) == 2010
+    assert all(a.mother is None or a.mother in {b.id for b in exp.ancestors} for a in exp.ancestors)
+    assert warning(exp, "external_ref_resolved") == [
+        "1 référence(s) Index Mellifera rattachée(s), 10 ancêtre(s) ajouté(s) au pedigree, "
+        "remontée arrêtée au plafond de 10 ancêtres"]
