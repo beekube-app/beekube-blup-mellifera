@@ -57,6 +57,16 @@ Règles :
   commun) ; il en va de même d'un accouplement par station ou insémination sans aucune information
   (ni RPM, ni mère des RPM, ni station, ni référence externe) ;
 - un parent cité mais absent des données est ajouté comme reine de base (`unknown_parent_added`) ;
+- une lignée Index Mellifera citée par son code (`mother_ref_ext` pour la mère, `mating.external_ref`
+  pour la mère des RPM, convention d'Index Mellifera) est cherchée dans la base du crawler quand
+  `MELLIFERA_DB` est configurée : son ascendance (au plus `options.external_pedigree_depth`
+  générations, 7 par défaut, 0 = désactivé) entre dans le pedigree comme reines de base, sans notes ;
+  elle rapproche les reines de l'exploitation issues de lignées apparentées mais n'apparaît dans
+  aucune sortie (reines, base 100, accouplements, tendance). Un accouplement `unknown` dont le côté mâle
+  est résolu devient une insémination. Les erreurs de la base (auto-références, cycles) sont coupées
+  sans faire échouer le calcul (`external_ref_resolved`) ; les codes introuvables sont ignorés jusqu'au
+  crawl suivant (`external_ref_unknown`) ; base configurée mais absente ou illisible :
+  `external_pedigree_unavailable` ;
 - une reine citée comme sa propre mère, sa propre RPM ou la mère de ses RPM (erreur de saisie) :
   ce lien est retiré et l'avertissement `self_reference_removed` liste les reines concernées ;
 - un pedigree cyclique (une reine ancêtre d'elle-même par au moins une autre reine) est refusé

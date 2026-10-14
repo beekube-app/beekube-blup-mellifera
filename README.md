@@ -74,6 +74,12 @@ Commands (`python -m mellifera …`, or `.venv/bin/python -m mellifera …` outs
 
 Exit codes: `0` success, `1` stopped after consecutive network errors, `2` more than 5 % of the pages of one type failed to parse (site structure changed?), `3` another crawl holds the lock, `4` configuration error (empty contact, invalid variable, missing database, unknown or ambiguous breeder).
 
+### Index Mellifera lineages in the engine
+
+When a queen cites an Index Mellifera lineage by its code (`mother_ref_ext` for her mother, `mating.external_ref` for the mother of the drone-producing queens), the v2 engine reads the crawler database read-only and adds that lineage's ancestry to the pedigree (at most `options.external_pedigree_depth` generations, 7 by default, 0 = disabled). These ancestors only feed relationship and inbreeding; they never appear in any output and their evaluations are never used. A code is looked up as given, upper-cased without spaces, then by displayed name (`B4536(NG)`) when unique; an unknown code is ignored (`external_ref_unknown` warning).
+
+Activation: `MELLIFERA_DB=/app/data/mellifera/mellifera.sqlite` in the `api` service's `.env.production`. Without this variable, resolution is disabled and no new warning is emitted; if the database is missing or unreadable, an input citing lineages gets the `external_pedigree_unavailable` warning. Version 2.1.0 adds the `external_pedigree_depth` option and three warning codes (`external_ref_resolved`, `external_ref_unknown`, `external_pedigree_unavailable`) to the contract: **enable `MELLIFERA_DB` in production only after regenerating and publishing the PHP SDK** from `openapi/openapi.json`.
+
 ## Project Structure
 - `app.py` : Entry point of the Flask application
 - `blup.r` : R script for BLUP calculations

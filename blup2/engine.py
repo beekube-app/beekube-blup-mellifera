@@ -6,6 +6,7 @@ from typing import Optional
 
 from . import ENGINE_VERSION
 from .connectivity import connectivity
+from .external import expand_external
 from .indexes import compute_indexes, queen_outputs
 from .kinship import inbreeding, inverse_relationship
 from .matings import evaluate_pairs, suggest_matings
@@ -34,7 +35,9 @@ def _fitter(profile: str, warnings: list[WarningOut]):
 
 
 def _evaluate(inp: BlupV2Input):
-    ped, warnings = build_pedigree(inp.queens, inp.options.default_n_drones)
+    ext = expand_external(inp)      # ancêtres Index Mellifera : dans le pedigree seulement (spec IM §8.3)
+    ped, warnings = build_pedigree(ext.queens, inp.options.default_n_drones, extra_queens=ext.ancestors)
+    warnings.extend(ext.warnings)
     Ainv = inverse_relationship(ped)
     F = inbreeding(ped)
     f_workers = {q: float(F[ped.w_node(q)]) for q in ped.queen_ids}
