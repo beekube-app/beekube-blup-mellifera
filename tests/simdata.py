@@ -201,3 +201,99 @@ def simulate_breeder_scenario(seed: int, s2aw: float = 1.0, s2aq: float = 0.5, r
     inp = {"exploitation": 1, "profile": "breeder", "options": {"n_suggestions": 0},
            "criteria": [crit], "queens": q_in, "records": records}
     return inp, truth, recorded, true
+
+
+def external_scenario(seed: int, s2e: float = 1.5, s2pe: float = 0.5, s2cg: float = 0.5, S: int = 8, D: int = 12,
+                      p_ext: float = 0.8, n_testers: int = 6, p_farm: float = 0.7, n_farm_ap: int = 4,
+                      n_free: int = 30, top_half: bool = False):
+    """Lignées Index Mellifera simulées (spec volet 3 §7) : pedigree de simulate.gen_pedigree sur 5
+    générations ; les générations 0 à 3 forment la base du crawler (notes de saison sur 0 à 6, un groupe par
+    testeur × année), la génération 4 est l'exploitation (filles de reines externes, accouplées sur des
+    sœurs filles d'une reine externe). n_free reines sans lien, dans leurs propres ruchers, complètent
+    l'exploitation. top_half : la base ne garde que la meilleure moitié des reines externes notées (sur la note).
+    Vraies valeurs tirées avec la matrice A de référence (σ²_A = 1), variances transmises au critère.
+    Retourne (entrée v2 en dict, lignes de la table queen, lignes de notes au format de
+    tests/external_base.NOTES, vérité {reine liée: valeur du nœud W normalisée}, reines sans lien)."""
+    from simulate import build_bb, gen_pedigree
+
+    rng = np.random.default_rng(seed)
+    inds, mate = gen_pedigree(rng, G=4)
+    P = build_bb(inds, S, D)
+    A = P.build()
+    L = np.linalg.cholesky(A + 1e-12 * np.eye(len(inds)))
+    a_true = L @ rng.standard_normal(len(inds))
+    idx = {x["id"]: i for i, x in enumerate(inds)}
+    sires = {x["id"]: x for x in inds if x["kind"] == "S"}
+    queens = [x for x in inds if x["kind"] == "Q"]
+    external = [x for x in queens if x["gen"] < 4]
+    code = {x["id"]: f"FR-SIM-B-{k + 1:04d}-{2015 + x['gen']}" for k, x in enumerate(external)}
+    width = SCALE_MAX - SCALE_MIN
+
+    rows = [(code[x["id"]], 2015 + x["gen"], code.get(x["dam"]), code.get(sires[mate[x["id"]]]["dam"]), S)
+            for x in external]
+    cg = {}
+    notes = []
+    for x in external:
+        if rng.random() >= p_ext:
+            continue
+        tester, year = int(rng.integers(n_testers)), 2016 + x["gen"]
+        cg.setdefault((tester, year), rng.standard_normal() * np.sqrt(s2cg))
+        y = (5.0 + a_true[idx["W_" + x["id"]]] + cg[(tester, year)] + rng.standard_normal() * np.sqrt(s2pe)
+             + rng.standard_normal() * np.sqrt(s2e))
+        value = float(np.clip((y - SCALE_MIN) / width * 6, 0, 6))
+        notes.append((code[x["id"]], "season_table", "evjp", "mildness", value, f"{year}-07-01", 300 + tester))
+    if top_half:
+        cut = float(np.median([n[4] for n in notes]))
+        notes = [n for n in notes if n[4] >= cut]
+
+    farm = [x for x in queens if x["gen"] == 4]
+    ap_eff = rng.standard_normal(n_farm_ap + 2) * np.sqrt(s2cg)
+    q_in, records, truth, recorded = [], [], {}, []
+    for k, x in enumerate(farm):
+        q = 1000 + k
+        truth[q] = a_true[idx["W_" + x["id"]]] / width
+        q_in.append({"id": q, "born": 2019, "mother_ref_ext": code[x["dam"]],
+                     "mating": {"type": "unknown", "external_ref": code[sires[mate[x["id"]]]["dam"]],
+                                "n_drone_queens": S, "n_drones": D}})
+        if rng.random() >= p_farm:
+            continue
+        recorded.append(x["id"])
+        ap, pe = int(rng.integers(n_farm_ap)), rng.standard_normal() * np.sqrt(s2pe)
+        for j in range(int(rng.integers(2, 6))):
+            y = 5.0 + a_true[idx["W_" + x["id"]]] + pe + ap_eff[ap] + rng.standard_normal() * np.sqrt(s2e)
+            records.append({"queen": q, "criterion": 1, "value": float(y), "scale_min": SCALE_MIN,
+                            "scale_max": SCALE_MAX, "date": f"2020-0{4 + j}-10", "evaluator": 1, "apiary": ap + 1})
+    free = list(range(5000, 5000 + n_free))
+    for q in free:
+        ap, g = n_farm_ap + int(rng.integers(2)), rng.standard_normal() * np.sqrt(0.5)
+        q_in.append({"id": q, "born": 2019})
+        for j in range(int(rng.integers(2, 6))):
+            y = 5.0 + g + ap_eff[ap] + rng.standard_normal() * np.sqrt(s2pe + s2e)
+            records.append({"queen": q, "criterion": 1, "value": float(y), "scale_min": SCALE_MIN,
+                            "scale_max": SCALE_MAX, "date": f"2020-0{4 + j}-10", "evaluator": 1, "apiary": ap + 1})
+    aww = float(np.mean([A[idx["W_" + q], idx["W_" + q]] for q in recorded]))
+    s2p = aww + s2pe + s2e
+    crit = {"id": 1, "name": "sim", "direction": 1, "kind": "note", "weight": 1, "h2": aww / s2p,
+            "repeatability": (aww + s2pe) / s2p}
+    inp = {"exploitation": 1, "profile": "standard", "options": {"n_suggestions": 0},
+           "criteria": [crit], "queens": q_in, "records": records}
+    return inp, rows, notes, truth, free
+
+
+def write_crawler_db(path, rows, notes) -> str:
+    """Base du crawler minimale (schéma de tests/external_base.py) pour external_scenario."""
+    import sqlite3
+
+    from tests.external_base import NOTES_SCHEMA, SCHEMA
+
+    conn = sqlite3.connect(path)
+    conn.executescript(SCHEMA + NOTES_SCHEMA)
+    conn.executemany("INSERT INTO queen (code, birth_year, mother_code, drone_mother_code, n_drone_queens, "
+                     "mating_code, breeder_id) VALUES (?, ?, ?, ?, ?, 'ins', 900)", rows)
+    conn.executemany(
+        "INSERT INTO evaluation (queen_name_raw, queen_code, queen_key, tester, tester_breeder_id, eval_date, mode, "
+        "criterion_code, value, value_raw, source, url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '/x/')",
+        [(c, c, c, f"T{t}", t, d, mode, crit, v, str(v), src) for c, src, mode, crit, v, d, t in notes])
+    conn.commit()
+    conn.close()
+    return str(path)

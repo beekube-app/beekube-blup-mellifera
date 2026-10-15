@@ -30,7 +30,7 @@ an) [BER08 p. 3].
   poids dans l'index total, caractère éliminatoire, h² et répétabilité facultatives (si une seule
   des deux est fournie, l'autre prend sa valeur par défaut ; répétabilité seule : h² = min(0,25,
   répétabilité)), et, pour le profil `breeder` seulement, `queen_ratio` (ρ) et `rg` (rG)
-  facultatifs (§6).
+  facultatifs (§6) ; caractère standard facultatif (`trait`, §3 bis).
 - **Profil** : champ `profile` de la requête, `"standard"` (défaut) ou `"breeder"` (§5, §5 bis).
 
 Préparation des notes, critère par critère :
@@ -61,7 +61,7 @@ Règles :
   pour la mère des RPM, convention d'Index Mellifera) est cherchée dans la base du crawler quand
   `MELLIFERA_DB` est configurée : son ascendance (au plus `options.external_pedigree_depth`
   générations, 7 par défaut, 0 = désactivé ; au plus 1 000 ancêtres au total) entre dans le pedigree
-  comme reines de base, sans notes ;
+  comme reines de base (leurs notes : §3 bis) ;
   elle rapproche les reines de l'exploitation issues de lignées apparentées mais n'apparaît dans
   aucune sortie (reines, base 100, accouplements, tendance). Un accouplement `unknown` dont le côté mâle
   est résolu devient une insémination. Le nœud sire d'une lignée externe n'est jamais partagé avec un
@@ -75,6 +75,50 @@ Règles :
   ce lien est retiré et l'avertissement `self_reference_removed` liste les reines concernées ;
 - un pedigree cyclique (une reine ancêtre d'elle-même par au moins une autre reine) est refusé
   (HTTP 422).
+
+## 3 bis. Notes des lignées Index Mellifera
+
+Un critère peut déclarer son **caractère standard** (`trait`) : une liste de 30 caractères figée dans
+le contrat (douceur, essaimage, tenue au cadre, hivernage, récoltes, test d'aiguille, varroa…), qui
+indique pour chacun son nom sur Index Mellifera, BeeBreed et le registre Karl Kehrle. Le moteur ne lit
+que les notes d'Index Mellifera ; les autres correspondances servent aux exports de Beekube. Deux
+critères ne peuvent pas déclarer le même caractère.
+
+Quand un critère déclare un caractère connu d'Index Mellifera et compte au moins une note de
+l'exploitation, le moteur lit dans la base du crawler les notes des ancêtres résolus (§3) sur ce
+caractère :
+- **sources** : tableaux de saison (un groupe par testeur et par année) et radar annuel des fiches
+  (un groupe par éleveur et par année) ; le radar d'une année est ignoré quand le tableau de saison
+  note la même reine sur le même caractère la même année ;
+- **nettoyage**, chaque écart compté dans l'avertissement `external_records_added` : récoltes en kg
+  (pas d'échelle commune), notes sans date, hors échelle, non numériques, sans testeur ni éleveur,
+  antérieures à la naissance de la reine, reines sans fiche (code inconnu ou année invalide), notes
+  seules dans leur groupe ;
+- **mise à l'échelle** : chaque note est ramenée sur [0, 1] avec l'échelle du site (0 à 6 pour les
+  notes, pourcentages divisés par 100), puis inversée (1 − v) si le sens du critère de l'exploitation
+  est contraire à celui du site ; les notes d'une même reine, même jour, même groupe sont moyennées.
+
+**Contemporaines.** Un BLUP n'apprend d'une note que par comparaison avec les autres notes de son
+groupe (testeur × année) : la note d'un ancêtre seul dans son groupe est absorbée par l'effet du
+groupe et n'apporte rien. Le moteur lit donc aussi les notes des autres reines du même groupe (même
+testeur, ou même éleveur pour le radar, même année, même caractère). Ces **contemporaines** entrent au
+pedigree comme les ancêtres (liées à leur mère et à leur côté mâle quand ils y sont), au plus 1 000 par
+calcul, retenues par code croissant (au-delà : « plafond de 1000 contemporaines atteint »). Inclure les
+reines parmi lesquelles les reproductrices ont été choisies rend aussi l'estimation peu sensible à
+cette sélection [Henderson 1975].
+
+**Isolement.** Les notes externes ne partagent aucun effet fixe avec celles de l'exploitation : un
+rucher et un évaluateur négatifs par testeur (ou éleveur), des classes d'âge et de ruche propres, une
+covariable de consanguinité des ouvrières propre. Leur effet d'environnement permanent est estimé
+comme celui des reines de l'exploitation. Les a priori de variance (§6), le choix d'estimer par REML
+et les compteurs publiés (`n_records`, `n_queens`, `n_contemporary_groups`, nombre de notes,
+d'évaluateurs et d'années par reine) portent sur l'exploitation seule. La méthode de fiabilité (§7) se
+décide sans les équations dues aux notes externes. Ancêtres et contemporaines n'apparaissent dans
+aucune sortie. Les reines de l'exploitation sans parenté avec les lignées externes ni groupe commun
+gardent exactement leurs index ; les autres peuvent bouger, comme dans tout BLUP.
+
+Notes illisibles (tables absentes, base d'une version antérieure) : le calcul garde l'ascendance sans
+les notes (`external_records_unavailable`).
 
 ## 4. Parenté
 
@@ -221,6 +265,9 @@ jusqu'à 6 000 équations ; au-delà, **approximation** (`reliability_method = "
 avertissement `reliability_approx`) : information propre de chaque colonie après absorption des
 effets fixes, propagée dans le pedigree [Misztal & Wiggans 1988]. Sur simulation, l'approximation
 suit le classement exact (corrélation 0,92 à 0,99) mais **surestime la fiabilité d'environ 0,1**.
+Les équations dues aux seules notes Index Mellifera (§3 bis) ne comptent pas dans cette limite : si
+l'exploitation et son ascendance tiennent sous 6 000 équations, les PEV de ses reines restent exactes,
+lues par résolutions du système déjà factorisé, une par reine, sans inverser la matrice entière.
 
 Profil `breeder` : r² = 1 − PEV(T) / (a_ii σ²_T) pour la valeur totale T du nœud W publié (σ²_T :
 §5 bis) ; PEV(T) = PEV(a_W) + PEV(a_Q) + 2 cov(a_W, a_Q), lues sur le bloc 2 × 2 de l'inverse.
@@ -308,6 +355,18 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
   profil `standard`) ; fournir h², répétabilité, ρ ou rG évite le REML. En `"always"` (4 paramètres),
   le REML coûte environ 65 s par critère à 3 000 reines, jusqu'à environ 105 s au plafond de 400
   évaluations : à éviter au-delà d'un critère à cette taille.
+- Notes Index Mellifera (§3 bis, `pytest -m slow`, 20 populations simulées : générations 0 à 3 dans
+  une base Index Mellifera simulée, 80 % des reines notées par 6 testeurs, génération 4 dans
+  l'exploitation, 70 % notées, plus 30 reines sans lien dans leurs propres ruchers ; variances
+  fournies). Avec les notes externes, la fiabilité des reines issues des lignées gagne 0,068 en moyenne
+  (au moins 0,047 sur chaque population ; seuil : gain partout positif et ≥ 0,05 en moyenne) et la
+  corrélation index / vraie valeur passe de 0,472 à 0,517 (seuil : + 0,02) ; les index des reines sans
+  lien ne bougent pas (écart ≤ 1e-9). Si la base ne garde que la meilleure moitié des reines externes
+  notées (sélection sur la note), le gain de fiabilité tombe à 0,033 et la corrélation de rang passe
+  de 0,452 à 0,472 (seuil : pas de baisse). Coût, sur une base de 9 000 reines : 300 reines de
+  l'exploitation citant 100 lignées reçoivent 1 789 notes (789 ancêtres, 1 000 contemporaines) ; le
+  calcul reste exact et prend environ 0,45 à 0,5 s, contre 0,7 à 0,8 s sans les notes (l'inverse dense
+  est alors remplacée par des résolutions).
 - Non-régression sur le jeu d'exemple anonymisé (`data/input-example.json`).
 
 ## 11. Hypothèses et limites (ce qui n'est pas fait)
@@ -345,6 +404,9 @@ Pour une mère M et une reine productrice de mâles P (vivantes, non éliminées
   repérer ce cas.
 - La classe de ruche est la seule information de ruche utilisée (`hive_type` est reçu mais non
   modélisé).
+- **Notes Index Mellifera** (§3 bis) : le sens et l'échelle des notes du site ne sont pas vérifiés
+  sur des cas réels ; les reines de l'exploitation ne sont jamais comparées aux lignées externes ; le
+  gain réel reste à mesurer sur données réelles, par validation croisée, après le crawl complet.
 
 ## Références
 
