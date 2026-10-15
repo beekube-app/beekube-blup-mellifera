@@ -8,7 +8,7 @@ import numpy as np
 import scipy.sparse as sp
 
 from .kinship import relationship_diagonal
-from .mme import EXACT_LIMIT, solve_mme
+from .mme import EXACT_LIMIT, inverse_entries, solve_mme
 from .pedigree import BeePedigree
 from .records import CriterionData
 from .reliability import approx_pev, effective_records
@@ -32,6 +32,15 @@ PEDIGREE_MIN_RELIABILITY = 1e-3
 class FitParams:
     estimate_variances: str = "auto"      # "auto" | "always" | "never"
     exact_limit: int = EXACT_LIMIT
+    external_nodes: int = 0               # nœuds du pedigree dus aux seules contemporaines (spec volet 3 §5)
+
+
+def external_equations(cdata: CriterionData, params: FitParams, n_genetic: int) -> int:
+    """Équations dues aux seules notes externes : effets fixes propres, environnement permanent des reines
+    externes notées, nœuds des contemporaines (n_genetic blocs génétiques). La méthode de fiabilité se décide
+    sur les autres (spec volet 3 §5)."""
+    return (cdata.X.shape[1] - cdata.prior_X.shape[1] + len(cdata.recorded_queens) - len(cdata.farm_queens)
+            + n_genetic * params.external_nodes)
 
 
 @dataclass
@@ -125,6 +134,10 @@ def fit_standard(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, pa
     a_hat = sol.u[0]
     if sol.pev is not None:
         pev, method = sol.pev[0], "exact"
+    elif sol.n_equations - external_equations(cdata, params, 1) <= params.exact_limit:
+        nodes = sol.n_fixed + np.array([ped.w_node(q) for q in ped.queen_ids], dtype=int)
+        pev, method = np.full(n_nodes, np.nan), "exact"     # seules les reines de l'exploitation sont lues
+        pev[nodes - sol.n_fixed] = inverse_entries(sol, nodes, nodes, comp.sigma2_e)
     else:
         n_eff = effective_records({"mean": [0] * cdata.n_obs, **cdata.factor_labels}, w_obs, n_nodes)
         pev, method = approx_pev(ped, n_eff, comp.sigma2_A, comp.sigma2_pe, comp.sigma2_e), "approx"

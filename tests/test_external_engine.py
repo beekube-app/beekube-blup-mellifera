@@ -234,6 +234,38 @@ def test_matings_route_accepts_the_notes(tmp_path, monkeypatch):
     assert warning(out, "external_records_added")
 
 
+@pytest.mark.parametrize("profile", ["standard", "breeder"])
+def test_notes_never_switch_the_reliability_method(tmp_path, monkeypatch, profile):
+    """Spec volet 3 §5 : la méthode de fiabilité se décide sur les équations de l'exploitation et de son
+    ascendance ; au-delà de la limite à cause des seules notes externes, les PEV des reines de l'exploitation
+    restent exactes, sans inverser la matrice entière."""
+    import functools
+
+    import blup2.engine as engine
+    from blup2.model_standard import FitParams
+    db = make_db(tmp_path / "m.sqlite", notes=NOTES)
+
+    monkeypatch.setenv("MELLIFERA_DB", db)
+    qs = [queen(k, 2023, mother_ref_ext="FR-CBP-B-0276-2022" if k <= 4 else None,
+                mating=mating("unknown", ext="FR-CBP-B-0100-2020")) for k in range(1, 9)]   # accouplements connus
+    recs = [record(k, 0.1 * k, date="2024-06-01", apiary=1 + k % 2) for k in range(1, 9)]
+
+    def solve(limit, criteria):
+        monkeypatch.setattr(engine, "FitParams", functools.partial(FitParams, exact_limit=limit))
+        out = run_blup(inp(qs, records=recs, criteria=criteria, profile=profile))
+        return out, {o.id: o.indexes["1"].reliability for o in out.queens}
+
+    sizes = [int(warning(solve(0, c)[0], "reliability_approx")[0].split()[0])
+             for c in ([criterion(1, h2=0.3, repeatability=0.4)], [criterion(1, **GENTLE)])]
+    assert sizes[0] < sizes[1]                                    # les notes ajoutent des équations
+    out, rel = solve(sizes[0], [criterion(1, **GENTLE)])
+    assert out.parameters["1"].reliability_method == "exact" and warning(out, "reliability_approx") == []
+    assert out.parameters["1"].profile_used == profile
+    _, dense = solve(10 ** 6, [criterion(1, **GENTLE)])
+    assert rel == pytest.approx(dense, abs=1e-9)
+    out, _ = solve(sizes[0] - 1, [criterion(1, **GENTLE)])      # l'exploitation seule dépasse : approché
+    assert out.parameters["1"].reliability_method == "approx"
+
 
 def test_reml_with_external_notes_counts_only_the_farm(tmp_path, monkeypatch):
     """Spec volet 3 §5 : le REML voit toutes les données, les compteurs publiés restent ceux de l'exploitation."""

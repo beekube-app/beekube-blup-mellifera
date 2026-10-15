@@ -59,3 +59,15 @@ def test_wrong_ginv_dimension_is_rejected():
     import pytest
     with pytest.raises(ValueError):
         solve_mme(X, [sp.csr_matrix(Z)], sp.identity(3), 1.0, y, False)
+
+
+def test_inverse_entries_match_the_dense_inverse_above_the_limit():
+    """Spec volet 3 §5 : PEV exactes de quelques nœuds par résolutions du système factorisé."""
+    from blup2.mme import inverse_entries
+    X, Z, G, y = _problem(seed=2)
+    Ginv = sp.csr_matrix(np.linalg.inv(G))
+    dense = solve_mme(X, [sp.csr_matrix(Z)], Ginv, 0.7, y, True)
+    big = solve_mme(X, [sp.csr_matrix(Z)], Ginv, 0.7, y, True, exact_limit=10)
+    rows, cols = [3, 5, 14, 3], [3, 5, 14, 14]
+    got = inverse_entries(big, rows, cols, 0.7, chunk=2)
+    assert np.allclose(got, dense.cinv[rows, cols], atol=1e-12)

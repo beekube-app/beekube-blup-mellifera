@@ -54,7 +54,11 @@ def _evaluate(inp: BlupV2Input):
     F = inbreeding(ped)
     f_workers = {q: float(F[ped.w_node(q)]) for q in (*ped.queen_ids, *ped.added_queen_ids)}
     fit_fn = _fitter(inp.profile, warnings)
-    params = FitParams(estimate_variances=inp.options.estimate_variances)
+    external_nodes = 0
+    if ext.contemporaries and extra_queens:    # nœuds des seules contemporaines (spec volet 3 §5)
+        external_nodes = ped.n_nodes - build_pedigree(ext.queens, inp.options.default_n_drones,
+                                                      extra_queens=ext.ancestors)[0].n_nodes
+    params = FitParams(estimate_variances=inp.options.estimate_variances, external_nodes=external_nodes)
     fits: dict[int, Optional[CriterionFit]] = {}
     for c in inp.criteria:
         try:

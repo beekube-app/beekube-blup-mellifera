@@ -22,13 +22,14 @@ import scipy.sparse as sp
 import scipy.sparse.linalg as spla
 
 from .kinship import relationship, relationship_diagonal
-from .mme import solve_mme
+from .mme import inverse_entries, solve_mme
 from .model_standard import (
     FEW_RECORDS_QUEENS,
     PEDIGREE_MIN_RELIABILITY,
     CriterionFit,
     FitParams,
     empty_fit,
+    external_equations,
     fit_standard,
     incidence,
 )
@@ -331,6 +332,12 @@ def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, par
         p, idx, cinv = sol.n_fixed, np.arange(n), sol.cinv
         pev = cinv[p + idx, p + idx] + cinv[p + n + idx, p + n + idx] + 2.0 * cinv[p + idx, p + n + idx]
         method = "exact"
+    elif sol.n_equations - external_equations(cdata, params, 2) <= params.exact_limit:
+        w = np.array([ped.w_node(q) for q in ped.queen_ids], dtype=int)
+        a, b, k = sol.n_fixed + w, sol.n_fixed + n + w, len(w)
+        v = inverse_entries(sol, np.r_[a, b, a], np.r_[a, b, b], comp.sigma2_e)
+        pev, method = np.full(n, np.nan), "exact"          # seules les reines de l'exploitation sont lues
+        pev[w] = v[:k] + v[k:2 * k] + 2.0 * v[2 * k:]
     else:
         pev = _approx_pev_total(cdata, ped, comp, w_obs, diag)
         method = "approx"

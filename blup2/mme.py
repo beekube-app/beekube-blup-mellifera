@@ -69,3 +69,19 @@ def solve_mme(
         beta=sol[:p], u=u, pev=pev, cinv=cinv, solve=lu.solve, n_equations=n_eq, n_fixed=p,
         sizes=sizes, exact=exact, ssr=float(y @ y - sol @ rhs),
     )
+
+
+def inverse_entries(sol: MMESolution, rows, cols, sigma2_e: float, chunk: int = 256) -> np.ndarray:
+    """σ²_e · C⁻¹[rows[k], cols[k]] par résolutions du système déjà factorisé, une par indice distinct de
+    cols, par paquets de `chunk` : PEV exactes de quelques nœuds sans inverser C (spec volet 3 §5)."""
+    rows, cols = np.asarray(rows, dtype=int), np.asarray(cols, dtype=int)
+    uniq, pos = np.unique(cols, return_inverse=True)
+    out = np.empty(len(rows))
+    for start in range(0, len(uniq), chunk):
+        block = uniq[start:start + chunk]
+        E = np.zeros((sol.n_equations, len(block)))
+        E[block, np.arange(len(block))] = 1.0
+        C = sol.solve(E)
+        sel = (pos >= start) & (pos < start + len(block))
+        out[sel] = C[rows[sel], pos[sel] - start]
+    return sigma2_e * out
