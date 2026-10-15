@@ -8,6 +8,8 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from .traits import TraitName, trait_description
+
 BORN_MIN = 1900   # born : entre 1900 et l'année courante + 1 (spec §5.1)
 
 
@@ -36,6 +38,7 @@ class CriterionIn(_In):
     repeatability: Optional[float] = Field(None, gt=0, lt=1)
     queen_ratio: Optional[float] = Field(None, gt=0)
     rg: Optional[float] = Field(None, ge=-1, le=1)
+    trait: Optional[TraitName] = Field(None, description=trait_description())
 
     @model_validator(mode="after")
     def _repeatability_ge_h2(self) -> "CriterionIn":
@@ -131,6 +134,14 @@ class BlupV2Input(_In):
         dc = sorted(i for i, n in Counter(cids).items() if n > 1)
         if dc:
             errors.append(f"identifiants de critères dupliqués : {dc}")
+        by_trait: dict[str, list[int]] = {}
+        for c in self.criteria:
+            if c.trait is not None:
+                by_trait.setdefault(c.trait, []).append(c.id)
+        for trait, ids in by_trait.items():
+            if len(ids) > 1:
+                errors.append(f"critères {', '.join(map(str, ids[:-1]))} et {ids[-1]} déclarent le même "
+                              f"caractère standard {trait}")
         qset, cmap = set(qids), {c.id: c for c in self.criteria}
         unknown_q = sorted({r.queen for r in self.records if r.queen not in qset})
         if unknown_q:
@@ -253,6 +264,8 @@ class WarningOut(BaseModel):
         "external_ref_resolved",
         "external_ref_unknown",
         "external_pedigree_unavailable",
+        "external_records_added",
+        "external_records_unavailable",
     ]
     message: str
     criterion: Optional[int] = None

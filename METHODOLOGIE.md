@@ -4,7 +4,7 @@ Ce document décrit ce que calcule réellement le moteur v2 (`POST /v2/blup`, pa
 les hypothèses retenues et les limites connues. Il s'adresse aux apiculteurs et sélectionneurs qui
 lisent les index dans Beekube, et aux personnes qui relisent le code. Les références entre crochets
 renvoient à la section « Références » ; [BB] = Brascamp & Bijma 2014, [BER08] = Bienefeld,
-Ehrhardt & Reinhardt 2008. Version du moteur : `2.1.0`, profils `standard` et `breeder`.
+Ehrhardt & Reinhardt 2008. Version du moteur : `2.2.0`, profils `standard` et `breeder`.
 
 ## 1. Pourquoi un BLUP avec parenté
 

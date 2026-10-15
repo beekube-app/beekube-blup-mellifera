@@ -343,6 +343,50 @@
             ],
             "title": "Rg"
           },
+          "trait": {
+            "anyOf": [
+              {
+                "enum": [
+                  "honey_yield",
+                  "honey_yield_average",
+                  "honey_score",
+                  "average_crop_score",
+                  "spring_crop",
+                  "mid_season_crop",
+                  "summer_crop",
+                  "autumn_crop",
+                  "pollen_crop",
+                  "gentleness",
+                  "calmness",
+                  "swarming",
+                  "overwintering",
+                  "spring_development",
+                  "colony_strength",
+                  "brood_vitality",
+                  "bee_vitality",
+                  "fertility",
+                  "comb_building",
+                  "propolis",
+                  "hygienic_24h",
+                  "hygienic_48h",
+                  "hygienic_score",
+                  "varroa_score",
+                  "varroa_infestation",
+                  "smr",
+                  "recapping",
+                  "chalkbrood",
+                  "nosema",
+                  "cbpv"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Caractère standard du critère ; sert au moteur à rattacher les notes Index Mellifera des ancêtres résolus, et à Beekube pour ses exports. Catalogue (identifiant : libellé [type] ; Index Mellifera, BeeBreed, Karl Kehrle) :\n- honey_yield : Récolte de miel (kg) [harvest] ; Index Mellifera honeyAmt ; BeeBreed Honey yield ; Karl Kehrle honeykgpromean\n- honey_yield_average : Récolte de miel moyenne (kg) [harvest] ; Index Mellifera aveHonAmt\n- honey_score : Indice miel (note) [note] ; Index Mellifera honeyIdx ; Karl Kehrle honeyindex\n- average_crop_score : Indice de récolte moyen (note) [note] ; Index Mellifera aveCropIdx\n- spring_crop : Récolte de printemps (note) [note] ; Index Mellifera sprCrop ; Karl Kehrle cropearly\n- mid_season_crop : Récolte de mi-saison (note) [note] ; Index Mellifera midCrop\n- summer_crop : Récolte d'été (note) [note] ; Index Mellifera sumCrop ; Karl Kehrle cropsumm\n- autumn_crop : Récolte d'automne (note) [note] ; Index Mellifera falCrop ; Karl Kehrle croplate\n- pollen_crop : Récolte de pollen (note) [note] ; Index Mellifera polCrop\n- gentleness : Douceur [note] ; Index Mellifera mildness ; BeeBreed Defensive behavior ; Karl Kehrle temperofbees\n- calmness : Tenue au cadre [note] ; Index Mellifera framHold ; BeeBreed Steadiness on comb ; Karl Kehrle calmbehaviour\n- swarming : Essaimage (note haute = essaime peu) [note] ; Index Mellifera swarming ; BeeBreed Swarming drive ; Karl Kehrle swarmtendency\n- overwintering : Hivernage [note] ; Index Mellifera winter ; BeeBreed Robustness in winter ; Karl Kehrle overwintering\n- spring_development : Développement de printemps [note] ; BeeBreed Development in Spring\n- colony_strength : Force de la colonie [note] ; BeeBreed Colony strength\n- brood_vitality : Vitalité du couvain [note] ; Index Mellifera broVital ; Karl Kehrle vitalityofbrood\n- bee_vitality : Vitalité des abeilles [note] ; Index Mellifera beeVital ; Karl Kehrle vitalityofbees\n- fertility : Fécondité [note] ; Index Mellifera fertil ; Karl Kehrle fertility\n- comb_building : Bâtisse [note] ; Index Mellifera bldCombs ; Karl Kehrle buildingcombs\n- propolis : Propolis [note] ; Index Mellifera propolis ; Karl Kehrle buildingpropol\n- hygienic_24h : Test d'aiguille, couvain nettoyé à 24 h (%) [percentage] ; Index Mellifera hyg24h ; BeeBreed rate of opened cells ; Karl Kehrle hygprozafter24h\n- hygienic_48h : Test d'aiguille, couvain nettoyé à 48 h (%) [percentage] ; Index Mellifera hyg48h ; Karl Kehrle hygienicprozafter48h\n- hygienic_score : Indice de comportement hygiénique (note) [note] ; Index Mellifera hygBehaIdx ; Karl Kehrle hygienicindex\n- varroa_score : Indice varroa (note) [note] ; Index Mellifera varIdx ; BeeBreed Varroa index\n- varroa_infestation : Infestation varroa (mesure) [percentage, valeur haute = moins bien] ; BeeBreed Varroa infestation development ; Karl Kehrle varroanumber\n- smr : SMR / VSH (%) [percentage] ; BeeBreed SMR ; Karl Kehrle varroavsh\n- recapping : Recapping (%) [percentage] ; BeeBreed Recapping\n- chalkbrood : Couvain plâtré (note haute = résistant) [note] ; BeeBreed Chalkbrood\n- nosema : Nosémose (note haute = résistant) [note] ; BeeBreed Nosemosis ; Karl Kehrle nosemaindex\n- cbpv : Paralysie chronique (note haute = résistant) [note] ; BeeBreed Chronic Bee Paralysis",
+            "title": "Trait"
+          },
           "weight": {
             "default": 1.0,
             "maximum": 1000000.0,
@@ -1598,7 +1642,9 @@
               "criterion_failed",
               "external_ref_resolved",
               "external_ref_unknown",
-              "external_pedigree_unavailable"
+              "external_pedigree_unavailable",
+              "external_records_added",
+              "external_records_unavailable"
             ],
             "title": "Code",
             "type": "string"
@@ -1649,7 +1695,7 @@
   "info": {
     "description": "SDK PHP pour l'API BLUP de Beekube - Calcul génétique des abeilles mellifères",
     "title": "Beekube BLUP Mellifera API",
-    "version": "2.1.0"
+    "version": "2.2.0"
   },
   "openapi": "3.1.0",
   "paths": {

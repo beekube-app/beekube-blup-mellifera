@@ -186,3 +186,23 @@ def test_external_warning_codes_are_part_of_the_contract():
 
     for code in ("external_ref_resolved", "external_ref_unknown", "external_pedigree_unavailable"):
         assert WarningOut(code=code, message="m").code == code
+
+
+def test_criterion_trait_comes_from_the_catalogue():
+    ok = BlupV2Input.model_validate(mutate(("criteria", 0, "trait"), "gentleness"))
+    assert ok.criteria[0].trait == "gentleness"
+    assert BlupV2Input.model_validate(VALID).criteria[0].trait is None
+    assert_invalid(mutate(("criteria", 0, "trait"), "douceur"), "trait")
+
+
+def test_two_criteria_on_the_same_trait_are_refused():
+    d = copy.deepcopy(VALID)
+    d["criteria"] = [dict(d["criteria"][0], id=k, trait="gentleness") for k in (44, 45, 46)]
+    assert_invalid(d, "critères 44, 45 et 46 déclarent le même caractère standard gentleness")
+
+
+def test_external_records_warning_codes_are_part_of_the_contract():
+    from blup2.schemas import WarningOut
+
+    for code in ("external_records_added", "external_records_unavailable"):
+        assert WarningOut(code=code, message="m").code == code
