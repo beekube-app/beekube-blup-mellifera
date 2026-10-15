@@ -16,7 +16,7 @@ class Settings:
     data_dir: Path
     contact: str
     delay: float = 2.0
-    max_errors: int = 5
+    max_errors: int = 10     # avec le délai doublé jusqu'à 5 min : une panne d'une vingtaine de minutes est tolérée
     schedule: str = "sun 02:00"
     timezone: str = "Europe/Paris"
     base_url: str = BASE_URL
@@ -57,7 +57,7 @@ class Settings:
             data_dir=Path(env.get("MELLIFERA_DATA", "data/mellifera")),
             contact=env.get("MELLIFERA_CONTACT", "").strip(),
             delay=number("MELLIFERA_DELAY", "2.0", float),
-            max_errors=number("MELLIFERA_MAX_ERRORS", "5", int),
+            max_errors=number("MELLIFERA_MAX_ERRORS", "10", int),
             schedule=env.get("MELLIFERA_SCHEDULE", "sun 02:00"),
             timezone=env.get("MELLIFERA_TZ", "Europe/Paris"),
         )

@@ -153,7 +153,7 @@ Les autres pages ne sont jamais relues.
 - `User-Agent: BeekubeCrawler/1.0 (+<MELLIFERA_CONTACT>)` ; le crawl refuse de démarrer si
   `MELLIFERA_CONTACT` est vide.
 - 429, 5xx ou délai dépassé : le délai double à chaque erreur (plafond 5 min), `Retry-After` est
-  respecté ; arrêt propre après 5 erreurs consécutives (`MELLIFERA_MAX_ERRORS`). Un 404 n'est
+  respecté ; arrêt propre après 10 erreurs consécutives (`MELLIFERA_MAX_ERRORS`, soit une vingtaine de minutes de panne). Un 404 n'est
   pas une erreur : la page est marquée `missing`.
 - GET uniquement. Liste blanche de chemins : `/all/`, `/countrybyyear/`, `/breederbyyear/`,
   `/breeder_Year/`, `/queen/`. Toute autre URL (`/rating/`, `/accounts/`, `/exportYearQueens/`,

@@ -232,3 +232,28 @@ def test_climb_stops_at_the_ancestor_cap(tmp_path, monkeypatch):
     assert warning(exp, "external_ref_resolved") == [
         "1 référence(s) Index Mellifera rattachée(s), 10 ancêtre(s) ajouté(s) au pedigree, "
         "remontée arrêtée au plafond de 10 ancêtres"]
+
+
+# ------------------------------------------------------------------ casse des codes (formes réelles du site)
+CASED = [("DE-ABg-B-0003-2017", 2017, None, None, "B3(ABg)", None),
+         ("DE-Ab-B-0001-2010", 2010, None, None, None, None),          # deux reines qui ne diffèrent que par la casse
+         ("DE-AB-B-0001-2010", 2010, None, None, None, None)]
+
+
+@pytest.fixture
+def cased_db(tmp_path):
+    return make_db(tmp_path / "cased.sqlite", CASED)
+
+
+@pytest.mark.parametrize("ref", ["DE-ABg-B-0003-2017", "DE-ABG-B-0003-2017", " de-abg-b-0003-2017 ", "b3(abg)"])
+def test_code_and_name_are_found_whatever_the_case(cased_db, ref):
+    exp = expand_external(inp([queen(1, 2024, mating=mating("unknown", ext=ref))]), cased_db)
+    assert exp.queens[0].mating.external_ref == "DE-ABg-B-0003-2017" and len(exp.ancestors) == 1
+
+
+def test_exact_case_wins_and_case_only_ambiguity_is_unknown(cased_db):
+    qs = [queen(1, 2024, mother_ref_ext="DE-Ab-B-0001-2010"), queen(2, 2024, mother_ref_ext="de-ab-b-0001-2010")]
+    exp = expand_external(inp(qs), cased_db)
+    assert exp.queens[0].mother is not None and exp.queens[1].mother is None
+    assert warning(exp, "external_ref_unknown") == [
+        "1 code(s) Index Mellifera introuvable(s), ignoré(s) jusqu'au prochain crawl : de-ab-b-0001-2010"]

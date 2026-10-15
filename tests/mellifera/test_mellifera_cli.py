@@ -46,7 +46,7 @@ def test_parse_failure_threshold_exit_code(settings):
 
 def test_network_stop_exit_code(settings):
     site = demo_site()
-    site.failures["/all/"] = [503] * 5
+    site.failures["/all/"] = [503] * 10
     assert crawl(settings, site) == EXIT_NETWORK
 
 
@@ -113,6 +113,6 @@ def test_unreadable_country_list_is_not_a_finished_run(settings, status):
 
 def test_status_lists_unfinished_runs(settings):
     site = demo_site()
-    site.failures[f"/queen/{DEMO['B'].code}/"] = [503] * 5
+    site.failures[f"/queen/{DEMO['B'].code}/"] = [503] * 10
     assert crawl(settings, site) == EXIT_NETWORK
     assert "passages inachevés : n° 1 full" in status_lines(settings)

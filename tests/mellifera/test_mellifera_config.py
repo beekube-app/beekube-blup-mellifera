@@ -11,7 +11,7 @@ from mellifera.urls import kind_of, path_ids, queen_path, queens_list_path, seas
 def test_settings_from_env():
     s = Settings.from_env({"MELLIFERA_DATA": "/x", "MELLIFERA_CONTACT": " me@example.org ", "MELLIFERA_DELAY": "3"})
     assert (str(s.db_path), s.contact, s.delay, s.max_errors, s.schedule) == (
-        "/x/mellifera.sqlite", "me@example.org", 3.0, 5, "sun 02:00")
+        "/x/mellifera.sqlite", "me@example.org", 3.0, 10, "sun 02:00")      # 10 erreurs ≈ 20 min de panne
     assert (str(s.cache_dir), str(s.lock_path)) == ("/x/cache", "/x/crawl.lock")
     assert Settings.from_env({}).contact == ""
 

@@ -51,7 +51,7 @@ Le crawler n'envoie que des GET vers une liste blanche de chemins publics, atten
 | `MELLIFERA_CONTACT` | (vide) | e-mail ou URL dans le `User-Agent` ; **obligatoire** : le crawl refuse de démarrer sans |
 | `MELLIFERA_DATA` | `data/mellifera` (`/app/data/mellifera` dans l'image) | base, cache brut et fichier de verrou |
 | `MELLIFERA_DELAY` | `2.0` | secondes entre deux requêtes (au moins 1) |
-| `MELLIFERA_MAX_ERRORS` | `5` | erreurs réseau consécutives avant un arrêt propre |
+| `MELLIFERA_MAX_ERRORS` | `10` | erreurs réseau consécutives avant un arrêt propre (avec le délai doublé jusqu'à 5 min, une panne d'une vingtaine de minutes est tolérée) |
 | `MELLIFERA_SCHEDULE` | `sun 02:00` | jour et heure du crawl incrémental hebdomadaire |
 | `MELLIFERA_TZ` | `Europe/Paris` | fuseau horaire de la planification |
 
@@ -75,7 +75,7 @@ Codes de sortie : `0` succès, `1` arrêt après des erreurs réseau consécutiv
 
 ### Lignées Index Mellifera dans le moteur
 
-Quand une reine cite une lignée Index Mellifera par son code (`mother_ref_ext` pour sa mère, `mating.external_ref` pour la mère des reines productrices de mâles), le moteur v2 lit la base du crawler en lecture seule et ajoute l'ascendance de cette lignée au pedigree (au plus `options.external_pedigree_depth` générations, 7 par défaut, 0 = désactivé, et au plus 1 000 ancêtres au total). Ces ancêtres servent au calcul de parenté et de consanguinité ; ils n'apparaissent dans aucune sortie et leurs évaluations ne sont jamais utilisées. Un code est cherché tel quel, en majuscules sans espaces, puis par nom affiché (`B4536(NG)`) s'il est unique ; un code introuvable est ignoré (avertissement `external_ref_unknown`).
+Quand une reine cite une lignée Index Mellifera par son code (`mother_ref_ext` pour sa mère, `mating.external_ref` pour la mère des reines productrices de mâles), le moteur v2 lit la base du crawler en lecture seule et ajoute l'ascendance de cette lignée au pedigree (au plus `options.external_pedigree_depth` générations, 7 par défaut, 0 = désactivé, et au plus 1 000 ancêtres au total). Ces ancêtres servent au calcul de parenté et de consanguinité ; ils n'apparaissent dans aucune sortie et leurs évaluations ne sont jamais utilisées. Un code est cherché tel quel, puis sans espaces ni distinction de casse (la casse compte sur le site : `DE-ABg-B-0003-2017` ; deux codes qui ne diffèrent que par la casse rendent la saisie ambiguë), puis par nom affiché (`B4536(NG)`) s'il est unique ; un code introuvable est ignoré (avertissement `external_ref_unknown`).
 
 Activation : `MELLIFERA_DB=/app/data/mellifera/mellifera.sqlite` dans `.env.production` du service `api`. Sans cette variable, la résolution est désactivée et aucun nouvel avertissement n'est émis ; si la base est absente ou illisible, une entrée qui cite des lignées reçoit l'avertissement `external_pedigree_unavailable`. La version 2.1.0 ajoute l'option `external_pedigree_depth` et trois codes d'avertissement (`external_ref_resolved`, `external_ref_unknown`, `external_pedigree_unavailable`) au contrat : **n'activez `MELLIFERA_DB` en production qu'après avoir régénéré et publié le SDK PHP** à partir de `openapi/openapi.json`.
 

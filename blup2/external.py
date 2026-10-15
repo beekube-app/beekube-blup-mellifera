@@ -79,14 +79,20 @@ class _Base:
         return self.by_code[code]
 
     def find(self, ref: str) -> Optional[sqlite3.Row]:
-        """Code exact après normalisation (ou tel que saisi), à défaut nom affiché s'il est unique en base."""
-        for code in dict.fromkeys((normalize_code(ref), ref.strip())):
+        """Code tel que saisi, puis sans espaces, puis sans tenir compte de la casse (la casse compte sur le site :
+        DE-ABg-B-0003-2017 ; deux codes qui ne diffèrent que par la casse rendent la saisie ambiguë, donc
+        introuvable), à défaut nom affiché s'il est unique en base, casse ignorée."""
+        ref = ref.strip()
+        for code in dict.fromkeys((ref, "".join(ref.split()))):
             r = self.row(code)
             if r is not None:
                 return r
-        rows = self.conn.execute(f"SELECT {_COLUMNS} FROM queen_mating WHERE name = ? LIMIT 2",
-                                 (ref.strip(),)).fetchall()
-        return rows[0] if len(rows) == 1 else None
+        for column, value in (("code", normalize_code(ref)), ("name", ref)):
+            rows = self.conn.execute(f"SELECT {_COLUMNS} FROM queen_mating WHERE {column} = ? COLLATE NOCASE LIMIT 2",
+                                     (value,)).fetchall()
+            if rows:
+                return rows[0] if len(rows) == 1 else None
+        return None
 
 
 def _ancestry(base: _Base, roots: list[str], depth: int) -> tuple[dict[str, sqlite3.Row], int, bool]:

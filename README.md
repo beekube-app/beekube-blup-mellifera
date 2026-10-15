@@ -52,7 +52,7 @@ The crawler only sends GET requests to an allow-list of public paths, waits at l
 | `MELLIFERA_CONTACT` | (empty) | e-mail or URL in the `User-Agent`; **required**: the crawl refuses to start without it |
 | `MELLIFERA_DATA` | `data/mellifera` (`/app/data/mellifera` in the image) | database, raw cache and lock file |
 | `MELLIFERA_DELAY` | `2.0` | seconds between two requests (at least 1) |
-| `MELLIFERA_MAX_ERRORS` | `5` | consecutive network errors before a clean stop |
+| `MELLIFERA_MAX_ERRORS` | `10` | consecutive network errors before a clean stop (with the delay doubling up to 5 min, an outage of about twenty minutes is tolerated) |
 | `MELLIFERA_SCHEDULE` | `sun 02:00` | day and time of the weekly incremental crawl |
 | `MELLIFERA_TZ` | `Europe/Paris` | time zone of the schedule |
 
@@ -76,7 +76,7 @@ Exit codes: `0` success, `1` stopped after consecutive network errors, `2` more 
 
 ### Index Mellifera lineages in the engine
 
-When a queen cites an Index Mellifera lineage by its code (`mother_ref_ext` for her mother, `mating.external_ref` for the mother of the drone-producing queens), the v2 engine reads the crawler database read-only and adds that lineage's ancestry to the pedigree (at most `options.external_pedigree_depth` generations, 7 by default, 0 = disabled, and at most 1,000 ancestors in total). These ancestors only feed relationship and inbreeding; they never appear in any output and their evaluations are never used. A code is looked up as given, upper-cased without spaces, then by displayed name (`B4536(NG)`) when unique; an unknown code is ignored (`external_ref_unknown` warning).
+When a queen cites an Index Mellifera lineage by its code (`mother_ref_ext` for her mother, `mating.external_ref` for the mother of the drone-producing queens), the v2 engine reads the crawler database read-only and adds that lineage's ancestry to the pedigree (at most `options.external_pedigree_depth` generations, 7 by default, 0 = disabled, and at most 1,000 ancestors in total). These ancestors only feed relationship and inbreeding; they never appear in any output and their evaluations are never used. A code is looked up as given, then without spaces and case-insensitively (case matters on the site: `DE-ABg-B-0003-2017`; two codes differing only by case make the input ambiguous), then by displayed name (`B4536(NG)`) when unique; an unknown code is ignored (`external_ref_unknown` warning).
 
 Activation: `MELLIFERA_DB=/app/data/mellifera/mellifera.sqlite` in the `api` service's `.env.production`. Without this variable, resolution is disabled and no new warning is emitted; if the database is missing or unreadable, an input citing lineages gets the `external_pedigree_unavailable` warning. Version 2.1.0 adds the `external_pedigree_depth` option and three warning codes (`external_ref_resolved`, `external_ref_unknown`, `external_pedigree_unavailable`) to the contract: **enable `MELLIFERA_DB` in production only after regenerating and publishing the PHP SDK** from `openapi/openapi.json`.
 

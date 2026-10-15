@@ -44,7 +44,7 @@ def _retry_after(resp: httpx.Response) -> float:
 
 
 class PoliteClient:
-    def __init__(self, base_url: str, contact: str, delay: float = 2.0, max_errors: int = 5, *,
+    def __init__(self, base_url: str, contact: str, delay: float = 2.0, max_errors: int = 10, *,
                  transport: Optional[httpx.BaseTransport] = None,
                  sleep: Callable[[float], None] = time.sleep,
                  clock: Callable[[], float] = time.monotonic,

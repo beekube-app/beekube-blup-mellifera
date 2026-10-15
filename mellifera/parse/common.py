@@ -10,8 +10,10 @@ from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 PARSER_VERSION = 1
 
-# Code international : PAYS-ÉLEVEUR-RACE-NUMÉRO-ANNÉE (FR-CBP-B-0276-2022, LU-PJ-V-005H-2015).
-CODE_RE = re.compile(r"^[A-Z]{2}-[A-Z0-9]{1,6}-[A-Z0-9]-[0-9A-Z]{1,6}-\d{4}$")
+# Code international : PAYS-ÉLEVEUR-RACE-NUMÉRO-ANNÉE (FR-CBP-B-0276-2022, LU-PJ-V-005H-2015). Formes réelles
+# du site : éleveur avec minuscules (ABg) ou réduit à « - » (vieilles reines allemandes : DE---B-0072-1993), race à
+# plusieurs lettres (Msw), numéro avec minuscules (082b, 0mix). La casse compte : elle est conservée telle quelle.
+CODE_RE = re.compile(r"^[A-Z]{2}-(?:[A-Za-z0-9]{1,6}|-)-[A-Za-z0-9]{1,3}-[0-9A-Za-z]{1,6}-\d{4}$")
 _QUEEN_HREF = re.compile(r"^/queen/([^/]+)/$")
 _HEADINGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
 _LABEL_TRIM = re.compile(r"^[\s:\-–]+|[\s:\-–]+$")

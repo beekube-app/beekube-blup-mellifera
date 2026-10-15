@@ -20,6 +20,9 @@ def test_parse_django_date(text, expected):
 
 @pytest.mark.parametrize("code, ok", [
     ("FR-CBP-B-0276-2022", True), ("LU-PJ-V-005H-2015", True), ("B4536(NG)", False), ("A087", False),
+    # formes réelles du site : éleveur avec minuscules ou vide, race à plusieurs lettres, numéro avec minuscules
+    ("DE-ABg-B-0003-2017", True), ("DE-AS-Msw-0017-2013", True), ("DE-AH-B-082b-2007", True),
+    ("DE-AS-B-0mix-2013", True), ("DE---B-0072-1993", True), ("DE-ABg-B-0003-17", False), ("FR-CBP-B-2022", False),
 ])
 def test_is_code(code, ok):
     assert is_code(code) is ok
