@@ -115,3 +115,54 @@ def test_only_records_of_the_requested_criterion():
 def test_none_evaluator_is_not_counted():
     d = prepare_criterion(_inp([record(1, 0.2, evaluator=None), record(1, 0.4, date="2024-06-01", evaluator=5)]), 1)
     assert d.n_evaluators[1] == 1
+
+
+# ------------------------------------------------------------------ notes externes (spec volet 3 §5)
+def _with_external():
+    from blup2.schemas import RecordIn
+
+    qs = [queen(k, 2022) for k in range(1, 4)]
+    farm = [record(1, 0.2), record(2, 0.6, hive_class="nuc"), record(3, 0.9, evaluator=None)]
+    ext = [RecordIn(queen=-1, criterion=1, value=0.5, date="2023-07-01", apiary=-2, evaluator=-2),
+           RecordIn(queen=-2, criterion=1, value=0.8, date="2023-07-01", apiary=-2, evaluator=-2),
+           RecordIn(queen=-1, criterion=2, value=0.1, date="2023-07-01", apiary=-2, evaluator=-2)]
+    inp = BlupV2Input(exploitation=1, criteria=[criterion(1), criterion(2)], queens=qs, records=farm)
+    return inp, [queen(-1, 2022), queen(-2, 2020)], ext
+
+
+def test_external_records_follow_the_farm_with_their_own_levels():
+    inp, anc, ext = _with_external()
+    fw = {1: 0.0, 2: 0.1, 3: 0.2, -1: 0.0, -2: 0.3}
+    d = prepare_criterion(inp, 1, f_workers=fw, extra_queens=anc, extra_records=ext)
+    ref = prepare_criterion(inp, 1, f_workers=fw)
+    assert d.queen_ids == [1, 2, 3, -1, -2] and d.n_farm_obs == 3
+    assert d.factor_labels["age"] == ["2+", "2+", "2+", "x1", "x2+"]
+    assert d.factor_labels["hive_class"] == ["hive", "nuc", "hive", "xhive", "xhive"]
+    assert d.factor_labels["evaluator"] == [1, 1, -1, -2, -2]
+    assert d.farm_queens == [1, 2, 3] and d.recorded_queens == [1, 2, 3, -1, -2]
+    assert (d.n_records, d.n_evaluators, d.n_years) == (ref.n_records, ref.n_evaluators, ref.n_years)
+    assert (d.n_raw_records, d.n_contemporary_groups) == (ref.n_raw_records, ref.n_contemporary_groups)
+    assert (d.prior_X != ref.X).nnz == 0 and d.prior_y.tolist() == ref.y.tolist()
+
+
+def test_external_records_are_ignored_when_the_farm_has_no_record_on_the_criterion():
+    inp, anc, ext = _with_external()
+    d = prepare_criterion(inp, 2, extra_queens=anc, extra_records=ext)
+    assert d.n_obs == 0 and d.recorded_queens == []
+
+
+def test_worker_inbreeding_of_external_records_has_its_own_covariate():
+    from blup2.schemas import RecordIn
+
+    qs = [queen(k, 2022) for k in range(1, 4)]
+    inp = BlupV2Input(exploitation=1, criteria=[criterion(1)], queens=qs,
+                      records=[record(k, 0.2 * k) for k in range(1, 4)])
+    anc = [queen(-k, 2021) for k in range(1, 4)]
+    ext = [RecordIn(queen=-k, criterion=1, value=0.1 * k, date="2023-07-01", apiary=-2, evaluator=-2)
+           for k in range(1, 4)]
+    fw = {1: 0.0, 2: 0.1, 3: 0.25, -1: 0.0, -2: 0.2, -3: 0.05}
+    d = prepare_criterion(inp, 1, f_workers=fw, extra_queens=anc, extra_records=ext)
+    X = d.X.toarray()
+    assert X.shape[1] == 4 and d.x_names[-2:] == ["f_workers", "f_workers_ext"]   # + constante, groupe externe
+    assert X[:, 2].tolist() == [0.0, 0.1, 0.25, 0.0, 0.0, 0.0]
+    assert X[:, 3].tolist() == [0.0, 0.0, 0.0, 0.0, 0.2, 0.05]
