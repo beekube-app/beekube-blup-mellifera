@@ -36,26 +36,30 @@ def _fitter(profile: str, warnings: list[WarningOut]):
 
 def _evaluate(inp: BlupV2Input):
     ext = expand_external(inp)      # ancêtres Index Mellifera : dans le pedigree seulement (spec IM §8.3)
+    extra_queens = ext.ancestors + ext.contemporaries             # et leurs notes (spec volet 3 §5)
+    extra_records = ext.records
     try:
-        ped, warnings = build_pedigree(ext.queens, inp.options.default_n_drones, extra_queens=ext.ancestors)
+        ped, warnings = build_pedigree(ext.queens, inp.options.default_n_drones, extra_queens=extra_queens)
         warnings.extend(ext.warnings)
     except ValueError:
-        if not ext.ancestors:
+        if not extra_queens:
             raise
         logger.exception("pedigree invalide avec les ancêtres Index Mellifera : calcul sans eux")
         ped, warnings = build_pedigree(inp.queens, inp.options.default_n_drones)
-        warnings.extend(w for w in ext.warnings if w.code != "external_ref_resolved")
+        extra_queens, extra_records = [], []
+        warnings.extend(w for w in ext.warnings if w.code not in ("external_ref_resolved", "external_records_added"))
         warnings.append(WarningOut(code="external_pedigree_unavailable", message=(
             "ascendance Index Mellifera incompatible avec le pedigree de l'exploitation : calcul sans les ancêtres")))
     Ainv = inverse_relationship(ped)
     F = inbreeding(ped)
-    f_workers = {q: float(F[ped.w_node(q)]) for q in ped.queen_ids}
+    f_workers = {q: float(F[ped.w_node(q)]) for q in (*ped.queen_ids, *ped.added_queen_ids)}
     fit_fn = _fitter(inp.profile, warnings)
     params = FitParams(estimate_variances=inp.options.estimate_variances)
     fits: dict[int, Optional[CriterionFit]] = {}
     for c in inp.criteria:
         try:
-            cdata = prepare_criterion(inp, c.id, f_workers=f_workers)
+            cdata = prepare_criterion(inp, c.id, f_workers=f_workers, extra_queens=extra_queens,
+                                      extra_records=extra_records)
             fit = fit_fn(cdata, ped, Ainv, params)
             fits[c.id] = fit
             warnings.extend(fit.warnings)

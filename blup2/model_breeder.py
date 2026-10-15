@@ -204,11 +204,12 @@ def reml_breeder(X, Zw, Zq, Zpe, Ainv, y: np.ndarray, start: BreederComponents, 
 
 
 def known_mating_share(cdata: CriterionData, ped: BeePedigree) -> float:
-    """Part des reines notées dont l'accouplement (nœud sire) est connu."""
-    if not cdata.recorded_queens:
+    """Part des reines notées de l'exploitation dont l'accouplement (nœud sire) est connu."""
+    queens = cdata.farm_queens
+    if not queens:
         return 0.0
-    known = sum(1 for q in cdata.recorded_queens if ped.sire_of_mating(q) is not None)
-    return known / len(cdata.recorded_queens)
+    known = sum(1 for q in queens if ped.sire_of_mating(q) is not None)
+    return known / len(queens)
 
 
 def _published_share(share: float) -> float:
@@ -283,15 +284,17 @@ def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, par
     w_obs = [ped.w_node(q) for q in cdata.queen_ids]
     q_obs = [ped.q_node(q) for q in cdata.queen_ids]
     rec_pos = {q: k for k, q in enumerate(cdata.recorded_queens)}
-    n_q = len(rec_pos)
+    n_q = len(rec_pos)                    # dimension de Z_pe (ancêtres notés compris)
+    farm_queens = cdata.farm_queens       # a priori et compteurs : exploitation seule (spec volet 3 §5)
+    n_farm = len(farm_queens)
     Zw, Zq = incidence(w_obs, n), incidence(q_obs, n)
     Zpe = incidence([rec_pos[q] for q in cdata.queen_ids], n_q)
-    rec_w = [ped.w_node(q) for q in cdata.recorded_queens]
-    rec_q = [ped.q_node(q) for q in cdata.recorded_queens]
+    rec_w = [ped.w_node(q) for q in farm_queens]
+    rec_q = [ped.q_node(q) for q in farm_queens]
     mean_aww = float(np.mean(diag[rec_w]))
     mean_aqq = float(np.mean(diag[rec_q]))
     mean_awq = float(np.mean([relationship(ped, w, q) for w, q in zip(rec_w, rec_q)]))
-    raw_p = phenotypic_variance(cdata.X, cdata.y, floor=0.0)
+    raw_p = phenotypic_variance(cdata.prior_X, cdata.prior_y, floor=0.0)
     no_variation = raw_p < NO_VARIATION_SIGMA2_P
     if no_variation:   # pas de REML : il partirait vers des variances de 1e-300 (index aberrants)
         warnings.append(WarningOut(
@@ -302,7 +305,7 @@ def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, par
     comp = prior_breeder(sigma2_p, h2, rep, ratio, rg, mean_aww, mean_aqq, mean_awq)
     mode = params.estimate_variances
     if source == "prior" and not no_variation and should_estimate(
-            mode, n_q, cdata.n_raw_records, cdata.n_contemporary_groups):
+            mode, n_farm, cdata.n_raw_records, cdata.n_contemporary_groups):
         res = reml_breeder(cdata.X, Zw, Zq, Zpe, Ainv, cdata.y, comp, estimate_partition=(mode == "always"))
         if res.converged:
             comp = BreederComponents(sigma2_AW=res.sigma2_AW, sigma2_AQ=res.sigma2_AQ, rg=res.rg,
@@ -346,9 +349,9 @@ def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, par
             status[q] = "pedigree"
         else:
             status[q] = "none"
-    if n_q < FEW_RECORDS_QUEENS:
+    if n_farm < FEW_RECORDS_QUEENS:
         warnings.append(WarningOut(code="few_records", criterion=cid,
-                                   message=f"seulement {n_q} reine(s) notée(s) : index peu fiables"))
+                                   message=f"seulement {n_farm} reine(s) notée(s) : index peu fiables"))
     if cdata.scale_mixed:
         warnings.append(WarningOut(code="scale_mixed", criterion=cid,
                                    message="plusieurs échelles de notes : notes ramenées sur [0, 1]"))
@@ -356,7 +359,7 @@ def fit_breeder(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, par
         source=source, h2=comp.h2, repeatability=comp.repeatability, sigma2_a=comp.sigma2_AW,
         sigma2_pe=comp.sigma2_pe, sigma2_e=comp.sigma2_e, sigma2_aq=comp.sigma2_AQ, rg=comp.rg,
         profile_used="breeder", known_mating_share=_published_share(share), n_records=cdata.n_raw_records,
-        n_queens=n_q, n_contemporary_groups=cdata.n_contemporary_groups, reliability_method=method,
+        n_queens=n_farm, n_contemporary_groups=cdata.n_contemporary_groups, reliability_method=method,
     )
     return CriterionFit(
         criterion_id=cid, parameters=parameters, ebv=ebv, reliability=rel, ebv_queen=ebv_q, status=status,

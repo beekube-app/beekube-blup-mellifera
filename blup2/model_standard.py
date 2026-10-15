@@ -90,8 +90,9 @@ def fit_standard(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, pa
     rec_pos = {q: k for k, q in enumerate(cdata.recorded_queens)}
     Zw = incidence(w_obs, n_nodes)
     Zpe = incidence([rec_pos[q] for q in cdata.queen_ids], len(rec_pos))
-    mean_aww = float(np.mean([diag[ped.w_node(q)] for q in cdata.recorded_queens]))
-    raw_p = phenotypic_variance(cdata.X, cdata.y, floor=0.0)
+    farm_queens = cdata.farm_queens       # a priori et compteurs : exploitation seule (spec volet 3 §5)
+    mean_aww = float(np.mean([diag[ped.w_node(q)] for q in farm_queens]))
+    raw_p = phenotypic_variance(cdata.prior_X, cdata.prior_y, floor=0.0)
     no_variation = raw_p < NO_VARIATION_SIGMA2_P
     if no_variation:   # pas de REML : il partirait vers des variances de 1e-300 (index aberrants)
         warnings.append(WarningOut(
@@ -100,9 +101,10 @@ def fit_standard(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, pa
     sigma2_p = max(raw_p, 1e-8)       # plancher de phenotypic_variance (σ²_P sert de diviseur)
     source, h2, rep = _variance_source(cdata)
     comp = prior_components(sigma2_p, h2, rep, mean_aww)
-    n_q = len(cdata.recorded_queens)
+    n_q = len(cdata.recorded_queens)      # dimension de Z_pe (ancêtres notés compris)
+    n_farm = len(farm_queens)
     if source == "prior" and not no_variation and should_estimate(
-            params.estimate_variances, n_q, cdata.n_raw_records, cdata.n_contemporary_groups):
+            params.estimate_variances, n_farm, cdata.n_raw_records, cdata.n_contemporary_groups):
         I_pe = sp.identity(n_q, format="csr")
         res = reml(cdata.X, [Zw, Zpe], [Ainv, I_pe], cdata.y, [comp.sigma2_A, comp.sigma2_pe], comp.sigma2_e)
         if res.converged:
@@ -140,16 +142,16 @@ def fit_standard(cdata: CriterionData, ped: BeePedigree, Ainv: sp.csr_matrix, pa
             status[q] = "pedigree"
         else:
             status[q] = "none"
-    if n_q < FEW_RECORDS_QUEENS:
+    if n_farm < FEW_RECORDS_QUEENS:
         warnings.append(WarningOut(code="few_records", criterion=cid,
-                                   message=f"seulement {n_q} reine(s) notée(s) : index peu fiables"))
+                                   message=f"seulement {n_farm} reine(s) notée(s) : index peu fiables"))
     if cdata.scale_mixed:
         warnings.append(WarningOut(code="scale_mixed", criterion=cid,
                                    message="plusieurs échelles de notes : notes ramenées sur [0, 1]"))
     parameters = CriterionParameters(
         source=source, h2=comp.h2, repeatability=comp.repeatability, sigma2_a=comp.sigma2_a,
         sigma2_pe=comp.sigma2_pe, sigma2_e=comp.sigma2_e, profile_used="standard",
-        n_records=cdata.n_raw_records, n_queens=n_q, n_contemporary_groups=cdata.n_contemporary_groups,
+        n_records=cdata.n_raw_records, n_queens=n_farm, n_contemporary_groups=cdata.n_contemporary_groups,
         reliability_method=method,
     )
     return CriterionFit(

@@ -16,8 +16,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
+from .external_records import build_records, read_notes, records_message
 from .pedigree import find_cycle, listed_ids
-from .schemas import BORN_MIN, BlupV2Input, MatingIn, QueenIn, WarningOut
+from .schemas import BORN_MIN, BlupV2Input, MatingIn, QueenIn, RecordIn, WarningOut
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,8 @@ _COLUMNS = ("code, name, birth_year, mother_code, drone_mother_code, n_drone_que
 class Expansion:
     queens: list[QueenIn]                                        # reines de l'entrée, liens complétés
     ancestors: list[QueenIn] = field(default_factory=list)      # ancêtres Index Mellifera (id négatifs)
+    contemporaries: list[QueenIn] = field(default_factory=list)  # reines notées dans les mêmes groupes (id négatifs)
+    records: list[RecordIn] = field(default_factory=list)       # notes des ancêtres et des contemporaines
     warnings: list[WarningOut] = field(default_factory=list)
 
 
@@ -247,9 +250,36 @@ def _expand(inp: BlupV2Input, refs: list, depth: int, base: _Base) -> Expansion:
         if capped:
             msg += f", remontée arrêtée au plafond de {MAX_ANCESTORS} ancêtres"
         out.warnings.append(WarningOut(code="external_ref_resolved", message=msg))
+    try:                # notes en échec : calcul avec l'ascendance, sans les notes (spec volet 3 §6)
+        _add_notes(out, inp, base, rows, ids)
+    except Exception:
+        logger.exception("notes Index Mellifera illisibles")
+        out.contemporaries, out.records = [], []
+        out.warnings.append(WarningOut(code="external_records_unavailable", message=(
+            "notes Index Mellifera illisibles : calcul avec l'ascendance mais sans leurs notes")))
     unknown = sorted(ref for ref, code in found.items() if code is None)
     if unknown:
         out.warnings.append(WarningOut(code="external_ref_unknown", message=(
             f"{len(unknown)} code(s) Index Mellifera introuvable(s), ignoré(s) jusqu'au prochain crawl : "
             f"{listed_ids(unknown)}")))
     return out
+
+
+def _add_notes(out: Expansion, inp: BlupV2Input, base: _Base, rows: dict[str, sqlite3.Row], ids: dict[str, int]) -> None:
+    """Notes des ancêtres et de leurs contemporaines (spec volet 3 §4). Les contemporaines prennent les id
+    négatifs suivants et sont construites comme les ancêtres : liées à leur mère et à leur côté mâle quand ils
+    sont dans l'ensemble."""
+    if not ids:
+        return
+    notes = read_notes(base.conn, inp, {code: r["birth_year"] for code, r in rows.items()})
+    start = min(ids.values())
+    all_ids = dict(ids)
+    for k, code in enumerate(notes.contemporaries, start=1):
+        all_ids[code] = start - k
+    queens = list(out.ancestors) + [_ancestor(base.row(code), all_ids)[0] for code in notes.contemporaries]
+    _cut_cycles(queens)               # un cycle ne peut passer que par des contemporaines
+    out.ancestors, out.contemporaries = queens[: len(out.ancestors)], queens[len(out.ancestors):]
+    out.records = build_records(notes, all_ids, inp)
+    msg = records_message(out.records, set(ids.values()), notes)
+    if msg is not None:
+        out.warnings.append(WarningOut(code="external_records_added", message=msg))
