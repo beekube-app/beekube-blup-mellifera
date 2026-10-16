@@ -51,7 +51,7 @@ Le crawler n'envoie que des GET vers une liste blanche de chemins publics, atten
 | `MELLIFERA_CONTACT` | (vide) | e-mail ou URL dans le `User-Agent` ; **obligatoire** : le crawl refuse de démarrer sans |
 | `MELLIFERA_DATA` | `data/mellifera` (`/app/data/mellifera` dans l'image) | base, cache brut et fichier de verrou |
 | `MELLIFERA_DELAY` | `2.0` | secondes entre deux requêtes (au moins 1) |
-| `MELLIFERA_MAX_ERRORS` | `10` | erreurs réseau consécutives avant un arrêt propre (avec le délai doublé jusqu'à 5 min, une panne d'une vingtaine de minutes est tolérée) |
+| `MELLIFERA_MAX_ERRORS` | `10` | erreurs réseau consécutives avant un arrêt propre (avec le délai doublé jusqu'à 5 min, une panne d'une vingtaine de minutes est tolérée). Une page qui dépasse trois fois le délai de lecture (30 s) est abandonnée pour ce passage, journalisée et notée en erreur ; le crawl continue |
 | `MELLIFERA_SCHEDULE` | `sun 02:00` | jour et heure du crawl incrémental hebdomadaire |
 | `MELLIFERA_TZ` | `Europe/Paris` | fuseau horaire de la planification |
 

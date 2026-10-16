@@ -1,4 +1,5 @@
 import datetime as dt
+import logging
 
 import pytest
 
@@ -165,3 +166,20 @@ def test_incremental_on_an_empty_database_runs_a_full_crawl(tmp_path):
     report = crawler.incremental()
     assert report.mode == "full" and not report.stopped
     assert parsed_codes(conn) == {q.code for q in QUEENS}
+
+
+def test_queen_page_that_never_answers_does_not_block_the_full_crawl(tmp_path, caplog):
+    """Une fiche qui ne répond jamais est notée en erreur et le passage complet se termine (crawl du 15/10 bloqué
+    sur /queen/DE-LB-C-010b-2008/)."""
+    site = demo_site()
+    site.failures[queen_path(B.code)] = ["timeout"] * 50
+    crawler, conn = make_crawler(tmp_path, site, max_errors=10)
+    with caplog.at_level(logging.WARNING, logger="mellifera"):
+        report = crawler.full()
+    assert not report.stopped
+    assert report.stats["pages"]["queen"]["error"] == 1
+    assert conn.execute("SELECT status FROM page WHERE url = ?", (queen_path(B.code),)).fetchone()[0] == "error"
+    assert parsed_codes(conn) == {q.code for q in QUEENS} - {B.code}
+    assert site.paths.count(queen_path(B.code)) == 3
+    assert f"{queen_path(B.code)} illisible" in caplog.text
+    assert conn.execute("SELECT finished_at IS NOT NULL FROM crawl_run").fetchone()[0] == 1

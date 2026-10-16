@@ -16,8 +16,8 @@ def fixture(name: str) -> bytes:
 
 # ------------------------------------------------------------------ faux site et horloge
 class FakeSite:
-    """Sert des pages par chemin. `failures[chemin]` : réponses d'erreur renvoyées avant la vraie page, code HTTP
-    ou (code, Retry-After)."""
+    """Sert des pages par chemin. `failures[chemin]` : réponses d'erreur renvoyées avant la vraie page, code HTTP,
+    (code, Retry-After) ou "timeout" (délai de lecture dépassé)."""
 
     def __init__(self, pages: Optional[dict[str, bytes]] = None):
         self.pages: dict[str, bytes] = dict(pages or {})
@@ -35,6 +35,9 @@ class FakeSite:
         if request.method != "GET":
             return httpx.Response(405)
         pending = self.failures.get(path)
+        if pending and pending[0] == "timeout":
+            pending.pop(0)
+            raise httpx.ReadTimeout("délai de lecture dépassé", request=request)
         if pending:
             status, retry_after = (pending.pop(0), None) if isinstance(pending[0], int) else pending.pop(0)
             return httpx.Response(status, headers={"Retry-After": retry_after} if retry_after else {})

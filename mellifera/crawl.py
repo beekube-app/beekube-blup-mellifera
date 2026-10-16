@@ -110,6 +110,9 @@ class Crawler:
             "parse_error = NULL, run_id = excluded.run_id",
             (path, kind, resp.status, resp.http_status, fetched_at, sha, rel, self.run_id))
         self.pages[kind][resp.status] += 1
+        if resp.status == "error":
+            log.warning("%s illisible (%s) : page ignorée pour ce passage", path,
+                        f"HTTP {resp.http_status}" if resp.http_status else "délai de lecture dépassé")
         return (resp.body if resp.status == "ok" else None), fetched_at
 
     def _parse(self, path: str, body: bytes, seen_at: str):

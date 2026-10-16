@@ -13,6 +13,7 @@ from .urls import kind_of
 MAX_BACKOFF = 300.0          # plafond du délai doublé (5 min)
 MAX_RETRY_AFTER = 3600.0     # un Retry-After plus long est ramené à 1 h
 MAX_REDIRECTS = 3
+MAX_PAGE_TIMEOUTS = 3        # délais de lecture dépassés sur une même page avant de l'abandonner pour ce passage
 LOGIN_PATH = "/accounts/login/"
 
 
@@ -92,13 +93,17 @@ class PoliteClient:
     def get(self, path: str) -> Response:
         if kind_of(path) is None:
             raise ForbiddenPath(path)
-        current, redirects = path, 0
+        current, redirects, timeouts = path, 0, 0
         while True:
             self._wait()
             try:
                 r = self._http.get(current)
             except httpx.TransportError as exc:          # délai dépassé, connexion refusée…
                 self._failure(current, type(exc).__name__)
+                if isinstance(exc, httpx.ReadTimeout):
+                    timeouts += 1
+                    if timeouts >= MAX_PAGE_TIMEOUTS:    # page qui ne répond jamais : abandonnée, le crawl continue ;
+                        return Response(path, "error", None)  # les erreurs restent comptées si le site est en panne
                 continue
             finally:
                 self._last = self._clock()               # le délai court depuis la fin de la réponse

@@ -178,3 +178,29 @@ def test_cookies_set_by_the_site_are_never_sent_back():
     client.get("/all/")
     client.get("/countrybyyear/8/")
     assert sent == ["django_language=en", "django_language=en"]
+
+
+def test_page_that_never_answers_is_abandoned_after_three_timeouts():
+    """Une page qui dépasse toujours le délai (vue sur /queen/DE-LB-C-010b-2008/) est abandonnée pour ce passage,
+    au lieu d'arrêter tout le crawl : la page suivante est lue."""
+    stuck = "/queen/DE-LB-C-010b-2008/"
+    site = FakeSite({"/all/": b"x", stuck: b"q"})
+    site.failures[stuck] = ["timeout"] * 50
+    client = make_client(site, FakeClock(), max_errors=10)
+    resp = client.get(stuck)
+    assert (resp.status, resp.http_status) == ("error", None)
+    assert site.paths == [stuck] * 3
+    assert client.get("/all/").status == "ok"
+
+
+def test_timeouts_on_successive_pages_still_stop_the_crawl():
+    """Site injoignable : les délais dépassés s'additionnent d'une page à l'autre et arrêtent le crawl."""
+    first, second = "/queen/FR-ABC-B-0001-2020/", "/queen/FR-ABC-B-0002-2020/"
+    site = FakeSite()
+    site.failures[first] = ["timeout"] * 50
+    site.failures[second] = ["timeout"] * 50
+    client = make_client(site, FakeClock(), max_errors=5)
+    assert client.get(first).status == "error"
+    with pytest.raises(TooManyErrors):
+        client.get(second)
+    assert len(site.requests) == 5

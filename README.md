@@ -52,7 +52,7 @@ The crawler only sends GET requests to an allow-list of public paths, waits at l
 | `MELLIFERA_CONTACT` | (empty) | e-mail or URL in the `User-Agent`; **required**: the crawl refuses to start without it |
 | `MELLIFERA_DATA` | `data/mellifera` (`/app/data/mellifera` in the image) | database, raw cache and lock file |
 | `MELLIFERA_DELAY` | `2.0` | seconds between two requests (at least 1) |
-| `MELLIFERA_MAX_ERRORS` | `10` | consecutive network errors before a clean stop (with the delay doubling up to 5 min, an outage of about twenty minutes is tolerated) |
+| `MELLIFERA_MAX_ERRORS` | `10` | consecutive network errors before a clean stop (with the delay doubling up to 5 min, an outage of about twenty minutes is tolerated). A page that exceeds the read timeout (30 s) three times is skipped for this pass, logged and recorded as an error; the crawl goes on |
 | `MELLIFERA_SCHEDULE` | `sun 02:00` | day and time of the weekly incremental crawl |
 | `MELLIFERA_TZ` | `Europe/Paris` | time zone of the schedule |
 
